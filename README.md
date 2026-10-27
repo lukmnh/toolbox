@@ -8,7 +8,8 @@ Superapp desktop berisi kumpulan utility pribadi untuk PDF, JSON, dan developer 
 > |---|---|
 > | Tool PDF (Isi & TTD, Gabung, Pisah, Kompres) | ✅ Selesai + test, lihat [Implementasi PDF](#implementasi-pdf) |
 > | Shell `app` | ⚠️ Minimal: Home, sidebar, Open with, `Ctrl+H`/`Ctrl+B`. Belum ada: halaman Settings, "Terakhir dipakai", simpan ukuran window, log ke file |
-> | Tool JSON & Dev Utils | ⏳ Belum dimulai |
+> | Tool JSON (Viewer, Beautify) | ✅ Selesai + test |
+> | Tool Dev Utils | ⏳ Belum dimulai |
 > | Packaging & release | ⏳ Belum dimulai |
 
 - Satu aplikasi, satu menu: pilih tool dari Home, pindah tool lewat sidebar.
@@ -101,10 +102,10 @@ Menjalankan aplikasi setelah build (sama di Linux dan Windows):
 
 ```bash
 ./mvnw package -DskipTests
-java -jar app/target/toolbox-app.jar
+java -Xmx320m -jar app/target/toolbox-app.jar
 
 # Simulasi "Open with" dengan argumen file
-java -jar app/target/toolbox-app.jar ~/Downloads/contoh.pdf
+java -Xmx320m -jar app/target/toolbox-app.jar ~/Downloads/contoh.pdf
 ```
 
 `toolbox-app.jar` memuat `Class-Path` ke `app/target/libs/`, jadi folder `libs/` harus tetap berada di sebelah jar.
@@ -379,8 +380,8 @@ Di Windows, ganti `./mvnw` dengan `.\mvnw.cmd`.
 **3. Jalankan.**
 
 ```bash
-java -jar app/target/toolbox-app.jar                     # buka Home
-java -jar app/target/toolbox-app.jar ~/Downloads/a.pdf   # langsung ke Isi & TTD
+java -Xmx320m -jar app/target/toolbox-app.jar                     # buka Home
+java -Xmx320m -jar app/target/toolbox-app.jar ~/Downloads/a.pdf   # langsung ke Isi & TTD
 ```
 
 Saat pertama kali merender PDF, PDFBox membangun cache font sistem (beberapa detik, log `Building on-disk font cache`). Ini hanya terjadi sekali.
