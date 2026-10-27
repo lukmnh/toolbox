@@ -1,0 +1,102 @@
+package io.github.lukmnh.toolbox.app;
+
+import io.github.lukmnh.toolbox.app.routing.OpenWithRouter;
+import io.github.lukmnh.toolbox.app.shell.MainShell;
+import io.github.lukmnh.toolbox.app.shell.ToolRegistry;
+import io.github.lukmnh.toolbox.common.download.DownloadLocationResolver;
+import io.github.lukmnh.toolbox.common.download.DownloadService;
+import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.settings.Settings;
+import io.github.lukmnh.toolbox.common.settings.Theme;
+import io.github.lukmnh.toolbox.common.task.TaskRunner;
+import io.github.lukmnh.toolbox.common.tool.Tool;
+import io.github.lukmnh.toolbox.common.tool.ToolContext;
+import io.github.lukmnh.toolbox.common.ui.ErrorDialogs;
+import io.github.lukmnh.toolbox.common.ui.ToastNotifier;
+import java.lang.System.Logger.Level;
+import java.util.List;
+import java.util.Objects;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
+/** Bootstrap: merakit layanan shell, memuat tool lewat ServiceLoader, lalu menampilkan window. */
+public final class ToolboxApplication extends Application {
+
+    private static final System.Logger LOG = System.getLogger(ToolboxApplication.class.getName());
+    private static final double MIN_WIDTH = 1200;
+    private static final double MIN_HEIGHT = 800;
+    private static final String LIGHT_THEME = "/css/theme-light.css";
+    private static final String DARK_THEME = "/css/theme-dark.css";
+
+    private TaskRunner taskRunner;
+    private MainShell shell;
+
+    @Override
+    public void start(Stage stage) {
+        Settings settings =
+                Settings.defaults(DownloadLocationResolver.forCurrentSystem().resolve());
+        StackPane root = new StackPane();
+        taskRunner = new TaskRunner();
+        installUncaughtExceptionHandler(stage);
+
+        List<Tool> tools = ToolRegistry.load();
+        // Notifier dibuat setelah shell supaya toast selalu tampil di atas konten
+        StackPane shellHost = new StackPane();
+        root.getChildren().add(shellHost);
+        ToastNotifier notifier = new ToastNotifier(root);
+        DownloadService downloads =
+                new DownloadService(() -> settings, () -> stage, notifier, taskRunner, getHostServices());
+        ToolContext context =
+                new ToolContext(downloads, taskRunner, notifier, () -> settings, getHostServices(), stage);
+        shell = new MainShell(tools, context);
+        shellHost.getChildren().add(shell);
+
+        Scene scene = new Scene(root, MIN_WIDTH, MIN_HEIGHT);
+        scene.getStylesheets().add(stylesheet(LIGHT_THEME));
+        if (settings.theme() == Theme.DARK) {
+            scene.getStylesheets().add(stylesheet(DARK_THEME));
+        }
+        shell.installShortcuts(scene);
+
+        stage.setTitle(Messages.get("app.title"));
+        stage.setMinWidth(MIN_WIDTH);
+        stage.setMinHeight(MIN_HEIGHT);
+        stage.setScene(scene);
+        stage.setOnCloseRequest(event -> {
+            if (!shell.closeActiveTool()) {
+                event.consume();
+            }
+        });
+        stage.show();
+
+        new OpenWithRouter(tools).route(getParameters().getRaw(), shell::openTool, notifier::warning);
+    }
+
+    private String stylesheet(String path) {
+        return Objects.requireNonNull(getClass().getResource(path), path).toExternalForm();
+    }
+
+    private static void installUncaughtExceptionHandler(Stage stage) {
+        Thread.setDefaultUncaughtExceptionHandler((thread, error) -> {
+            LOG.log(Level.ERROR, "Uncaught exception di thread " + thread.getName(), error);
+            if (Platform.isFxApplicationThread()) {
+                ErrorDialogs.showUnexpected(stage, error);
+            } else {
+                Platform.runLater(() -> ErrorDialogs.showUnexpected(stage, error));
+            }
+        });
+    }
+
+    @Override
+    public void stop() {
+        if (shell != null) {
+            shell.disposeActiveTool();
+        }
+        if (taskRunner != null) {
+            taskRunner.close();
+        }
+    }
+}
