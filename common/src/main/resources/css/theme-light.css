@@ -1,0 +1,155 @@
+/*
+ * Tema dasar Toolbox. Warna didefinisikan sebagai looked-up color di .root sehingga tema lain
+ * (theme-dark.css) cukup mengganti variabel ini.
+ */
+.root {
+    -tb-bg: #f6f7f9;
+    -tb-surface: #ffffff;
+    -tb-surface-alt: #eef0f4;
+    -tb-border: #d9dde4;
+    -tb-text: #1f2328;
+    -tb-text-muted: #5f6873;
+    -tb-accent: #2f6fdb;
+    -tb-accent-hover: #2459b3;
+    -tb-accent-text: #ffffff;
+    -tb-success: #1f883d;
+    -tb-warning: #b35900;
+    -tb-danger: #cf222e;
+    -tb-selection: #2f6fdb;
+
+    -fx-base: -tb-surface;
+    -fx-background: -tb-bg;
+    -fx-control-inner-background: -tb-surface;
+    -fx-accent: -tb-accent;
+    -fx-focus-color: -tb-accent;
+    -fx-text-base-color: -tb-text;
+    -fx-font-size: 13px;
+    -fx-background-color: -tb-bg;
+}
+
+/* ---------- Shell ---------- */
+.app-header {
+    -fx-background-color: -tb-surface;
+    -fx-border-color: transparent transparent -tb-border transparent;
+}
+.app-name { -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -tb-text; }
+.current-tool { -fx-text-fill: -tb-text-muted; -fx-font-size: 14px; }
+.sidebar-toggle { -fx-background-color: transparent; -fx-font-size: 16px; -fx-cursor: hand; }
+
+.sidebar, .sidebar > .viewport {
+    -fx-background-color: -tb-surface;
+}
+.sidebar { -fx-border-color: transparent -tb-border transparent transparent; }
+.sidebar-category {
+    -fx-text-fill: -tb-text-muted;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 14 8 4 8;
+}
+.sidebar-button {
+    -fx-alignment: center-left;
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+    -fx-padding: 7 10 7 10;
+    -fx-cursor: hand;
+}
+.sidebar-button:hover { -fx-background-color: -tb-surface-alt; }
+.sidebar-button.active {
+    -fx-background-color: derive(-tb-accent, 85%);
+    -fx-text-fill: -tb-accent-hover;
+    -fx-font-weight: bold;
+}
+
+/* ---------- Home ---------- */
+.home-view, .home-view > .viewport { -fx-background-color: -tb-bg; }
+.home-title { -fx-font-size: 22px; -fx-font-weight: bold; }
+.home-search { -fx-pref-width: 420; -fx-max-width: 420; -fx-padding: 8 10 8 10; }
+.category-title { -fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: -tb-text-muted; }
+.tool-card {
+    -fx-background-color: -tb-surface;
+    -fx-background-radius: 10;
+    -fx-border-color: -tb-border;
+    -fx-border-radius: 10;
+    -fx-padding: 16;
+    -fx-cursor: hand;
+}
+.tool-card:hover { -fx-border-color: -tb-accent; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 2); }
+.tool-card-name { -fx-font-size: 14px; -fx-font-weight: bold; }
+.tool-card-description { -fx-text-fill: -tb-text-muted; }
+
+/* ---------- Tool umum ---------- */
+.tool-view { -fx-background-color: -tb-bg; }
+.tool-title { -fx-font-size: 20px; -fx-font-weight: bold; }
+.tool-description, .file-info { -fx-text-fill: -tb-text-muted; }
+.section-title { -fx-font-weight: bold; -fx-font-size: 14px; }
+.field-label { -fx-text-fill: -tb-text-muted; -fx-font-size: 12px; }
+.text-error { -fx-text-fill: -tb-danger; }
+
+.button.accent {
+    -fx-background-color: -tb-accent;
+    -fx-text-fill: -tb-accent-text;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+}
+.button.accent:hover { -fx-background-color: -tb-accent-hover; }
+.button.accent:disabled { -fx-opacity: 0.5; }
+
+.drop-zone {
+    -fx-background-color: -tb-surface;
+    -fx-border-color: -tb-border;
+    -fx-border-style: segments(8, 6);
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 28;
+}
+.drop-hint { -fx-text-fill: -tb-text-muted; -fx-font-size: 14px; }
+.drop-active {
+    -fx-border-color: -tb-accent;
+    -fx-background-color: derive(-tb-accent, 90%);
+}
+.list-view.drop-active { -fx-border-color: -tb-accent; -fx-border-width: 2; }
+
+.task-status-bar { -fx-padding: 4 0 4 0; }
+
+/* ---------- Toast ---------- */
+.toast {
+    -fx-background-color: -tb-surface;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-width: 0 0 0 4;
+    -fx-padding: 12 14 12 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 14, 0, 0, 3);
+}
+.toast-success { -fx-border-color: -tb-success; }
+.toast-info { -fx-border-color: -tb-accent; }
+.toast-warning { -fx-border-color: -tb-warning; }
+.toast-action { -fx-font-size: 12px; }
+
+/* ---------- Isi & TTD ---------- */
+.tool-toolbar {
+    -fx-background-color: -tb-surface;
+    -fx-border-color: transparent transparent -tb-border transparent;
+}
+.page-canvas, .page-canvas > .viewport { -fx-background-color: #8a9099; }
+.page-sheet { -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 12, 0, 0, 2); }
+.overlay-outline {
+    -fx-stroke: -tb-selection;
+    -fx-stroke-width: 1.5;
+    -fx-stroke-dash-array: 6 4;
+}
+.overlay-outline-editing { -fx-stroke: -tb-success; }
+.overlay-caret { -fx-fill: -tb-success; }
+.overlay-text { -fx-fill: black; }
+.signature-canvas { -fx-cursor: crosshair; }
+.signature-thumbnail {
+    -fx-background-color: white;
+    -fx-border-color: -tb-border;
+    -fx-padding: 2;
+    -fx-min-width: 80;
+    -fx-min-height: 32;
+}
+.form-panel, .form-panel > .viewport {
+    -fx-background-color: -tb-surface;
+}
+.form-panel { -fx-border-color: transparent transparent transparent -tb-border; }

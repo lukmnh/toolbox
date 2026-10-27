@@ -1,0 +1,18 @@
+/* Tema gelap: dimuat SETELAH theme-light.css dan hanya mengganti variabel warna. */
+.root {
+    -tb-bg: #16181d;
+    -tb-surface: #1f2228;
+    -tb-surface-alt: #2a2e36;
+    -tb-border: #353a44;
+    -tb-text: #e6e8eb;
+    -tb-text-muted: #9aa3ad;
+    -tb-accent: #5b8def;
+    -tb-accent-hover: #7aa3f3;
+    -tb-accent-text: #0d1117;
+    -tb-success: #3fb950;
+    -tb-warning: #d29922;
+    -tb-danger: #f85149;
+    -tb-selection: #7aa3f3;
+}
+
+.page-canvas, .page-canvas > .viewport { -fx-background-color: #0d0f12; }
