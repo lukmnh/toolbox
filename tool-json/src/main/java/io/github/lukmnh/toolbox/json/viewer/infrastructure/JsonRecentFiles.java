@@ -80,7 +80,7 @@ public final class JsonRecentFiles implements RecentFiles {
                     ? Optional.of(object)
                     : Optional.empty();
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "Gagal membaca " + file + ", daftar file terakhir dikosongkan", e);
+            LOG.log(Level.WARNING, "Gagal membaca " + file.getFileName() + ", daftar file terakhir dikosongkan", e);
             return Optional.empty();
         }
     }

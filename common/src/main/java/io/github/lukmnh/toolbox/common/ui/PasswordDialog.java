@@ -19,10 +19,11 @@ public final class PasswordDialog {
 
     /**
      * @param wrongPassword {@code true} bila password sebelumnya salah, untuk menampilkan peringatan
-     * @return password, atau kosong bila user membatalkan
+     * @return password sebagai {@code char[]} (pemanggil wajib meng-wipe setelah dipakai), atau kosong bila
+     *     user membatalkan
      */
-    public static Optional<String> ask(Window owner, String fileName, boolean wrongPassword) {
-        Dialog<String> dialog = new Dialog<>();
+    public static Optional<char[]> ask(Window owner, String fileName, boolean wrongPassword) {
+        Dialog<char[]> dialog = new Dialog<>();
         dialog.initOwner(owner);
         dialog.setTitle(Messages.get("password.title"));
         dialog.setHeaderText(Messages.format("password.header", fileName));
@@ -37,8 +38,20 @@ public final class PasswordDialog {
         content.getChildren().addAll(new Label(Messages.get("password.label")), field);
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        dialog.setResultConverter(button -> button == ButtonType.OK ? field.getText() : null);
+        dialog.setResultConverter(button -> button == ButtonType.OK ? toChars(field.getCharacters()) : null);
         Platform.runLater(field::requestFocus);
-        return dialog.showAndWait();
+        Optional<char[]> password = dialog.showAndWait();
+        // Kosongkan field UI supaya password tidak tertinggal di node yang masih direferensikan
+        field.clear();
+        return password;
+    }
+
+    /** Disalin per karakter supaya tidak membuat {@link String} yang tidak bisa di-wipe. */
+    private static char[] toChars(CharSequence typed) {
+        char[] chars = new char[typed.length()];
+        for (int index = 0; index < chars.length; index++) {
+            chars[index] = typed.charAt(index);
+        }
+        return chars;
     }
 }

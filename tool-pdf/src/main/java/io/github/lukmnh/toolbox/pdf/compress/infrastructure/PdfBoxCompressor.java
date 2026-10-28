@@ -4,15 +4,18 @@ import io.github.lukmnh.toolbox.pdf.compress.domain.CompressionPreset;
 import io.github.lukmnh.toolbox.pdf.compress.domain.CompressionSession;
 import io.github.lukmnh.toolbox.pdf.compress.domain.PdfCompressor;
 import io.github.lukmnh.toolbox.pdf.shared.domain.CorruptPdfException;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfIoException;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import io.github.lukmnh.toolbox.pdf.shared.infrastructure.PdfLoader;
+import io.github.lukmnh.toolbox.pdf.shared.infrastructure.PdfProtection;
 import java.io.IOException;
 import java.lang.System.Logger.Level;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 public final class PdfBoxCompressor implements PdfCompressor {
@@ -25,7 +28,8 @@ public final class PdfBoxCompressor implements PdfCompressor {
 
     @Override
     public CompressionSession open(PdfSource source) {
-        return new Session(loader, source, loader.load(source));
+        PDDocument document = loader.load(source);
+        return new Session(loader, source, document, loader.protectionOf(document, source));
     }
 
     private static final class Session implements CompressionSession {
@@ -35,14 +39,16 @@ public final class PdfBoxCompressor implements PdfCompressor {
         private final PdfLoader loader;
         private final PdfSource source;
         private final PDDocument document;
+        private final Optional<PdfProtection> protection;
         private final ImageUsageCollector collector = new ImageUsageCollector();
         private final ImageRecompressor recompressor;
         private List<ImageUsageCollector.ImageUsage> images = List.of();
 
-        private Session(PdfLoader loader, PdfSource source, PDDocument document) {
+        private Session(PdfLoader loader, PdfSource source, PDDocument document, Optional<PdfProtection> protection) {
             this.loader = loader;
             this.source = source;
             this.document = document;
+            this.protection = protection;
             this.recompressor = new ImageRecompressor(document);
         }
 
@@ -78,24 +84,29 @@ public final class PdfBoxCompressor implements PdfCompressor {
                 return recompressor.recompress(usage.image(), usage.maxEffectiveDpi(), preset);
             } catch (IOException e) {
                 // Satu gambar rusak tidak boleh menggagalkan seluruh dokumen; gambar itu dibiarkan apa adanya
-                LOG.log(Level.WARNING, "Gambar #" + imageIndex + " dilewati di " + source.file(), e);
+                LOG.log(Level.WARNING, "Gambar #" + imageIndex + " dilewati di " + source.fileName(), e);
                 return false;
             }
         }
 
         @Override
-        public long save(Path output) {
-            loader.save(document, output);
+        public long save(Path output, OutputProtection mode) {
+            loader.save(document, output, protection, mode);
             return loader.sizeOf(output);
         }
 
         @Override
-        public void copyOriginal(Path output) {
+        public long copyOriginal(Path output, OutputProtection mode) {
+            // File asli masih terenkripsi; menyalinnya akan mengabaikan pilihan "hapus password"
+            if (mode == OutputProtection.REMOVE && protection.isPresent()) {
+                return save(output, mode);
+            }
             try {
                 Files.copy(source.file(), output, StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 throw new PdfIoException(output, e);
             }
+            return loader.sizeOf(output);
         }
 
         @Override

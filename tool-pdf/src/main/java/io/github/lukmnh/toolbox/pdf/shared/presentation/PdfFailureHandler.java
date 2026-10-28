@@ -1,5 +1,6 @@
 package io.github.lukmnh.toolbox.pdf.shared.presentation;
 
+import io.github.lukmnh.toolbox.common.security.SecretBuffer;
 import io.github.lukmnh.toolbox.common.ui.PasswordDialog;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PasswordRequiredException;
 import java.nio.file.Path;
@@ -21,7 +22,9 @@ public final class PdfFailureHandler {
     public static void handle(Window owner, Throwable error, BiConsumer<Path, String> retryWithPassword) {
         if (error instanceof PasswordRequiredException passwordError) {
             PasswordDialog.ask(owner, passwordError.file().getFileName().toString(), passwordError.passwordWasGiven())
-                    .ifPresent(password -> retryWithPassword.accept(passwordError.file(), password));
+                    // PDFBox hanya menerima String; char[] dari dialog tetap di-wipe setelah dipakai
+                    .ifPresent(password -> SecretBuffer.consume(
+                            password, text -> retryWithPassword.accept(passwordError.file(), text)));
             return;
         }
         PdfErrorMessages.show(owner, error);

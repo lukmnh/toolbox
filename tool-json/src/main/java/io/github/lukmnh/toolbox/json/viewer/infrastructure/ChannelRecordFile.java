@@ -2,6 +2,7 @@ package io.github.lukmnh.toolbox.json.viewer.infrastructure;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import io.github.lukmnh.toolbox.json.shared.domain.JsonIoException;
 import io.github.lukmnh.toolbox.json.shared.infrastructure.JacksonErrors;
@@ -59,6 +60,8 @@ final class ChannelRecordFile implements RecordFile {
             return value;
         } catch (StreamReadException e) {
             throw JacksonErrors.fromBytes(null, raw, e);
+        } catch (StreamConstraintsException e) {
+            throw JacksonErrors.limitExceeded(null, e);
         } catch (IOException e) {
             throw new JsonIoException(file, e);
         }
@@ -74,6 +77,8 @@ final class ChannelRecordFile implements RecordFile {
             return describe(parser, token, null, -1, start);
         } catch (StreamReadException e) {
             throw JacksonErrors.fromFile(file, e);
+        } catch (StreamConstraintsException e) {
+            throw JacksonErrors.limitExceeded(file.getFileName().toString(), e);
         } catch (IOException e) {
             throw new JsonIoException(file, e);
         }
@@ -107,6 +112,8 @@ final class ChannelRecordFile implements RecordFile {
             return new NodeChildren(nodes, total);
         } catch (StreamReadException e) {
             throw JacksonErrors.fromFile(file, e);
+        } catch (StreamConstraintsException e) {
+            throw JacksonErrors.limitExceeded(file.getFileName().toString(), e);
         } catch (IOException e) {
             throw new JsonIoException(file, e);
         }

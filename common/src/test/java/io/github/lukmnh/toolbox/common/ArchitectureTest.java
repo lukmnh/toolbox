@@ -25,7 +25,7 @@ class ArchitectureTest {
     @ArchTest
     static final ArchRule nonUiPackagesDoNotUseJavaFx = noClasses()
             .that()
-            .resideInAnyPackage("..common.io..", "..common.settings..", "..common.i18n..")
+            .resideInAnyPackage("..common.io..", "..common.security..", "..common.settings..", "..common.i18n..")
             .should()
             .dependOnClassesThat()
             .resideInAPackage("javafx..");

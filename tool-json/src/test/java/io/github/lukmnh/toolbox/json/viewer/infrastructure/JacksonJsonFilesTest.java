@@ -202,6 +202,16 @@ class JacksonJsonFilesTest {
         }
     }
 
+    @Test
+    void deepNestingIsRejectedAsLimitNotIoError() throws IOException {
+        Path file = write("dalam.json", "{\"a\":" + "[".repeat(100_000) + "]".repeat(100_000) + "}");
+
+        MalformedJsonException error =
+                assertThrows(MalformedJsonException.class, () -> files.index(file, ScanProgress.NONE));
+
+        assertEquals(MalformedJsonException.Kind.LIMIT_EXCEEDED, error.kind());
+    }
+
     private Path write(String name, String content) throws IOException {
         return Files.writeString(temp.resolve(name), content);
     }

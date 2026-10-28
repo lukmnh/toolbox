@@ -11,6 +11,7 @@ import io.github.lukmnh.toolbox.pdf.compress.domain.CompressResult;
 import io.github.lukmnh.toolbox.pdf.compress.domain.CompressionPreset;
 import io.github.lukmnh.toolbox.pdf.compress.domain.CompressionSession;
 import io.github.lukmnh.toolbox.pdf.compress.domain.PdfCompressor;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
@@ -65,8 +66,8 @@ class CompressPdfUseCaseTest {
 
     private static CompressResult run(FakeSession session) {
         PdfCompressor compressor = source -> session;
-        CompressRequest request =
-                new CompressRequest(PdfSource.of(Path.of("in.pdf")), CompressionPreset.DEFAULT, OUTPUT);
+        CompressRequest request = new CompressRequest(
+                PdfSource.of(Path.of("in.pdf")), CompressionPreset.DEFAULT, OUTPUT, OutputProtection.KEEP);
         return new CompressPdfUseCase(compressor).execute(request, ProgressReporter.NONE, CancellationToken.none());
     }
 
@@ -115,14 +116,15 @@ class CompressPdfUseCaseTest {
         }
 
         @Override
-        public long save(Path output) {
+        public long save(Path output, OutputProtection protection) {
             saved = true;
             return savedSize;
         }
 
         @Override
-        public void copyOriginal(Path output) {
+        public long copyOriginal(Path output, OutputProtection protection) {
             copiedOriginal = true;
+            return originalSize;
         }
 
         @Override

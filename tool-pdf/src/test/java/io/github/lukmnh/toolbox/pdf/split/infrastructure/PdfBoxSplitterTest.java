@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.lukmnh.toolbox.common.task.CancellationToken;
 import io.github.lukmnh.toolbox.common.task.ProgressReporter;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import io.github.lukmnh.toolbox.pdf.shared.infrastructure.PdfLoader;
 import io.github.lukmnh.toolbox.pdf.split.application.SplitPdfUseCase;
@@ -43,7 +44,7 @@ class PdfBoxSplitterTest {
     }
 
     @Test
-    void eachPageModeOfEncryptedPdfProducesUnencryptedPages() throws IOException {
+    void eachPageOfEncryptedPdfKeepsPasswordByDefault() throws IOException {
         Path source = TestPdfs.encrypted(temp.resolve("rahasia.pdf"), 3);
         Path out = Files.createDirectory(temp.resolve("out"));
 
@@ -51,13 +52,32 @@ class PdfBoxSplitterTest {
 
         assertEquals(3, result.files().size());
         for (Path file : result.files()) {
+            assertTrue(TestPdfs.needsUserPassword(file), file.getFileName().toString());
+        }
+    }
+
+    @Test
+    void encryptedPdfSplitWithRemoveProtectionProducesUnencryptedPages() throws IOException {
+        Path source = TestPdfs.encrypted(temp.resolve("rahasia.pdf"), 3);
+        Path out = Files.createDirectory(temp.resolve("out"));
+
+        SplitResult result = split(
+                new PdfSource(source, TestPdfs.USER_PASSWORD), new SplitMode.EachPage(), out, OutputProtection.REMOVE);
+
+        for (Path file : result.files()) {
             assertEquals(1, TestPdfs.pageCount(file));
         }
     }
 
     private SplitResult split(PdfSource source, SplitMode mode, Path out) {
+        return split(source, mode, out, OutputProtection.KEEP);
+    }
+
+    private SplitResult split(PdfSource source, SplitMode mode, Path out, OutputProtection protection) {
         String baseName = source.fileName().replace(".pdf", "");
         return useCase.execute(
-                new SplitRequest(source, mode, out, baseName), ProgressReporter.NONE, CancellationToken.none());
+                new SplitRequest(source, mode, out, baseName, protection),
+                ProgressReporter.NONE,
+                CancellationToken.none());
     }
 }

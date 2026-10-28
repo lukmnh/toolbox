@@ -33,7 +33,7 @@ public final class MergePdfUseCase {
                 progress.report(index + 1L, totalSteps);
             }
             cancellation.throwIfCancelled();
-            session.save(request.output());
+            session.save(request.output(), request.protection());
             progress.report(totalSteps, totalSteps);
             return new MergeResult(request.output(), sources.size(), session.pageCount());
         }

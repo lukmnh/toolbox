@@ -2,6 +2,7 @@ package io.github.lukmnh.toolbox.json.shared.infrastructure;
 
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import io.github.lukmnh.toolbox.json.shared.domain.ErrorSnippet;
 import io.github.lukmnh.toolbox.json.shared.domain.JsonIoException;
@@ -56,6 +57,18 @@ public final class JacksonErrors {
                 line(location),
                 column(location),
                 bytesSnippet(content, location == null ? 0 : location.getByteOffset()),
+                error.getOriginalMessage());
+    }
+
+    /** Pesan Jackson untuk pelanggaran batas hanya berisi angka batas, tanpa potongan isi file. */
+    public static MalformedJsonException limitExceeded(String sourceName, StreamConstraintsException error) {
+        JsonLocation location = error.getLocation();
+        return new MalformedJsonException(
+                Kind.LIMIT_EXCEEDED,
+                sourceName,
+                line(location),
+                column(location),
+                ErrorSnippet.NONE,
                 error.getOriginalMessage());
     }
 

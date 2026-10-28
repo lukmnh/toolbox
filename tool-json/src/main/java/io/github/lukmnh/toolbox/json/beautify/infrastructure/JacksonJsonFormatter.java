@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonStreamContext;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -75,6 +76,8 @@ public final class JacksonJsonFormatter implements JsonFormatter {
             return counter.stats();
         } catch (StreamReadException e) {
             throw malformed(input, e);
+        } catch (StreamConstraintsException e) {
+            throw JacksonErrors.limitExceeded(sourceName(input), e);
         } catch (IOException e) {
             throw new JsonIoException(output != null ? output : inputPath(input), e);
         }

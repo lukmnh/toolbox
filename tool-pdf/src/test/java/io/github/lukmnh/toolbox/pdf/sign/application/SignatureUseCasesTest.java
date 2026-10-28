@@ -20,33 +20,60 @@ class SignatureUseCasesTest {
 
     private final InMemorySignatures repository = new InMemorySignatures();
 
-    @Test
-    void drawnSignatureIsSavedAsLastSignature() {
-        SaveDrawnSignatureUseCase save = new SaveDrawnSignatureUseCase(repository, new SignatureRasterizer());
-        SignatureStroke stroke =
-                new SignatureStroke(List.of(new StrokePoint(0, 0), new StrokePoint(30, 10)), InkColor.BLACK, 3);
+    private static final SignatureStroke STROKE =
+            new SignatureStroke(List.of(new StrokePoint(0, 0), new StrokePoint(30, 10)), InkColor.BLACK, 3);
 
-        BufferedImage saved = save.execute(List.of(stroke)).orElseThrow();
+    @Test
+    void drawnSignatureIsSavedWhenUserOptsIn() {
+        SaveDrawnSignatureUseCase save = new SaveDrawnSignatureUseCase(repository, new SignatureRasterizer());
+
+        BufferedImage saved = save.execute(List.of(STROKE), true).orElseThrow();
 
         assertSame(saved, new LoadLastSignatureUseCase(repository).execute().orElseThrow());
     }
 
     @Test
+    void drawnSignatureIsNotSavedByDefault() {
+        SaveDrawnSignatureUseCase save = new SaveDrawnSignatureUseCase(repository, new SignatureRasterizer());
+
+        assertTrue(save.execute(List.of(STROKE), false).isPresent());
+        assertTrue(repository.last.isEmpty());
+    }
+
+    @Test
     void emptyDrawingSavesNothing() {
-        new SaveDrawnSignatureUseCase(repository, new SignatureRasterizer()).execute(List.of());
+        new SaveDrawnSignatureUseCase(repository, new SignatureRasterizer()).execute(List.of(), true);
 
         assertTrue(repository.last.isEmpty());
     }
 
     @Test
-    void uploadedImageIsCleanedThenSaved() {
+    void uploadedImageIsCleanedThenSavedWhenUserOptsIn() {
         repository.uploadContent = new BufferedImage(40, 20, BufferedImage.TYPE_INT_RGB);
         ImportSignatureImageUseCase importer = new ImportSignatureImageUseCase(repository, new SignatureImageCleaner());
 
-        BufferedImage imported = importer.execute(Path.of("ttd.jpg"));
+        BufferedImage imported = importer.execute(Path.of("ttd.jpg"), true);
 
         assertTrue(imported.getColorModel().hasAlpha());
         assertEquals(Optional.of(imported), repository.last);
+    }
+
+    @Test
+    void uploadedImageIsNotSavedByDefault() {
+        repository.uploadContent = new BufferedImage(40, 20, BufferedImage.TYPE_INT_RGB);
+
+        new ImportSignatureImageUseCase(repository, new SignatureImageCleaner()).execute(Path.of("ttd.png"), false);
+
+        assertTrue(repository.last.isEmpty());
+    }
+
+    @Test
+    void forgetDeletesSavedSignature() {
+        repository.saveLast(new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB));
+
+        new ForgetSavedSignatureUseCase(repository).execute();
+
+        assertTrue(repository.last.isEmpty());
     }
 
     private static final class InMemorySignatures implements SignatureRepository {
@@ -61,6 +88,11 @@ class SignatureUseCasesTest {
         @Override
         public void saveLast(BufferedImage signature) {
             last = Optional.of(signature);
+        }
+
+        @Override
+        public void deleteLast() {
+            last = Optional.empty();
         }
 
         @Override

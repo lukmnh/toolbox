@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Optional;
 
-/** Mengubah goresan dari kanvas menjadi gambar tanda tangan dan menyimpannya. */
+/** Mengubah goresan dari kanvas menjadi gambar tanda tangan; disimpan ke disk hanya bila user memilih. */
 public final class SaveDrawnSignatureUseCase {
 
     private final SignatureRepository repository;
@@ -18,10 +18,15 @@ public final class SaveDrawnSignatureUseCase {
         this.rasterizer = rasterizer;
     }
 
-    /** @return kosong bila tidak ada goresan */
-    public Optional<BufferedImage> execute(List<SignatureStroke> strokes) {
+    /**
+     * @param remember {@code true} bila checkbox "Simpan TTD untuk dipakai lagi" aktif (default mati)
+     * @return kosong bila tidak ada goresan
+     */
+    public Optional<BufferedImage> execute(List<SignatureStroke> strokes, boolean remember) {
         Optional<BufferedImage> signature = rasterizer.rasterize(strokes);
-        signature.ifPresent(repository::saveLast);
+        if (remember) {
+            signature.ifPresent(repository::saveLast);
+        }
         return signature;
     }
 }

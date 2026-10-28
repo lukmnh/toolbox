@@ -167,6 +167,29 @@ class JacksonJsonFormatterTest {
         assertEquals(SAMPLE, Files.readString(source));
     }
 
+    @Test
+    void deepNestingIsRejectedAsLimitNotIoError() {
+        String deep = "[".repeat(100_000) + "]".repeat(100_000);
+
+        MalformedJsonException error =
+                assertThrows(MalformedJsonException.class, () -> validate(new JsonInput.Text(deep)));
+
+        assertEquals(MalformedJsonException.Kind.LIMIT_EXCEEDED, error.kind());
+    }
+
+    @Test
+    void hugeStringIsRejectedAsLimit() throws IOException {
+        Path file = temp.resolve("besar.json");
+        // 50MB + 1 karakter: tepat melewati batas string
+        Files.writeString(file, "\"" + "a".repeat(50 * 1024 * 1024 + 1) + "\"");
+
+        MalformedJsonException error = assertThrows(
+                MalformedJsonException.class, () -> validate(new JsonInput.FileInput(file, Files.size(file))));
+
+        assertEquals(MalformedJsonException.Kind.LIMIT_EXCEEDED, error.kind());
+        assertEquals("besar.json", error.sourceName().orElseThrow());
+    }
+
     private String run(String json, BeautifyAction action, Indent indent, boolean sortKeys) throws IOException {
         Path output = Files.createTempFile(temp, "out", ".json");
         formatter.format(

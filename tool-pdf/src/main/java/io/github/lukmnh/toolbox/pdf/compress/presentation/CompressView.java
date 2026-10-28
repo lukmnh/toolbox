@@ -10,6 +10,7 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
@@ -39,7 +40,7 @@ public final class CompressView extends VBox {
                         dropZone,
                         infoLabel(),
                         buildPresets(),
-                        buildActions());
+                        buildActions(owner));
     }
 
     private Label infoLabel() {
@@ -73,7 +74,7 @@ public final class CompressView extends VBox {
         return presets;
     }
 
-    private VBox buildActions() {
+    private VBox buildActions(Window owner) {
         Button compress = new Button(Messages.get("pdf.compress.run"));
         compress.getStyleClass().add("accent");
         compress.disableProperty().bind(viewModel.canCompress().not());
@@ -101,6 +102,7 @@ public final class CompressView extends VBox {
         resultRow.visibleProperty().bind(viewModel.resultProperty().isNotNull());
         resultRow.managedProperty().bind(resultRow.visibleProperty());
 
-        return new VBox(ToolLayout.SPACING, compress, status, resultRow);
+        CheckBox removeProtection = ToolLayout.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
+        return new VBox(ToolLayout.SPACING, removeProtection, compress, status, resultRow);
     }
 }

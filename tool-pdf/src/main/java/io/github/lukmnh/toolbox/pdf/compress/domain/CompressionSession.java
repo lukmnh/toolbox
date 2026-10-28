@@ -1,5 +1,6 @@
 package io.github.lukmnh.toolbox.pdf.compress.domain;
 
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import java.nio.file.Path;
 
 /**
@@ -22,10 +23,15 @@ public interface CompressionSession extends AutoCloseable {
     boolean recompressImage(int imageIndex, CompressionPreset preset);
 
     /** @return ukuran file hasil dalam byte */
-    long save(Path output);
+    long save(Path output, OutputProtection protection);
 
-    /** Salin file asli apa adanya, dipakai bila hasil kompres tidak lebih kecil. */
-    void copyOriginal(Path output);
+    /**
+     * Dipakai bila hasil kompres tidak lebih kecil: salin file asli apa adanya, kecuali proteksi harus dihapus
+     * (file asli masih terenkripsi) sehingga dokumen disimpan ulang tanpa password.
+     *
+     * @return ukuran file hasil dalam byte
+     */
+    long copyOriginal(Path output, OutputProtection protection);
 
     @Override
     void close();

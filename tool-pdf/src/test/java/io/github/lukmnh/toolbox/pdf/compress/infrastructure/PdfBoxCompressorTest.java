@@ -10,6 +10,7 @@ import io.github.lukmnh.toolbox.pdf.compress.application.CompressPdfUseCase;
 import io.github.lukmnh.toolbox.pdf.compress.domain.CompressRequest;
 import io.github.lukmnh.toolbox.pdf.compress.domain.CompressResult;
 import io.github.lukmnh.toolbox.pdf.compress.domain.CompressionPreset;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import io.github.lukmnh.toolbox.pdf.shared.infrastructure.PdfLoader;
 import io.github.lukmnh.toolbox.pdf.testsupport.TestPdfs;
@@ -73,7 +74,7 @@ class PdfBoxCompressorTest {
 
     private CompressResult compress(Path source, Path output, CompressionPreset preset) {
         return useCase.execute(
-                new CompressRequest(PdfSource.of(source), preset, output),
+                new CompressRequest(PdfSource.of(source), preset, output, OutputProtection.KEEP),
                 ProgressReporter.NONE,
                 CancellationToken.none());
     }
