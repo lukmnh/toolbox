@@ -22,5 +22,11 @@ public final class SecurityLimits {
     public static final int JSON_MAX_STRING_LENGTH = (int) (50 * MB);
     public static final int JSON_MAX_NUMBER_LENGTH = 1_000;
 
+    /** File daftar checksum (*SUMS) dibaca utuh ke memori. */
+    public static final long CHECKSUM_LIST_MAX_FILE_BYTES = 10 * MB;
+
+    /** Text Diff memuat kedua sisi utuh ke memori untuk algoritma Myers. */
+    public static final long DIFF_MAX_FILE_BYTES = 20 * MB;
+
     private SecurityLimits() {}
 }
