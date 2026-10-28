@@ -5,6 +5,7 @@ import io.github.lukmnh.toolbox.common.io.TempFiles;
 import io.github.lukmnh.toolbox.common.tool.Tool;
 import io.github.lukmnh.toolbox.common.tool.ToolCategory;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
+import io.github.lukmnh.toolbox.json.shared.presentation.JsonToolIds;
 import java.nio.file.Path;
 import java.util.Set;
 import javafx.scene.Node;
@@ -21,7 +22,7 @@ public final class ViewerTool implements Tool {
 
     @Override
     public String id() {
-        return "json.viewer";
+        return JsonToolIds.VIEWER;
     }
 
     @Override

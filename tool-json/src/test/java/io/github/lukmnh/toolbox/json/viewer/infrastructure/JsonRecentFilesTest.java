@@ -6,8 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
 class JsonRecentFilesTest {
@@ -28,6 +31,15 @@ class JsonRecentFilesTest {
         recent.save(files);
 
         assertEquals(files, recent.load());
+    }
+
+    @Test
+    @EnabledOnOs(OS.LINUX)
+    void savedRecentFileIsOwnerOnly() throws IOException {
+        new JsonRecentFiles(dataDirectory).save(List.of(dataDirectory.resolve("a.json")));
+
+        Path saved = dataDirectory.resolve("recent.json");
+        assertEquals("rw-------", PosixFilePermissions.toString(Files.getPosixFilePermissions(saved)));
     }
 
     @Test

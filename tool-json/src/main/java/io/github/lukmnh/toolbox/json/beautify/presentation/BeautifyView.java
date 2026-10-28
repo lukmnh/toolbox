@@ -70,7 +70,11 @@ public final class BeautifyView extends VBox {
         Button clear = new Button(Messages.get("json.beautify.file.clear"));
         clear.setOnAction(event -> viewModel.clearFile());
         clear.visibleProperty().bind(viewModel.fileProperty().isNotNull());
+        Button openViewer = new Button(Messages.get("json.beautify.openViewer"));
+        openViewer.setOnAction(event -> viewModel.openInViewer());
+        openViewer.visibleProperty().bind(viewModel.fileProperty().isNotNull());
         JsonLayout.collapseWhenHidden(clear);
+        JsonLayout.collapseWhenHidden(openViewer);
         Label info = new Label();
         info.getStyleClass().add("file-info");
         info.textProperty()
@@ -79,7 +83,7 @@ public final class BeautifyView extends VBox {
                                 ? Messages.get("json.beautify.file.none")
                                 : viewModel.fileSummary(viewModel.fileProperty().get()),
                         viewModel.fileProperty()));
-        HBox row = new HBox(JsonLayout.SPACING, upload, clear, info);
+        HBox row = new HBox(JsonLayout.SPACING, upload, clear, openViewer, info);
         row.setAlignment(Pos.CENTER_LEFT);
         return row;
     }

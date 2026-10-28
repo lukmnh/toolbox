@@ -3,6 +3,7 @@ package io.github.lukmnh.toolbox.app.shell;
 import io.github.lukmnh.toolbox.common.i18n.Messages;
 import io.github.lukmnh.toolbox.common.tool.Tool;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import javafx.geometry.Insets;
@@ -67,6 +68,17 @@ public final class MainShell extends BorderPane {
         currentTitle.setText("› " + tool.name());
         sidebar.highlight(Optional.of(tool));
         return true;
+    }
+
+    /** Implementasi {@code ToolOpener}: buka tool berdasarkan id lalu serahkan file, kecuali user membatalkan. */
+    public void openFile(String toolId, Path file) {
+        Tool tool = tools.stream()
+                .filter(candidate -> candidate.id().equals(toolId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Tool tidak terdaftar: " + toolId));
+        if (openTool(tool)) {
+            tool.openFile(file);
+        }
     }
 
     private void showHome() {

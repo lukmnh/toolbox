@@ -17,6 +17,7 @@ import io.github.lukmnh.toolbox.json.beautify.domain.JsonInput;
 import io.github.lukmnh.toolbox.json.beautify.domain.TextPreview;
 import io.github.lukmnh.toolbox.json.shared.domain.MalformedJsonException;
 import io.github.lukmnh.toolbox.json.shared.presentation.JsonErrorMessages;
+import io.github.lukmnh.toolbox.json.shared.presentation.JsonToolIds;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 import javafx.beans.binding.Bindings;
@@ -144,6 +145,14 @@ public final class BeautifyViewModel {
 
     public void clearFile() {
         file.set(null);
+    }
+
+    /** File besar lebih nyaman dijelajahi di Viewer; tool ini di-dispose oleh shell setelah pindah. */
+    public void openInViewer() {
+        JsonInput.FileInput current = file.get();
+        if (current != null) {
+            context.tools().open(JsonToolIds.VIEWER, current.file());
+        }
     }
 
     public void run(BeautifyAction action) {

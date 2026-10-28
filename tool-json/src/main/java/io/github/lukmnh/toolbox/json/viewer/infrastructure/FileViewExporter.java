@@ -1,5 +1,6 @@
 package io.github.lukmnh.toolbox.json.viewer.infrastructure;
 
+import io.github.lukmnh.toolbox.common.security.CsvFormulaGuard;
 import io.github.lukmnh.toolbox.json.shared.domain.JsonIoException;
 import io.github.lukmnh.toolbox.json.shared.domain.ScanProgress;
 import io.github.lukmnh.toolbox.json.viewer.domain.CsvFormat;
@@ -73,11 +74,15 @@ public final class FileViewExporter implements ViewExporter {
     private static void writeCsv(
             RecordSource source, int[] rows, List<RecordColumn> columns, OutputStream out, ScanProgress progress)
             throws IOException {
-        write(out, CsvFormat.row(columns.stream().map(RecordColumn::header).toList()) + CsvFormat.LINE_END);
+        // Header (key JSON) dan nilai sama-sama berasal dari file tidak dipercaya, jadi keduanya dinetralisir (#18)
+        List<String> headers = columns.stream()
+                .map(column -> CsvFormulaGuard.neutralize(column.header()))
+                .toList();
+        write(out, CsvFormat.row(headers) + CsvFormat.LINE_END);
         for (int i = 0; i < rows.length; i++) {
             JsonValue record = source.parse(source.raw(rows[i]));
             List<String> cells = columns.stream()
-                    .map(column -> CsvFormat.cell(column.extract(record)))
+                    .map(column -> CsvFormulaGuard.neutralize(CsvFormat.cell(column.extract(record))))
                     .toList();
             write(out, CsvFormat.row(cells) + CsvFormat.LINE_END);
             report(i, rows.length, progress);

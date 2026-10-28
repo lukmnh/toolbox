@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ListChangeListener;
@@ -62,12 +63,14 @@ final class PageCanvas extends ScrollPane {
         setContent(new Group(page));
 
         pageView.imageProperty().bind(viewModel.pageImageProperty());
-        overlayLayer
-                .prefWidthProperty()
-                .bind(Bindings.createDoubleBinding(this::imageWidth, viewModel.pageImageProperty()));
-        overlayLayer
-                .prefHeightProperty()
-                .bind(Bindings.createDoubleBinding(this::imageHeight, viewModel.pageImageProperty()));
+        // Gambar HiDPI punya pixel lebih banyak; ditampilkan di ukuran preview supaya koordinat overlay tetap sama
+        DoubleBinding pageWidth = Bindings.createDoubleBinding(this::imageWidth, viewModel.pageImageProperty());
+        DoubleBinding pageHeight = Bindings.createDoubleBinding(this::imageHeight, viewModel.pageImageProperty());
+        pageView.setSmooth(true);
+        pageView.fitWidthProperty().bind(pageWidth);
+        pageView.fitHeightProperty().bind(pageHeight);
+        overlayLayer.prefWidthProperty().bind(pageWidth);
+        overlayLayer.prefHeightProperty().bind(pageHeight);
         overlayLayer.setFocusTraversable(true);
         overlayLayer
                 .cursorProperty()
@@ -108,14 +111,15 @@ final class PageCanvas extends ScrollPane {
         zoom.set(Math.clamp(value, MIN_ZOOM, MAX_ZOOM));
     }
 
+    /** Lebar halaman dalam pixel preview (bukan pixel gambar). */
     private double imageWidth() {
         Image image = viewModel.pageImageProperty().get();
-        return image == null ? 0 : image.getWidth();
+        return image == null ? 0 : image.getWidth() / viewModel.pagePixelScale();
     }
 
     private double imageHeight() {
         Image image = viewModel.pageImageProperty().get();
-        return image == null ? 0 : image.getHeight();
+        return image == null ? 0 : image.getHeight() / viewModel.pagePixelScale();
     }
 
     // ---------- Overlay nodes ----------
