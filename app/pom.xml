@@ -31,6 +31,10 @@
             <groupId>io.github.lukmnh.toolbox</groupId>
             <artifactId>tool-json</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.github.lukmnh.toolbox</groupId>
+            <artifactId>tool-devutils</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

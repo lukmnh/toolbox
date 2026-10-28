@@ -9,7 +9,7 @@ Superapp desktop berisi kumpulan utility pribadi untuk PDF, JSON, dan developer 
 > | Tool PDF (Isi & TTD, Gabung, Pisah, Kompres) | ✅ Selesai + test, lihat [Implementasi PDF](#implementasi-pdf) |
 > | Shell `app` | ⚠️ Minimal: Home, sidebar, Open with, `Ctrl+H`/`Ctrl+B`. Belum ada: halaman Settings, "Terakhir dipakai", simpan ukuran window, log ke file |
 > | Tool JSON (Viewer, Beautify) | ✅ Selesai + test |
-> | Tool Dev Utils | ⏳ Belum dimulai |
+> | Tool Dev Utils | 🚧 Sebagian: JWT Debugger, Encoder/Decoder, Hash, Checksum, Text Diff ✅ + test. Belum: Regex Tester, SQL Formatter, Cron Builder |
 > | Packaging & release | ⏳ Belum dimulai |
 
 - Satu aplikasi, satu menu: pilih tool dari Home, pindah tool lewat sidebar.
@@ -48,11 +48,14 @@ Superapp desktop berisi kumpulan utility pribadi untuk PDF, JSON, dan developer 
 | PDF | **Kompres** | Kompres gambar di PDF dengan 3 preset, teks/vektor tidak disentuh | ✅ |
 | JSON | **JSON Viewer** | Viewer file besar: tabel/tree, filter query, sort, export JSON/JSONL/CSV | ✅ |
 | JSON | **JSON Beautify** | Format, minify, validate. Input paste atau upload `.json` | ✅ |
+| Dev Utils | **JWT Debugger** | Decode header/payload/claims, status waktu, verifikasi signature HS/RS/PS/ES/EdDSA secara offline | – |
+| Dev Utils | **Encoder / Decoder** | Base64 teks & file (URL-safe, MIME, data URI) + URL encode/decode & parser query string | ✅ (Base64 file) |
 | Dev Utils | **Hash Generator** | MD5, SHA-1, SHA-2, SHA3 untuk teks, plus mode HMAC | – |
 | Dev Utils | **Checksum** | Generate & verify checksum file, format `sha256sum` | ✅ |
-| Dev Utils | **Regex Tester** | Uji regex Java: highlight, group, replace, aman dari backtracking | – |
-| Dev Utils | **Text Diff** | Side-by-side & unified, highlight per kata, export `.diff` | ✅ |
-| Dev Utils | **Base64** | Encode/decode teks & file, URL-safe, MIME, data URI | ✅ |
+| Dev Utils | **Text Diff** | Side-by-side & unified, highlight per kata, export `.diff` (bisa di-`git apply`) | ✅ |
+| Dev Utils | **Regex Tester** | _Belum diimplementasi_ | – |
+| Dev Utils | **SQL Formatter** | _Belum diimplementasi_ | ✅ |
+| Dev Utils | **Cron Builder** | _Belum diimplementasi_ | – |
 
 Kebutuhan dan aturan lengkap tiap tool ada di [docs/business.md](docs/business.md).
 
@@ -498,7 +501,7 @@ toolbox/
 ├── common/              # kontrak Tool, download, task runner, settings, UI reusable, i18n, tema CSS
 ├── tool-pdf/            # Isi & TTD, Gabung, Pisah, Kompres
 ├── tool-json/           # JSON Viewer, JSON Beautify
-├── tool-devutils/       # Hash, Checksum, Regex, Text Diff, Base64
+├── tool-devutils/       # JWT, Encoder/Decoder, Hash, Checksum, Text Diff (Regex, SQL, Cron menyusul)
 ├── app/                 # shell: Home, sidebar, routing, Settings, main class
 ├── tools/               # GenerateSample.java (generator JSON dummy)
 ├── packaging/           # script jpackage + icons/ (opsional)
@@ -513,9 +516,9 @@ Tech stack:
 | Bahasa | Java 21 (`record`, `sealed interface`, pattern matching `switch`, virtual threads) |
 | UI | JavaFX dari Liberica JDK Full (tanpa FXML, styling via CSS) |
 | PDF | Apache PDFBox 3.x |
-| JSON | Jackson (streaming `jackson-core`) |
-| Diff | java-diff-utils |
-| Hash, Base64, Regex | JDK standard library |
+| JSON | Jackson (streaming `jackson-core`): tool JSON + header/payload/JWK di JWT Debugger |
+| Diff | java-diff-utils (Myers linear-space) |
+| Hash, HMAC, Checksum, Base64, URL, crypto JWT | JDK standard library |
 | Build | Maven multi-module + Wrapper, Spotless, Enforcer |
 | Test | JUnit 5, ArchUnit |
 

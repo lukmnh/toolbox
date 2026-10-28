@@ -16,6 +16,7 @@
         <module>common</module>
         <module>tool-pdf</module>
         <module>tool-json</module>
+        <module>tool-devutils</module>
         <module>app</module>
     </modules>
 
@@ -28,6 +29,7 @@
         <!-- Library -->
         <pdfbox.version>3.0.8</pdfbox.version>
         <jackson.version>2.22.3</jackson.version>
+        <java-diff-utils.version>4.18</java-diff-utils.version>
         <junit.version>5.14.4</junit.version>
         <archunit.version>1.5.1</archunit.version>
 
@@ -65,9 +67,19 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>io.github.lukmnh.toolbox</groupId>
+                <artifactId>tool-devutils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.java-diff-utils</groupId>
+                <artifactId>java-diff-utils</artifactId>
+                <version>${java-diff-utils.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>

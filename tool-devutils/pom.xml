@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.github.lukmnh.toolbox</groupId>
+        <artifactId>toolbox-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>tool-devutils</artifactId>
+    <name>Toolbox :: Tool DevUtils</name>
+    <description>JWT Debugger, Encoder/Decoder, Hash Generator, Checksum, dan Text Diff.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.lukmnh.toolbox</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <!-- Pretty-print header/payload JWT dan parsing JWK; streaming saja, tanpa databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <!-- Text Diff: algoritma Myers (linear space) untuk diff baris dan kata -->
+        <dependency>
+            <groupId>io.github.java-diff-utils</groupId>
+            <artifactId>java-diff-utils</artifactId>
+        </dependency>
+    </dependencies>
+</project>
