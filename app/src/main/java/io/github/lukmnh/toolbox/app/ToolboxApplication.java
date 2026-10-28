@@ -72,8 +72,15 @@ public final class ToolboxApplication extends Application {
         ToastNotifier notifier = new ToastNotifier(root);
         DownloadService downloads =
                 new DownloadService(() -> settings, () -> stage, notifier, taskRunner, getHostServices());
-        ToolContext context =
-                new ToolContext(downloads, taskRunner, notifier, () -> settings, getHostServices(), stage);
+        ToolContext context = new ToolContext(
+                downloads,
+                taskRunner,
+                notifier,
+                () -> settings,
+                getHostServices(),
+                stage,
+                // shell dibuat setelah context; lambda baru dipanggil saat user menekan tombol di tool
+                (toolId, file) -> shell.openFile(toolId, file));
         shell = new MainShell(tools, context);
         shellHost.getChildren().add(shell);
 

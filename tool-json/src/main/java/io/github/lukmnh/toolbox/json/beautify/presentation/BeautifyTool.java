@@ -8,6 +8,7 @@ import io.github.lukmnh.toolbox.common.tool.ToolContext;
 import io.github.lukmnh.toolbox.json.beautify.application.FormatJsonUseCase;
 import io.github.lukmnh.toolbox.json.beautify.application.LoadJsonFileUseCase;
 import io.github.lukmnh.toolbox.json.beautify.application.ReadOutputUseCase;
+import io.github.lukmnh.toolbox.json.shared.presentation.JsonToolIds;
 import java.util.Set;
 import javafx.scene.Node;
 
@@ -27,7 +28,7 @@ public final class BeautifyTool implements Tool {
 
     @Override
     public String id() {
-        return "json.beautify";
+        return JsonToolIds.BEAUTIFY;
     }
 
     @Override

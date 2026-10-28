@@ -79,6 +79,9 @@ public final class SignViewModel {
     private final Set<RunningTask> activeTasks = new HashSet<>();
     private EditSession session;
     private long renderGeneration;
+    /** Pixel gambar per pixel preview untuk {@link #pageImage}: 1 di layar 100%, 2 di layar 200%. */
+    private double pagePixelScale = 1;
+
     private boolean disposed;
 
     public SignViewModel(SignUseCases useCases, ToolContext context, TempFiles tempFiles) {
@@ -104,6 +107,10 @@ public final class SignViewModel {
 
     ReadOnlyObjectProperty<Image> pageImageProperty() {
         return pageImage;
+    }
+
+    double pagePixelScale() {
+        return pagePixelScale;
     }
 
     ObjectProperty<EditMode> modeProperty() {
@@ -219,11 +226,16 @@ public final class SignViewModel {
         EditSession current = session;
         int index = pageIndex.get();
         long generation = ++renderGeneration;
+        // Dibaca di FX thread; window bisa pindah ke monitor dengan skala berbeda di antara dua render
+        double outputScale = context.owner().getOutputScaleX();
+        double pixelScale = (double) PreviewScale.renderDpi(outputScale) / PreviewScale.PREVIEW_DPI;
         submit(
-                () -> SwingFXUtils.toFXImage(useCases.render().execute(current, index), null),
+                () -> SwingFXUtils.toFXImage(useCases.render().execute(current, index, outputScale), null),
                 image -> {
                     // Abaikan hasil render lama bila user sudah pindah halaman lagi
                     if (generation == renderGeneration) {
+                        // Skala di-set sebelum gambar, karena binding ukuran canvas membaca keduanya
+                        pagePixelScale = pixelScale;
                         pageImage.set(image);
                     }
                 },

@@ -119,6 +119,19 @@ class ViewerUseCasesTest {
     }
 
     @Test
+    void exportCsvNeutralizesFormulasButKeepsNumbers() throws IOException {
+        session.close();
+        session = open.execute(
+                Files.writeString(temp.resolve("formula.json"), """
+                        [{"=cmd": "=HYPERLINK(\\"x\\")", "saldo": "-12.5", "nilai": -3, "user": "@admin"}]
+                        """), ProgressReporter.NONE, CancellationToken.none());
+
+        String csv = Files.readString(exportTo(new int[] {0}, ExportFormat.CSV));
+
+        assertEquals("'=cmd,saldo,nilai,user\r\n\"'=HYPERLINK(\"\"x\"\")\",-12.5,-3,'@admin\r\n", csv);
+    }
+
+    @Test
     void exportJsonArrayAndJsonLinesRoundTrip() throws IOException {
         int[] view = {3, 0};
 

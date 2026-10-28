@@ -2,6 +2,7 @@ package io.github.lukmnh.toolbox.json.viewer.infrastructure;
 
 import com.fasterxml.jackson.core.JsonParser;
 import io.github.lukmnh.toolbox.common.io.AtomicFiles;
+import io.github.lukmnh.toolbox.common.security.OwnerOnlyFiles;
 import io.github.lukmnh.toolbox.json.shared.domain.JsonIoException;
 import io.github.lukmnh.toolbox.json.shared.infrastructure.JsonFactories;
 import io.github.lukmnh.toolbox.json.viewer.domain.JsonValue;
@@ -61,7 +62,11 @@ public final class JsonRecentFiles implements RecentFiles {
         fields.put(KEY, new JsonValue.JsonArray(items));
         String json = JsonWriter.pretty(new JsonValue.JsonObject(fields)) + "\n";
         try {
-            AtomicFiles.write(file, temp -> Files.writeString(temp, json));
+            AtomicFiles.write(file, temp -> {
+                Files.writeString(temp, json);
+                // Path file yang pernah dibuka termasuk data pribadi; dibatasi sebelum di-move seperti signature.png
+                OwnerOnlyFiles.restrict(temp);
+            });
         } catch (IOException e) {
             throw new JsonIoException(file, e);
         }
