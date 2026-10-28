@@ -2,6 +2,7 @@ package io.github.lukmnh.toolbox.json.viewer.infrastructure;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import io.github.lukmnh.toolbox.json.shared.domain.JsonIoException;
 import io.github.lukmnh.toolbox.json.shared.domain.ScanProgress;
@@ -59,6 +60,8 @@ public final class JacksonJsonFiles implements JsonFiles {
             return new RecordIndex(file, format, size, offsets.starts(), offsets.ends(), elapsed);
         } catch (StreamReadException e) {
             throw JacksonErrors.fromFile(file, e);
+        } catch (StreamConstraintsException e) {
+            throw JacksonErrors.limitExceeded(file.getFileName().toString(), e);
         } catch (IOException e) {
             throw new JsonIoException(file, e);
         }

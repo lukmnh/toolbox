@@ -15,6 +15,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Spinner;
@@ -81,6 +82,7 @@ public final class SignView extends BorderPane {
         saveAs.setOnAction(event -> viewModel.saveAs());
         HBox downloads = ToolLayout.downloadButtons(download, saveAs);
         downloads.disableProperty().bind(viewModel.sourceProperty().isNull());
+        CheckBox removeProtection = ToolLayout.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
 
         HBox bar = toolbar(
                 open,
@@ -89,6 +91,7 @@ public final class SignView extends BorderPane {
                 new Separator(),
                 zoomControls(),
                 ToolLayout.spacer(),
+                removeProtection,
                 downloads);
         bar.getStyleClass().add("tool-toolbar");
         return bar;
@@ -217,7 +220,12 @@ public final class SignView extends BorderPane {
         StackPane thumbnailFrame = new StackPane(thumbnail);
         thumbnailFrame.getStyleClass().add("signature-thumbnail");
         Tooltip.install(thumbnailFrame, new Tooltip(Messages.get("pdf.sign.signature.current")));
-        return toolbar(draw, upload, thumbnailFrame);
+        CheckBox remember = new CheckBox(Messages.get("pdf.sign.signature.remember"));
+        remember.setTooltip(new Tooltip(Messages.get("pdf.sign.signature.remember.tooltip")));
+        remember.selectedProperty().bindBidirectional(viewModel.rememberSignatureProperty());
+        Button forget = new Button(Messages.get("pdf.sign.signature.forget"));
+        forget.setOnAction(event -> viewModel.forgetSavedSignature());
+        return toolbar(draw, upload, thumbnailFrame, remember, forget);
     }
 
     private static HBox toolbar(Node... children) {

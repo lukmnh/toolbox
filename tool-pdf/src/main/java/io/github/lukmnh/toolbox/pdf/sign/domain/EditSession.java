@@ -1,6 +1,7 @@
 package io.github.lukmnh.toolbox.pdf.sign.domain;
 
 import io.github.lukmnh.toolbox.pdf.shared.domain.FontSpec;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.List;
@@ -29,7 +30,7 @@ public interface EditSession extends AutoCloseable {
      * Tulis salinan dokumen dengan overlay di-burn ke {@code output}. Dokumen yang sedang diedit tidak
      * berubah, sehingga user bisa lanjut mengedit dan download lagi.
      */
-    void export(List<Overlay> overlays, Path output);
+    void export(List<Overlay> overlays, Path output, OutputProtection protection);
 
     @Override
     void close();

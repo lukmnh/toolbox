@@ -6,6 +6,9 @@ import io.github.lukmnh.toolbox.app.shell.ToolRegistry;
 import io.github.lukmnh.toolbox.common.download.DownloadLocationResolver;
 import io.github.lukmnh.toolbox.common.download.DownloadService;
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.io.AppDirectories;
+import io.github.lukmnh.toolbox.common.io.TempFiles;
+import io.github.lukmnh.toolbox.common.security.OwnerOnlyFiles;
 import io.github.lukmnh.toolbox.common.settings.Settings;
 import io.github.lukmnh.toolbox.common.settings.Theme;
 import io.github.lukmnh.toolbox.common.task.TaskRunner;
@@ -13,7 +16,9 @@ import io.github.lukmnh.toolbox.common.tool.Tool;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
 import io.github.lukmnh.toolbox.common.ui.ErrorDialogs;
 import io.github.lukmnh.toolbox.common.ui.ToastNotifier;
+import java.io.IOException;
 import java.lang.System.Logger.Level;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import javafx.application.Application;
@@ -33,6 +38,24 @@ public final class ToolboxApplication extends Application {
 
     private TaskRunner taskRunner;
     private MainShell shell;
+
+    @Override
+    public void init() {
+        prepareDataDirectory();
+    }
+
+    /** {@code ~/.toolbox} owner-only, lalu bersihkan sisa temp dari sesi yang crash (Security Requirements #4). */
+    private static void prepareDataDirectory() {
+        try {
+            OwnerOnlyFiles.createDirectories(AppDirectories.dataDirectory());
+        } catch (IOException e) {
+            LOG.log(Level.ERROR, "Gagal membatasi permission folder data aplikasi", e);
+        }
+        Path temp = AppDirectories.tempDirectory();
+        TempFiles.purge(temp);
+        // Tetap jalan walau app ditutup tanpa stop() (misalnya SIGTERM)
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> TempFiles.purge(temp), "toolbox-temp-cleanup"));
+    }
 
     @Override
     public void start(Stage stage) {

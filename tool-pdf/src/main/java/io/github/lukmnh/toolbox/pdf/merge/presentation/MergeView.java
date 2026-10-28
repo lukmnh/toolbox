@@ -10,6 +10,7 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -39,7 +40,7 @@ public final class MergeView extends BorderPane {
         setTop(ToolLayout.header(Messages.get("pdf.merge.name"), Messages.get("pdf.merge.hint")));
         setCenter(buildList());
         setRight(buildSideButtons(owner));
-        setBottom(buildActions());
+        setBottom(buildActions(owner));
         BorderPane.setMargin(getCenter(), new Insets(ToolLayout.SPACING, 0, ToolLayout.SPACING, 0));
         BorderPane.setMargin(getRight(), new Insets(ToolLayout.SPACING, 0, ToolLayout.SPACING, ToolLayout.SPACING));
     }
@@ -81,7 +82,7 @@ public final class MergeView extends BorderPane {
         return button;
     }
 
-    private VBox buildActions() {
+    private VBox buildActions(Window owner) {
         Button merge = new Button(Messages.get("pdf.merge.run"));
         merge.getStyleClass().add("accent");
         merge.disableProperty().bind(viewModel.canMerge().not());
@@ -107,7 +108,8 @@ public final class MergeView extends BorderPane {
 
         TaskStatusBar status = new TaskStatusBar();
         viewModel.currentTaskProperty().addListener((observable, previous, task) -> status.track(task));
-        return new VBox(ToolLayout.SPACING, new HBox(ToolLayout.SPACING, merge), status, resultRow);
+        CheckBox removeProtection = ToolLayout.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
+        return new VBox(ToolLayout.SPACING, removeProtection, new HBox(ToolLayout.SPACING, merge), status, resultRow);
     }
 
     private int selectedIndex() {

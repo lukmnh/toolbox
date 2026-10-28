@@ -12,6 +12,7 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
@@ -26,6 +27,7 @@ import org.apache.pdfbox.text.PDFTextStripper;
 public final class TestPdfs {
 
     public static final String USER_PASSWORD = "rahasia";
+    public static final String OWNER_PASSWORD = "pemilik";
     private static final long RANDOM_SEED = 42;
 
     private TestPdfs() {}
@@ -43,13 +45,27 @@ public final class TestPdfs {
         return file;
     }
 
-    public static Path encrypted(Path file, int pages) throws IOException {
+    /** Halaman kosong tanpa content stream: cepat dibuat walau ribuan halaman. */
+    public static Path blankPages(Path file, int pages) throws IOException {
         try (PDDocument document = new PDDocument()) {
             for (int page = 0; page < pages; page++) {
                 document.addPage(new PDPage(PDRectangle.A4));
             }
-            StandardProtectionPolicy policy =
-                    new StandardProtectionPolicy("pemilik", USER_PASSWORD, new AccessPermission());
+            document.save(file.toFile());
+        }
+        return file;
+    }
+
+    public static Path encrypted(Path file, int pages) throws IOException {
+        return encrypted(file, pages, new AccessPermission());
+    }
+
+    public static Path encrypted(Path file, int pages, AccessPermission permission) throws IOException {
+        try (PDDocument document = new PDDocument()) {
+            for (int page = 0; page < pages; page++) {
+                document.addPage(new PDPage(PDRectangle.A4));
+            }
+            StandardProtectionPolicy policy = new StandardProtectionPolicy(OWNER_PASSWORD, USER_PASSWORD, permission);
             policy.setEncryptionKeyLength(128);
             document.protect(policy);
             document.save(file.toFile());
@@ -128,6 +144,17 @@ public final class TestPdfs {
     public static int pageCount(Path file) throws IOException {
         try (PDDocument document = Loader.loadPDF(file.toFile())) {
             return document.getNumberOfPages();
+        }
+    }
+
+    /** {@code true} bila file tidak bisa dibuka tanpa password tetapi bisa dibuka dengan {@link #USER_PASSWORD}. */
+    public static boolean needsUserPassword(Path file) throws IOException {
+        try (PDDocument document = Loader.loadPDF(file.toFile())) {
+            return false;
+        } catch (InvalidPasswordException e) {
+            try (PDDocument document = Loader.loadPDF(file.toFile(), USER_PASSWORD)) {
+                return document.isEncrypted();
+            }
         }
     }
 

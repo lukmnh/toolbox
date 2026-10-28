@@ -36,7 +36,7 @@ public final class SplitPdfUseCase {
             for (PageRange range : ranges) {
                 cancellation.throwIfCancelled();
                 Path output = request.outputDirectory().resolve(uniqueName(request.baseName(), range, usedNames));
-                session.extract(range, output);
+                session.extract(range, output, request.protection());
                 files.add(output);
                 progress.report(files.size(), ranges.size());
             }

@@ -1,6 +1,7 @@
 package io.github.lukmnh.toolbox.pdf.sign.presentation;
 
 import io.github.lukmnh.toolbox.pdf.sign.application.ExportEditedPdfUseCase;
+import io.github.lukmnh.toolbox.pdf.sign.application.ForgetSavedSignatureUseCase;
 import io.github.lukmnh.toolbox.pdf.sign.application.ImportSignatureImageUseCase;
 import io.github.lukmnh.toolbox.pdf.sign.application.LoadLastSignatureUseCase;
 import io.github.lukmnh.toolbox.pdf.sign.application.OpenDocumentUseCase;
@@ -17,7 +18,8 @@ public record SignUseCases(
         ExportEditedPdfUseCase export,
         SaveDrawnSignatureUseCase saveDrawnSignature,
         ImportSignatureImageUseCase importSignature,
-        LoadLastSignatureUseCase loadLastSignature) {
+        LoadLastSignatureUseCase loadLastSignature,
+        ForgetSavedSignatureUseCase forgetSavedSignature) {
 
     public SignUseCases {
         Objects.requireNonNull(open, "open");
@@ -27,5 +29,6 @@ public record SignUseCases(
         Objects.requireNonNull(saveDrawnSignature, "saveDrawnSignature");
         Objects.requireNonNull(importSignature, "importSignature");
         Objects.requireNonNull(loadLastSignature, "loadLastSignature");
+        Objects.requireNonNull(forgetSavedSignature, "forgetSavedSignature");
     }
 }

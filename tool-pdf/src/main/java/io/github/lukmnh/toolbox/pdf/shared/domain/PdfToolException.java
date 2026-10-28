@@ -12,7 +12,8 @@ public abstract sealed class PdfToolException extends RuntimeException
                 PdfIoException,
                 InvalidPageRangeException,
                 FormFieldException,
-                UnsupportedTextException {
+                UnsupportedTextException,
+                PdfLimitExceededException {
 
     @Serial
     private static final long serialVersionUID = 1L;

@@ -15,7 +15,9 @@ public final class MalformedJsonException extends JsonToolException {
         /** Masih ada konten setelah nilai root selesai. */
         TRAILING_CONTENT,
         /** Kesalahan sintaks; detail teknis ada di {@link #detail()}. */
-        SYNTAX
+        SYNTAX,
+        /** Melebihi batas keamanan parser (nesting, panjang string/angka). */
+        LIMIT_EXCEEDED
     }
 
     private final Kind kind;

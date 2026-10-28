@@ -5,7 +5,7 @@ import io.github.lukmnh.toolbox.pdf.sign.domain.SignatureRepository;
 import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 
-/** Upload gambar tanda tangan (PNG/JPG): bersihkan background, simpan sebagai tanda tangan terakhir. */
+/** Upload gambar tanda tangan (PNG/JPG): bersihkan background; disimpan ke disk hanya bila user memilih. */
 public final class ImportSignatureImageUseCase {
 
     private final SignatureRepository repository;
@@ -16,9 +16,12 @@ public final class ImportSignatureImageUseCase {
         this.cleaner = cleaner;
     }
 
-    public BufferedImage execute(Path imageFile) {
+    /** @param remember {@code true} bila checkbox "Simpan TTD untuk dipakai lagi" aktif (default mati) */
+    public BufferedImage execute(Path imageFile, boolean remember) {
         BufferedImage cleaned = cleaner.clean(repository.readImage(imageFile));
-        repository.saveLast(cleaned);
+        if (remember) {
+            repository.saveLast(cleaned);
+        }
         return cleaned;
     }
 }

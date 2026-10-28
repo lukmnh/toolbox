@@ -9,6 +9,7 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -41,7 +42,7 @@ public final class SplitView extends VBox {
                         dropZone,
                         infoLabel(),
                         buildOptions(),
-                        buildActions());
+                        buildActions(owner));
     }
 
     private Label infoLabel() {
@@ -84,7 +85,7 @@ public final class SplitView extends VBox {
         return options;
     }
 
-    private VBox buildActions() {
+    private VBox buildActions(Window owner) {
         Button split = new Button(Messages.get("pdf.split.run"));
         split.getStyleClass().add("accent");
         split.disableProperty().bind(viewModel.canSplit().not());
@@ -111,6 +112,7 @@ public final class SplitView extends VBox {
         resultRow.visibleProperty().bind(viewModel.resultProperty().isNotNull());
         resultRow.managedProperty().bind(resultRow.visibleProperty());
 
-        return new VBox(ToolLayout.SPACING, split, status, resultRow);
+        CheckBox removeProtection = ToolLayout.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
+        return new VBox(ToolLayout.SPACING, removeProtection, split, status, resultRow);
     }
 }

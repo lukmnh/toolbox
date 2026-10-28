@@ -57,6 +57,7 @@ public final class JsonErrorMessages {
             case EMPTY -> Messages.get("json.error.malformed.empty");
             case TRAILING_CONTENT -> Messages.get("json.error.malformed.trailing");
             case SYNTAX -> Messages.format("json.error.malformed.syntax", error.detail());
+            case LIMIT_EXCEEDED -> Messages.format("json.error.malformed.limit", error.detail());
         };
     }
 

@@ -1,15 +1,18 @@
 package io.github.lukmnh.toolbox.pdf.split.infrastructure;
 
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PageRange;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfIoException;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import io.github.lukmnh.toolbox.pdf.shared.infrastructure.PdfLoader;
+import io.github.lukmnh.toolbox.pdf.shared.infrastructure.PdfProtection;
 import io.github.lukmnh.toolbox.pdf.split.domain.PdfSplitter;
 import io.github.lukmnh.toolbox.pdf.split.domain.SplitSession;
 import java.io.IOException;
 import java.lang.System.Logger.Level;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
@@ -23,7 +26,8 @@ public final class PdfBoxSplitter implements PdfSplitter {
 
     @Override
     public SplitSession open(PdfSource source) {
-        return new Session(loader, source, loader.load(source));
+        PDDocument document = loader.load(source);
+        return new Session(loader, source, document, loader.protectionOf(document, source));
     }
 
     private static final class Session implements SplitSession {
@@ -33,11 +37,13 @@ public final class PdfBoxSplitter implements PdfSplitter {
         private final PdfLoader loader;
         private final PdfSource source;
         private final PDDocument document;
+        private final Optional<PdfProtection> protection;
 
-        private Session(PdfLoader loader, PdfSource source, PDDocument document) {
+        private Session(PdfLoader loader, PdfSource source, PDDocument document, Optional<PdfProtection> protection) {
             this.loader = loader;
             this.source = source;
             this.document = document;
+            this.protection = protection;
         }
 
         @Override
@@ -46,10 +52,11 @@ public final class PdfBoxSplitter implements PdfSplitter {
         }
 
         @Override
-        public void extract(PageRange range, Path output) {
+        public void extract(PageRange range, Path output, OutputProtection mode) {
             List<PDDocument> parts = splitRange(range);
             try {
-                loader.save(parts.getFirst(), output);
+                // Potongan dari Splitter adalah dokumen baru tanpa enkripsi; proteksi sumber di-apply ulang
+                loader.save(parts.getFirst(), output, protection, mode);
             } finally {
                 parts.forEach(Session::closeQuietly);
             }

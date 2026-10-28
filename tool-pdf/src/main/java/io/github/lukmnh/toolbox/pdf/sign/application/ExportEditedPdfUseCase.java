@@ -1,6 +1,7 @@
 package io.github.lukmnh.toolbox.pdf.sign.application;
 
 import io.github.lukmnh.toolbox.common.task.CancellationToken;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.sign.domain.EditSession;
 import io.github.lukmnh.toolbox.pdf.sign.domain.Overlay;
 import java.nio.file.Path;
@@ -9,7 +10,12 @@ import java.util.List;
 /** Menulis salinan PDF dengan teks dan tanda tangan di-burn ke halaman. */
 public final class ExportEditedPdfUseCase {
 
-    public Path execute(EditSession session, List<Overlay> overlays, Path output, CancellationToken cancellation) {
+    public Path execute(
+            EditSession session,
+            List<Overlay> overlays,
+            Path output,
+            OutputProtection protection,
+            CancellationToken cancellation) {
         cancellation.throwIfCancelled();
         List<Overlay> visible =
                 overlays.stream().filter(ExportEditedPdfUseCase::hasContent).toList();
@@ -18,7 +24,7 @@ public final class ExportEditedPdfUseCase {
                 throw new IllegalArgumentException("Overlay di halaman yang tidak ada: " + overlay.pageIndex());
             }
         }
-        session.export(visible, output);
+        session.export(visible, output, protection);
         return output;
     }
 

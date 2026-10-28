@@ -12,6 +12,7 @@ import io.github.lukmnh.toolbox.pdf.merge.domain.MergeRequest;
 import io.github.lukmnh.toolbox.pdf.merge.domain.MergeResult;
 import io.github.lukmnh.toolbox.pdf.merge.domain.MergeSession;
 import io.github.lukmnh.toolbox.pdf.merge.domain.PdfMerger;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -29,8 +30,10 @@ class MergePdfUseCaseTest {
     void appendsSourcesInRequestedOrderThenSaves() {
         List<PdfSource> sources = List.of(source("b.pdf"), source("a.pdf"), source("c.pdf"));
 
-        MergeResult result =
-                useCase.execute(new MergeRequest(sources, OUTPUT), ProgressReporter.NONE, CancellationToken.none());
+        MergeResult result = useCase.execute(
+                new MergeRequest(sources, OUTPUT, OutputProtection.KEEP),
+                ProgressReporter.NONE,
+                CancellationToken.none());
 
         assertEquals(List.of("b.pdf", "a.pdf", "c.pdf"), merger.session.appended);
         assertEquals(OUTPUT, merger.session.savedTo);
@@ -44,7 +47,7 @@ class MergePdfUseCaseTest {
         List<long[]> reports = new ArrayList<>();
 
         useCase.execute(
-                new MergeRequest(List.of(source("a.pdf"), source("b.pdf")), OUTPUT),
+                new MergeRequest(List.of(source("a.pdf"), source("b.pdf")), OUTPUT, OutputProtection.KEEP),
                 (done, total) -> reports.add(new long[] {done, total}),
                 CancellationToken.none());
 
@@ -61,7 +64,7 @@ class MergePdfUseCaseTest {
         assertThrows(
                 TaskCancelledException.class,
                 () -> useCase.execute(
-                        new MergeRequest(List.of(source("a.pdf"), source("b.pdf")), OUTPUT),
+                        new MergeRequest(List.of(source("a.pdf"), source("b.pdf")), OUTPUT, OutputProtection.KEEP),
                         ProgressReporter.NONE,
                         token));
 
@@ -71,7 +74,9 @@ class MergePdfUseCaseTest {
 
     @Test
     void requestNeedsAtLeastTwoFiles() {
-        assertThrows(IllegalArgumentException.class, () -> new MergeRequest(List.of(source("a.pdf")), OUTPUT));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new MergeRequest(List.of(source("a.pdf")), OUTPUT, OutputProtection.KEEP));
     }
 
     private static PdfSource source(String name) {
@@ -104,7 +109,7 @@ class MergePdfUseCaseTest {
         }
 
         @Override
-        public void save(Path output) {
+        public void save(Path output, OutputProtection protection) {
             savedTo = output;
         }
 
