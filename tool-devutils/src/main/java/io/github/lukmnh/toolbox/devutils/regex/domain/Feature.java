@@ -1,0 +1,35 @@
+package io.github.lukmnh.toolbox.devutils.regex.domain;
+
+/** Fitur yang dukungannya berbeda antar flavor; dipakai di pesan "tidak didukung". */
+public enum Feature {
+    LOOKAHEAD,
+    LOOKBEHIND,
+    UNBOUNDED_LOOKBEHIND,
+    ATOMIC_GROUP,
+    POSSESSIVE_QUANTIFIER,
+    BACKREFERENCE,
+    NAMED_GROUP,
+    DUPLICATE_GROUP_NAME,
+    INLINE_FLAGS,
+    FLAG_GROUP,
+    INPUT_ANCHOR,
+    END_BEFORE_NEWLINE_ANCHOR,
+    PREVIOUS_MATCH_END_ANCHOR,
+    QUOTE,
+    UNICODE_PROPERTY,
+    POSIX_CLASS,
+    CLASS_INTERSECTION,
+    CLASS_SUBTRACTION,
+    NESTED_CLASS,
+    HORIZONTAL_VERTICAL_SPACE,
+    LINEBREAK,
+    GRAPHEME,
+    COMMENT_GROUP,
+    KEEP_OUT,
+    RECURSION,
+    SUBROUTINE_CALL,
+    CONDITIONAL,
+    BRANCH_RESET,
+    BACKTRACK_VERB,
+    SINGLE_BYTE
+}

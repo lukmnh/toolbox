@@ -30,6 +30,11 @@
         <pdfbox.version>3.0.8</pdfbox.version>
         <jackson.version>2.22.3</jackson.version>
         <java-diff-utils.version>4.18</java-diff-utils.version>
+        <re2j.version>1.8</re2j.version>
+        <sql-formatter.version>2.0.5</sql-formatter.version>
+        <cron-utils.version>9.2.1</cron-utils.version>
+        <!-- Transitive cron-utils (2.0.7) & ArchUnit; dikunci supaya satu versi -->
+        <slf4j.version>2.0.19</slf4j.version>
         <junit.version>5.14.4</junit.version>
         <archunit.version>1.5.1</archunit.version>
 
@@ -80,6 +85,26 @@
                 <groupId>io.github.java-diff-utils</groupId>
                 <artifactId>java-diff-utils</artifactId>
                 <version>${java-diff-utils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.re2j</groupId>
+                <artifactId>re2j</artifactId>
+                <version>${re2j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.vertical-blank</groupId>
+                <artifactId>sql-formatter</artifactId>
+                <version>${sql-formatter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cronutils</groupId>
+                <artifactId>cron-utils</artifactId>
+                <version>${cron-utils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>

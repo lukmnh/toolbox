@@ -1,6 +1,7 @@
 package io.github.lukmnh.toolbox.devutils.jwt.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.devutils.shared.presentation.DateTimeTexts;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -11,8 +12,7 @@ import java.time.temporal.ChronoUnit;
 /** Format waktu claim: {@code Sen, 2 Nov 2026 08:00 WIB} + ISO 8601 + waktu relatif dalam bahasa Indonesia. */
 final class JwtTimeFormat {
 
-    private static final DateTimeFormatter HUMAN =
-            DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm z", Messages.LOCALE);
+    private static final DateTimeFormatter HUMAN = DateTimeTexts.HUMAN;
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private static final long SECONDS_PER_MINUTE = 60;
     private static final long SECONDS_PER_HOUR = 3_600;

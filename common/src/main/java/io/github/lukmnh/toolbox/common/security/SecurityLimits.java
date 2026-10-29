@@ -28,5 +28,14 @@ public final class SecurityLimits {
     /** Text Diff memuat kedua sisi utuh ke memori untuk algoritma Myers. */
     public static final long DIFF_MAX_FILE_BYTES = 20 * MB;
 
+    /** Teks uji Regex Tester dimuat ke memori dan di-highlight. */
+    public static final long REGEX_TEST_MAX_FILE_BYTES = 5 * MB;
+
+    /** SQL Formatter memuat file utuh ke memori (formatter library tidak streaming). */
+    public static final long SQL_MAX_FILE_BYTES = 10 * MB;
+
+    /** Batas eksekusi regex; mencegah catastrophic backtracking membekukan app. */
+    public static final Duration REGEX_TIMEOUT = Duration.ofSeconds(2);
+
     private SecurityLimits() {}
 }

@@ -51,7 +51,13 @@ class ArchitectureTest {
             .resideInAPackage(PRESENTATION)
             .should()
             .dependOnClassesThat()
-            .resideInAnyPackage(INFRASTRUCTURE, "com.fasterxml.jackson..", "com.github.difflib..")
+            .resideInAnyPackage(
+                    INFRASTRUCTURE,
+                    "com.fasterxml.jackson..",
+                    "com.github.difflib..",
+                    "com.google.re2j..",
+                    "com.github.vertical_blank..",
+                    "com.cronutils..")
             .orShould()
             .dependOnClassesThat()
             .haveFullyQualifiedName("java.nio.file.Files");

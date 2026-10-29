@@ -12,7 +12,7 @@
 
     <artifactId>tool-devutils</artifactId>
     <name>Toolbox :: Tool DevUtils</name>
-    <description>JWT Debugger, Encoder/Decoder, Hash Generator, Checksum, dan Text Diff.</description>
+    <description>JWT Debugger, Encoder/Decoder, Hash Generator, Checksum, Text Diff, Regex Tester, SQL Formatter, dan Cron Builder.</description>
 
     <dependencies>
         <dependency>
@@ -28,6 +28,21 @@
         <dependency>
             <groupId>io.github.java-diff-utils</groupId>
             <artifactId>java-diff-utils</artifactId>
+        </dependency>
+        <!-- Regex flavor Go: port resmi RE2 (sintaks & semantik sama dengan paket regexp Go) -->
+        <dependency>
+            <groupId>com.google.re2j</groupId>
+            <artifactId>re2j</artifactId>
+        </dependency>
+        <!-- SQL Formatter: format multi-dialect (tanpa dependency runtime). Minify memakai tokenizer sendiri -->
+        <dependency>
+            <groupId>com.github.vertical-blank</groupId>
+            <artifactId>sql-formatter</artifactId>
+        </dependency>
+        <!-- Cron: parse/validasi per target + jadwal berikutnya. Versi terbaru (versi lama punya CVE) -->
+        <dependency>
+            <groupId>com.cronutils</groupId>
+            <artifactId>cron-utils</artifactId>
         </dependency>
     </dependencies>
 </project>

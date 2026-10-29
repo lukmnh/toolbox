@@ -10,6 +10,11 @@ import io.github.lukmnh.toolbox.devutils.checksum.domain.ChecksumFiles;
 import io.github.lukmnh.toolbox.devutils.checksum.infrastructure.JdkChecksumFiles;
 import io.github.lukmnh.toolbox.devutils.checksum.presentation.ChecksumTool;
 import io.github.lukmnh.toolbox.devutils.checksum.presentation.ChecksumUseCases;
+import io.github.lukmnh.toolbox.devutils.cron.application.BuildCronUseCase;
+import io.github.lukmnh.toolbox.devutils.cron.application.ExplainCronUseCase;
+import io.github.lukmnh.toolbox.devutils.cron.infrastructure.CronUtilsEngine;
+import io.github.lukmnh.toolbox.devutils.cron.presentation.CronTool;
+import io.github.lukmnh.toolbox.devutils.cron.presentation.CronUseCases;
 import io.github.lukmnh.toolbox.devutils.diff.application.CompareTextsUseCase;
 import io.github.lukmnh.toolbox.devutils.diff.application.ExportUnifiedDiffUseCase;
 import io.github.lukmnh.toolbox.devutils.diff.application.LoadTextFileUseCase;
@@ -36,6 +41,26 @@ import io.github.lukmnh.toolbox.devutils.jwt.domain.JwtSignatureVerifier;
 import io.github.lukmnh.toolbox.devutils.jwt.infrastructure.JacksonJwtJson;
 import io.github.lukmnh.toolbox.devutils.jwt.infrastructure.JdkPublicKeyParser;
 import io.github.lukmnh.toolbox.devutils.jwt.presentation.JwtTool;
+import io.github.lukmnh.toolbox.devutils.regex.application.AnalyzeRegexUseCase;
+import io.github.lukmnh.toolbox.devutils.regex.application.LoadTestTextUseCase;
+import io.github.lukmnh.toolbox.devutils.regex.application.RegexCompiler;
+import io.github.lukmnh.toolbox.devutils.regex.application.ReplaceRegexUseCase;
+import io.github.lukmnh.toolbox.devutils.regex.application.RunRegexUseCase;
+import io.github.lukmnh.toolbox.devutils.regex.infrastructure.JdkRegexEngine;
+import io.github.lukmnh.toolbox.devutils.regex.infrastructure.JdkTestTextFiles;
+import io.github.lukmnh.toolbox.devutils.regex.infrastructure.Re2jRegexEngine;
+import io.github.lukmnh.toolbox.devutils.regex.presentation.RegexTool;
+import io.github.lukmnh.toolbox.devutils.regex.presentation.RegexUseCases;
+import io.github.lukmnh.toolbox.devutils.sql.application.ExportSqlUseCase;
+import io.github.lukmnh.toolbox.devutils.sql.application.FormatSqlUseCase;
+import io.github.lukmnh.toolbox.devutils.sql.application.LoadSqlFileUseCase;
+import io.github.lukmnh.toolbox.devutils.sql.application.MinifySqlUseCase;
+import io.github.lukmnh.toolbox.devutils.sql.domain.SqlFiles;
+import io.github.lukmnh.toolbox.devutils.sql.infrastructure.JdkSqlFiles;
+import io.github.lukmnh.toolbox.devutils.sql.infrastructure.VerticalBlankSqlFormatter;
+import io.github.lukmnh.toolbox.devutils.sql.presentation.SqlTool;
+import io.github.lukmnh.toolbox.devutils.sql.presentation.SqlUseCases;
+import java.time.Clock;
 import java.util.List;
 
 /**
@@ -46,7 +71,8 @@ public final class DevUtilsToolsProvider implements ToolProvider {
 
     @Override
     public List<Tool> tools() {
-        return List.of(jwtTool(), encoderTool(), hashTool(), checksumTool(), diffTool());
+        return List.of(
+                jwtTool(), encoderTool(), hashTool(), checksumTool(), diffTool(), regexTool(), sqlTool(), cronTool());
     }
 
     private static JwtTool jwtTool() {
@@ -81,5 +107,28 @@ public final class DevUtilsToolsProvider implements ToolProvider {
                 new LoadTextFileUseCase(files),
                 new CompareTextsUseCase(new JavaDiffUtilsDiffer()),
                 new ExportUnifiedDiffUseCase(files)));
+    }
+
+    private static RegexTool regexTool() {
+        RegexCompiler compiler = new RegexCompiler(List.of(new JdkRegexEngine(), new Re2jRegexEngine()));
+        return new RegexTool(new RegexUseCases(
+                new AnalyzeRegexUseCase(),
+                new RunRegexUseCase(compiler),
+                new ReplaceRegexUseCase(compiler),
+                new LoadTestTextUseCase(new JdkTestTextFiles())));
+    }
+
+    private static SqlTool sqlTool() {
+        SqlFiles files = new JdkSqlFiles();
+        return new SqlTool(new SqlUseCases(
+                new LoadSqlFileUseCase(files),
+                new FormatSqlUseCase(new VerticalBlankSqlFormatter()),
+                new MinifySqlUseCase(),
+                new ExportSqlUseCase(files)));
+    }
+
+    private static CronTool cronTool() {
+        return new CronTool(new CronUseCases(
+                new ExplainCronUseCase(new CronUtilsEngine(), Clock.systemUTC()), new BuildCronUseCase()));
     }
 }
