@@ -26,6 +26,20 @@
     -tb-diff-delete: #fef2f2;
     -tb-diff-delete-word: #fecaca;
     -tb-diff-change: #fffbeb;
+    /* Warna grup regex: soft = latar highlight, strong = garis/penanda */
+    -tb-group-1: #e0e7ff;
+    -tb-group-1-strong: #6366f1;
+    -tb-group-2: #d1fae5;
+    -tb-group-2-strong: #059669;
+    -tb-group-3: #fef3c7;
+    -tb-group-3-strong: #d97706;
+    -tb-group-4: #ffe4e6;
+    -tb-group-4-strong: #e11d48;
+    -tb-group-5: #e0f2fe;
+    -tb-group-5-strong: #0284c7;
+    -tb-group-6: #ede9fe;
+    -tb-group-6-strong: #7c3aed;
+    -tb-match: #fde68a;
     -tb-selection: #4f46e5;
 
     -fx-base: -tb-surface;
@@ -320,3 +334,96 @@
 .diff-list .list-cell.diff-line-header { -fx-font-weight: bold; -fx-text-fill: -tb-text-muted; }
 .diff-list .list-cell.diff-line-note { -fx-text-fill: -tb-text-muted; -fx-font-style: italic; }
 .diff-list .list-cell.diff-unified-cell:filled:selected { -fx-background-color: -tb-accent-soft; }
+
+
+/* ---------- Regex Tester ---------- */
+.regex-delimiter {
+    -fx-font-family: 'Monospaced';
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -tb-text-muted;
+}
+.regex-flag-chip {
+    -fx-background-color: -tb-border, -tb-surface;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 999;
+    -fx-padding: 3 10 3 10;
+    -fx-font-family: 'Monospaced';
+    -fx-font-size: 12px;
+    -fx-text-fill: -tb-text-muted;
+}
+.regex-flag-chip:hover { -fx-background-color: -tb-accent, -tb-surface-alt; }
+.regex-flag-chip:selected {
+    -fx-background-color: -tb-accent, -tb-accent-soft;
+    -fx-text-fill: -tb-accent;
+    -fx-font-weight: bold;
+}
+
+/* Preview pola: posisi caret ^ sejajar karena font dan padding kiri sama dengan teks pola */
+.regex-preview-box {
+    -fx-background-color: -tb-code-bg;
+    -fx-background-radius: 8;
+    -fx-border-color: -tb-border;
+    -fx-border-radius: 8;
+    -fx-padding: 6 0 6 0;
+}
+.regex-pattern-preview { -fx-padding: 0 10 0 10; }
+.regex-caret {
+    -fx-font-family: 'Monospaced';
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -tb-danger;
+    -fx-padding: 0 10 0 10;
+}
+.regex-text {
+    -fx-font-family: 'Monospaced';
+    -fx-font-size: 13px;
+    -fx-fill: -tb-text;
+}
+.regex-highlight-text { -fx-padding: 8 10 8 10; }
+.regex-highlight-scroll, .regex-highlight-scroll > .viewport { -fx-background-color: -tb-code-bg; }
+.regex-highlight-scroll { -fx-background-radius: 8; -fx-border-color: -tb-border; -fx-border-radius: 8; }
+
+/* Latar highlight digambar sebagai Path di belakang teks */
+.regex-highlight { -fx-stroke: transparent; }
+.regex-hl-match { -fx-fill: -tb-match; }
+.regex-hl-group-1 { -fx-fill: -tb-group-1; }
+.regex-hl-group-2 { -fx-fill: -tb-group-2; }
+.regex-hl-group-3 { -fx-fill: -tb-group-3; }
+.regex-hl-group-4 { -fx-fill: -tb-group-4; }
+.regex-hl-group-5 { -fx-fill: -tb-group-5; }
+.regex-hl-group-6 { -fx-fill: -tb-group-6; }
+.regex-hl-hover { -fx-fill: -tb-accent-soft; -fx-stroke: -tb-accent; -fx-stroke-width: 1; }
+.regex-hl-error { -fx-fill: -tb-danger-soft; -fx-stroke: -tb-danger; -fx-stroke-width: 1; }
+
+/* Tab Penjelasan */
+.explain-row {
+    -fx-padding: 4 6 4 6;
+    -fx-background-radius: 6;
+}
+.explain-row:hover { -fx-background-color: -tb-accent-soft; }
+.regex-token {
+    -fx-font-family: 'Monospaced';
+    -fx-background-color: -tb-surface-alt;
+    -fx-background-radius: 4;
+    -fx-padding: 1 6 1 6;
+    -fx-text-fill: -tb-accent;
+}
+.regex-group-bar {
+    -fx-min-width: 4;
+    -fx-pref-width: 4;
+    -fx-max-width: 4;
+    -fx-min-height: 18;
+    -fx-background-radius: 2;
+    -fx-background-color: transparent;
+}
+.regex-group-bar-1 { -fx-background-color: -tb-group-1-strong; }
+.regex-group-bar-2 { -fx-background-color: -tb-group-2-strong; }
+.regex-group-bar-3 { -fx-background-color: -tb-group-3-strong; }
+.regex-group-bar-4 { -fx-background-color: -tb-group-4-strong; }
+.regex-group-bar-5 { -fx-background-color: -tb-group-5-strong; }
+.regex-group-bar-6 { -fx-background-color: -tb-group-6-strong; }
+
+.regex-tabs-card { -fx-padding: 8 12 12 12; }
+.regex-match-column { -fx-font-family: 'Monospaced'; }
+.regex-cheat-section > .title { -fx-font-weight: bold; }

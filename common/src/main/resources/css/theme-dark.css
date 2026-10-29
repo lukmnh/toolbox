@@ -22,6 +22,19 @@
     -tb-diff-delete: #2d1215;
     -tb-diff-delete-word: #7f1d1d;
     -tb-diff-change: #2a2106;
+    -tb-group-1: #312e81;
+    -tb-group-1-strong: #818cf8;
+    -tb-group-2: #064e3b;
+    -tb-group-2-strong: #34d399;
+    -tb-group-3: #78350f;
+    -tb-group-3-strong: #fbbf24;
+    -tb-group-4: #881337;
+    -tb-group-4-strong: #fb7185;
+    -tb-group-5: #0c4a6e;
+    -tb-group-5-strong: #38bdf8;
+    -tb-group-6: #4c1d95;
+    -tb-group-6-strong: #a78bfa;
+    -tb-match: #713f12;
     -tb-selection: #818cf8;
     -fx-faint-focus-color: #818cf833;
 }
