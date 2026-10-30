@@ -17,6 +17,7 @@
         <module>tool-pdf</module>
         <module>tool-json</module>
         <module>tool-devutils</module>
+        <module>tool-productivity</module>
         <module>app</module>
     </modules>
 
@@ -33,6 +34,8 @@
         <re2j.version>1.8</re2j.version>
         <sql-formatter.version>2.0.5</sql-formatter.version>
         <cron-utils.version>9.2.1</cron-utils.version>
+        <fastcsv.version>4.4.0</fastcsv.version>
+        <fastexcel.version>0.20.2</fastexcel.version>
         <!-- Transitive cron-utils (2.0.7) & ArchUnit; dikunci supaya satu versi -->
         <slf4j.version>2.0.19</slf4j.version>
         <junit.version>5.14.4</junit.version>
@@ -77,9 +80,29 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>io.github.lukmnh.toolbox</groupId>
+                <artifactId>tool-productivity</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.siegmar</groupId>
+                <artifactId>fastcsv</artifactId>
+                <version>${fastcsv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dhatim</groupId>
+                <artifactId>fastexcel</artifactId>
+                <version>${fastexcel.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.java-diff-utils</groupId>

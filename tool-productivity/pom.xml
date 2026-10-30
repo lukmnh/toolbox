@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.github.lukmnh.toolbox</groupId>
+        <artifactId>toolbox-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>tool-productivity</artifactId>
+    <name>Toolbox :: Tool Productivity</name>
+    <description>Text Tools, Batch Rename, Kalkulator Cepat, Budget, dan Ambient Sound.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.lukmnh.toolbox</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <!-- Budget: file JSON per budget (data kecil, 1 dokumen) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <!-- Export jadwal cicilan (RFC 4180) -->
+        <dependency>
+            <groupId>de.siegmar</groupId>
+            <artifactId>fastcsv</artifactId>
+        </dependency>
+        <!-- Export Budget .xlsx (style + formula) tanpa Apache POI -->
+        <dependency>
+            <groupId>org.dhatim</groupId>
+            <artifactId>fastexcel</artifactId>
+        </dependency>
+    </dependencies>
+</project>

@@ -12,4 +12,9 @@ import java.util.List;
 public interface ToolProvider {
 
     List<Tool> tools();
+
+    /** Service yang tetap jalan saat user pindah tool. Default: tidak ada. */
+    default List<BackgroundService> backgroundServices() {
+        return List.of();
+    }
 }

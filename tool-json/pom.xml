@@ -12,7 +12,7 @@
 
     <artifactId>tool-json</artifactId>
     <name>Toolbox :: Tool JSON</name>
-    <description>JSON Viewer (file besar) dan JSON Beautify.</description>
+    <description>JSON Viewer (file besar), JSON Beautify, dan CSV Kolom: Split &amp; Merge.</description>
 
     <dependencies>
         <dependency>
@@ -23,6 +23,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
+        </dependency>
+        <!-- CSV Split & Merge: satu-satunya library baca/tulis CSV (RFC 4180), streaming -->
+        <dependency>
+            <groupId>de.siegmar</groupId>
+            <artifactId>fastcsv</artifactId>
         </dependency>
     </dependencies>
 </project>

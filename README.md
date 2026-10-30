@@ -46,8 +46,9 @@ Superapp desktop berisi kumpulan utility pribadi untuk PDF, JSON, dan developer 
 | PDF | **Gabung** | Gabung banyak PDF dengan urutan yang bisa diatur | ✅ |
 | PDF | **Pisah** | Pisah per halaman atau per range (`1-3, 5, 8-10`) | ✅ |
 | PDF | **Kompres** | Kompres gambar di PDF dengan 3 preset, teks/vektor tidak disentuh | ✅ |
-| JSON | **JSON Viewer** | Viewer file besar: tabel/tree, filter query, sort, export JSON/JSONL/CSV | ✅ |
-| JSON | **JSON Beautify** | Format, minify, validate. Input paste atau upload `.json` | ✅ |
+| Data | **JSON Viewer** | Viewer file besar: tabel/tree, filter query, sort, export JSON/JSONL/CSV | ✅ |
+| Data | **JSON Beautify** | Format, minify, validate. Input paste atau upload `.json` | ✅ |
+| Data | **CSV Kolom: Split & Merge** | Pisah/gabung/atur kolom CSV secara streaming: deteksi delimiter & encoding, pipeline langkah, formula guard | ✅ |
 | Dev Utils | **JWT Debugger** | Decode header/payload/claims, status waktu, verifikasi signature HS/RS/PS/ES/EdDSA secara offline | – |
 | Dev Utils | **Encoder / Decoder** | Base64 teks & file (URL-safe, MIME, data URI) + URL encode/decode & parser query string | ✅ (Base64 file) |
 | Dev Utils | **Hash Generator** | MD5, SHA-1, SHA-2, SHA3 untuk teks, plus mode HMAC | – |
@@ -56,6 +57,11 @@ Superapp desktop berisi kumpulan utility pribadi untuk PDF, JSON, dan developer 
 | Dev Utils | **Regex Tester** | Uji & jelaskan regex **Java, JavaScript, Go, PHP**: highlight per grup, tabel match, replace, timeout anti-backtracking | – |
 | Dev Utils | **SQL Formatter** | Format & minify SQL 10 dialect (MySQL, PostgreSQL, Oracle, SQL Server, …); string & quoted identifier tidak diubah, file s.d. 10 MB | ✅ |
 | Dev Utils | **Cron Builder & Explainer** | Builder + penjelasan bahasa Indonesia + 10 jadwal berikutnya untuk **Unix crontab, Java Spring, Java Quarkus/Quartz, Go (robfig/cron), PHP Laravel**, lengkap dengan snippet kode per target | – |
+| Produktivitas | **Text Tools** | Statistik teks (grapheme, kata, kalimat, waktu baca), case converter, rapikan teks, undo 20 langkah | ✅ |
+| Produktivitas | **Batch Rename** | Rename banyak file dengan aturan bertingkat, preview konflik, two-phase rename + rollback, undo | – (in-place) |
+| Produktivitas | **Kalkulator Cepat** | Diskon ganda (diskon efektif) dan simulasi cicilan anuitas/flat/efektif | ✅ (jadwal cicilan) |
+| Produktivitas | **Budget** | Catat pemasukan & pengeluaran rutin, rata-rata per bulan, ringkasan + grafik, autosave, export `.xlsx` berformula | ✅ (.xlsx) |
+| Produktivitas | **Ambient Sound** | Hujan, white/pink/brown noise prosedural, sleep timer, tetap jalan di background | – |
 
 Kebutuhan dan aturan lengkap tiap tool ada di [docs/business.md](docs/business.md).
 
@@ -489,6 +495,8 @@ Toolbox tidak memakai database. Semua data tersimpan di folder home:
 | `~/.toolbox/settings.json` | Folder download, tema, ukuran window, state sidebar |
 | `~/.toolbox/recent.json` | Tool dan file JSON terakhir dipakai |
 | `~/.toolbox/signature.png` | Tanda tangan terakhir |
+| `~/.toolbox/budgets/` | Data Budget, 1 file JSON per budget (owner-only, autosave atomic) |
+| `~/.toolbox/rename-history/` | Log undo Batch Rename, 20 terakhir (owner-only) |
 | `~/.toolbox/logs/` | Log aplikasi (maks 5 file × 1 MB) |
 
 Folder download default: `%USERPROFILE%\Downloads` (Windows), atau `XDG_DOWNLOAD_DIR` dengan fallback `~/Downloads` (Linux). Bisa diganti di **Settings**.
@@ -500,8 +508,9 @@ toolbox/
 ├── pom.xml              # parent: versi, dependencyManagement, pluginManagement
 ├── common/              # kontrak Tool, download, task runner, settings, UI reusable, i18n, tema CSS
 ├── tool-pdf/            # Isi & TTD, Gabung, Pisah, Kompres
-├── tool-json/           # JSON Viewer, JSON Beautify
+├── tool-json/           # JSON Viewer, JSON Beautify, CSV Split & Merge
 ├── tool-devutils/       # JWT, Encoder/Decoder, Hash, Checksum, Text Diff, Regex, SQL, Cron
+├── tool-productivity/   # Text Tools, Batch Rename, Kalkulator, Budget, Ambient Sound
 ├── app/                 # shell: Home, sidebar, routing, Settings, main class
 ├── tools/               # GenerateSample.java (generator JSON dummy)
 ├── packaging/           # script jpackage + icons/ (opsional)

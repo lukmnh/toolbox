@@ -34,6 +34,20 @@ public final class SecurityLimits {
     /** SQL Formatter memuat file utuh ke memori (formatter library tidak streaming). */
     public static final long SQL_MAX_FILE_BYTES = 10 * MB;
 
+    /** Text Tools menghitung statistik dari teks utuh di memori. */
+    public static final long TEXT_TOOLS_MAX_BYTES = 10 * MB;
+
+    /** CSV diproses streaming; batas ini hanya menjaga waktu proses tetap wajar. */
+    public static final long CSV_MAX_FILE_BYTES = 1024 * MB;
+
+    /** Import JSON Budget dibaca utuh lewat databind (Security Requirements #19). */
+    public static final long BUDGET_IMPORT_MAX_FILE_BYTES = 10 * MB;
+
+    public static final int BUDGET_MAX_ITEMS = 10_000;
+
+    /** Batch Rename per eksekusi (Security Requirements #21). */
+    public static final int RENAME_MAX_FILES = 10_000;
+
     /** Batas eksekusi regex; mencegah catastrophic backtracking membekukan app. */
     public static final Duration REGEX_TIMEOUT = Duration.ofSeconds(2);
 
