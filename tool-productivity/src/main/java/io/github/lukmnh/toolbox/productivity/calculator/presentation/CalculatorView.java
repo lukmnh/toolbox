@@ -14,17 +14,18 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-/** Kerangka Kalkulator Cepat: header + dua tab (Diskon Ganda, Simulasi Cicilan). */
+/** Kerangka Installment Simulator: header + tab Cicilan, Diskon, Pajak & PPN, Invoice. */
 final class CalculatorView {
 
     private CalculatorView() {}
 
-    static Node create(DiscountViewModel discount, InstallmentViewModel installment) {
-        Tab discountTab =
-                new Tab(Messages.get("productivity.calculator.tab.discount"), scroll(DiscountPane.create(discount)));
-        Tab installmentTab = new Tab(
-                Messages.get("productivity.calculator.tab.installment"), scroll(InstallmentPane.create(installment)));
-        TabPane tabs = new TabPane(discountTab, installmentTab);
+    static Node create(
+            InstallmentViewModel installment, DiscountViewModel discount, TaxViewModel tax, InvoiceViewModel invoice) {
+        TabPane tabs = new TabPane(
+                tab("productivity.calculator.tab.installment", InstallmentPane.create(installment)),
+                tab("productivity.calculator.tab.discount", DiscountPane.create(discount)),
+                tab("productivity.calculator.tab.tax", TaxPane.create(tax)),
+                tab("productivity.calculator.tab.invoice", InvoicePane.create(invoice)));
         tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabs.getStyleClass().add("underline-tabs");
         VBox.setVgrow(tabs, Priority.ALWAYS);
@@ -39,7 +40,7 @@ final class CalculatorView {
         return page;
     }
 
-    /** Kotak angka besar + keterangan kecil, dipakai kedua tab. */
+    /** Kotak angka besar + keterangan kecil, dipakai semua tab. */
     static VBox tile(String caption, ObservableStringValue value) {
         return tile(Bindings.createStringBinding(() -> caption), value);
     }
@@ -54,6 +55,10 @@ final class CalculatorView {
         VBox tile = new VBox(2, valueLabel, captionLabel);
         tile.getStyleClass().add("stat-tile");
         return tile;
+    }
+
+    private static Tab tab(String titleKey, Node content) {
+        return new Tab(Messages.get(titleKey), scroll(content));
     }
 
     private static ScrollPane scroll(Node content) {

@@ -2,7 +2,6 @@ package io.github.lukmnh.toolbox.productivity.calculator.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
 import io.github.lukmnh.toolbox.common.io.TempFiles;
-import io.github.lukmnh.toolbox.common.task.RunningTask;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
 import io.github.lukmnh.toolbox.common.ui.ClipboardActions;
 import io.github.lukmnh.toolbox.productivity.calculator.domain.AdminFee;
@@ -11,25 +10,24 @@ import io.github.lukmnh.toolbox.productivity.calculator.domain.CalculatorInputEx
 import io.github.lukmnh.toolbox.productivity.calculator.domain.InstallmentMethod;
 import io.github.lukmnh.toolbox.productivity.calculator.domain.InstallmentRequest;
 import io.github.lukmnh.toolbox.productivity.calculator.domain.InstallmentSchedule;
+import io.github.lukmnh.toolbox.productivity.calculator.domain.ReportDocument;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-/** State Simulasi Cicilan. Jadwal (maks 600 baris) dihitung di FX thread; hanya export CSV yang ke background. */
+/** State Simulasi Cicilan. Jadwal (maks 600 baris) dihitung di FX thread; hanya export CSV/PDF yang ke background. */
 final class InstallmentViewModel {
 
     static final String PRINCIPAL_KEY = "productivity.calculator.installment.principal";
@@ -45,14 +43,16 @@ final class InstallmentViewModel {
             "productivity.calculator.schedule.interest",
             "productivity.calculator.schedule.remaining");
 
-    private static final String CSV_NAME = "jadwal-cicilan.csv";
+    private static final String CSV_NAME = "installment-schedule.csv";
     private static final String CSV_SUFFIX = ".csv";
+    private static final String PDF_NAME = "installment-simulation.pdf";
+    private static final String PDF_SUFFIX = ".pdf";
     /** Key ringkasan = key label tile + akhiran ini (label dengan placeholder nominal). */
     private static final String VALUE_SUFFIX = ".value";
 
     private final CalculatorUseCases useCases;
     private final ToolContext context;
-    private final TempFiles tempFiles;
+    private final FileExport fileExport;
 
     private final StringProperty principal = new SimpleStringProperty("");
     private final StringProperty tenor = new SimpleStringProperty("");
@@ -63,17 +63,13 @@ final class InstallmentViewModel {
     private final ObjectProperty<InstallmentSchedule> schedule = new SimpleObjectProperty<>();
     private final ObservableList<AmortizationRow> rows = FXCollections.observableArrayList();
     private final StringProperty error = new SimpleStringProperty("");
-    private final BooleanProperty busy = new SimpleBooleanProperty();
 
     private InstallmentRequest lastRequest;
-    private RunningTask runningTask;
-    /** Satu temp file dipakai ulang supaya download berulang tidak menumpuk di disk. */
-    private Path outputFile;
 
     InstallmentViewModel(CalculatorUseCases useCases, ToolContext context, TempFiles tempFiles) {
         this.useCases = useCases;
         this.context = context;
-        this.tempFiles = tempFiles;
+        this.fileExport = new FileExport(context, tempFiles);
         for (var input : List.of(principal, tenor, rate, fee)) {
             input.addListener((observable, previous, current) -> recalculate());
         }
@@ -118,26 +114,31 @@ final class InstallmentViewModel {
     }
 
     BooleanBinding canExport() {
-        return schedule.isNotNull().and(busy.not());
+        return schedule.isNotNull().and(fileExport.busyProperty().not());
     }
 
     void copySummary() {
         ClipboardActions.copy(summary(), context.notifier());
     }
 
-    void download() {
-        export(file -> context.downloads().download(file, CSV_NAME));
+    void downloadCsv() {
+        exportCsv(context.downloads()::download);
     }
 
-    void saveAs() {
-        export(file -> context.downloads().saveAs(file, CSV_NAME));
+    void saveCsvAs() {
+        exportCsv(context.downloads()::saveAs);
+    }
+
+    void downloadPdf() {
+        exportPdf(context.downloads()::download);
+    }
+
+    void savePdfAs() {
+        exportPdf(context.downloads()::saveAs);
     }
 
     void dispose() {
-        if (runningTask != null) {
-            runningTask.cancel();
-        }
-        tempFiles.close();
+        fileExport.dispose();
     }
 
     /** Ringkasan teks untuk clipboard, termasuk disclaimer; kosong bila belum ada hasil. */
@@ -230,34 +231,28 @@ final class InstallmentViewModel {
         error.set(message);
     }
 
-    private void export(Consumer<Path> deliver) {
+    private void exportCsv(BiConsumer<Path, String> deliver) {
         InstallmentSchedule current = schedule.get();
         if (current == null) {
             return;
         }
         List<String> header = COLUMN_KEYS.stream().map(Messages::get).toList();
-        Path target = outputFile();
-        busy.set(true);
-        runningTask = context.tasks()
-                .submit(
-                        (progress, cancellation) -> {
-                            useCases.export().execute(current, header, target);
-                            return target;
-                        },
-                        file -> {
-                            busy.set(false);
-                            deliver.accept(file);
-                        },
-                        failure -> {
-                            busy.set(false);
-                            CalculatorMessages.showError(context.owner(), failure);
-                        });
+        fileExport.run(
+                CSV_SUFFIX,
+                target -> useCases.export().execute(current, header, target),
+                file -> deliver.accept(file, CSV_NAME));
     }
 
-    private Path outputFile() {
-        if (outputFile == null) {
-            outputFile = tempFiles.createFile(CSV_SUFFIX);
+    private void exportPdf(BiConsumer<Path, String> deliver) {
+        InstallmentSchedule current = schedule.get();
+        if (current == null || lastRequest == null) {
+            return;
         }
-        return outputFile;
+        // Teks disusun di FX thread (Messages/format), hanya penulisan file yang ke background
+        ReportDocument document = CalculatorReports.installment(current, lastRequest);
+        fileExport.run(
+                PDF_SUFFIX,
+                target -> useCases.exportPdf().execute(document, target),
+                file -> deliver.accept(file, PDF_NAME));
     }
 }

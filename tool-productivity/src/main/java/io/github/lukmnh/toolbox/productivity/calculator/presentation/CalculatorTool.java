@@ -9,11 +9,13 @@ import io.github.lukmnh.toolbox.productivity.shared.presentation.ProductivityToo
 import java.util.Set;
 import javafx.scene.Node;
 
-/** Kalkulator Cepat: Diskon Ganda dan Simulasi Cicilan (+ export jadwal CSV). */
+/** Installment Simulator: simulasi cicilan (+ export PDF/CSV), diskon ganda, pajak & PPN, dan invoice/kuitansi. */
 public final class CalculatorTool implements Tool {
 
     private final CalculatorUseCases useCases;
     private InstallmentViewModel installmentViewModel;
+    private TaxViewModel taxViewModel;
+    private InvoiceViewModel invoiceViewModel;
 
     public CalculatorTool(CalculatorUseCases useCases) {
         this.useCases = useCases;
@@ -49,15 +51,25 @@ public final class CalculatorTool implements Tool {
     public Node createView(ToolContext context) {
         DiscountViewModel discountViewModel = new DiscountViewModel(useCases.discount(), context.notifier());
         installmentViewModel = new InstallmentViewModel(useCases, context, new TempFiles());
-        return CalculatorView.create(discountViewModel, installmentViewModel);
+        taxViewModel = new TaxViewModel(useCases.tax(), context.notifier());
+        invoiceViewModel = new InvoiceViewModel(useCases, context, new TempFiles());
+        return CalculatorView.create(installmentViewModel, discountViewModel, taxViewModel, invoiceViewModel);
     }
 
-    /** Diskon tidak punya task atau temp file; hanya tab cicilan yang perlu dibersihkan. */
+    /** Diskon tidak punya task, timer, atau temp file; tab lain perlu dibersihkan. */
     @Override
     public void dispose() {
         if (installmentViewModel != null) {
             installmentViewModel.dispose();
             installmentViewModel = null;
+        }
+        if (taxViewModel != null) {
+            taxViewModel.dispose();
+            taxViewModel = null;
+        }
+        if (invoiceViewModel != null) {
+            invoiceViewModel.dispose();
+            invoiceViewModel = null;
         }
     }
 }

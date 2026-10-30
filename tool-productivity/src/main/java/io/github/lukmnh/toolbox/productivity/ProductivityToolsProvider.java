@@ -29,9 +29,13 @@ import io.github.lukmnh.toolbox.productivity.budget.infrastructure.JsonBudgetTra
 import io.github.lukmnh.toolbox.productivity.budget.presentation.BudgetTool;
 import io.github.lukmnh.toolbox.productivity.budget.presentation.BudgetUseCases;
 import io.github.lukmnh.toolbox.productivity.calculator.application.CalculateDiscountUseCase;
+import io.github.lukmnh.toolbox.productivity.calculator.application.CalculateInvoiceUseCase;
+import io.github.lukmnh.toolbox.productivity.calculator.application.CalculateTaxUseCase;
+import io.github.lukmnh.toolbox.productivity.calculator.application.ExportPdfUseCase;
 import io.github.lukmnh.toolbox.productivity.calculator.application.ExportScheduleUseCase;
 import io.github.lukmnh.toolbox.productivity.calculator.application.SimulateInstallmentUseCase;
 import io.github.lukmnh.toolbox.productivity.calculator.infrastructure.FastCsvScheduleWriter;
+import io.github.lukmnh.toolbox.productivity.calculator.infrastructure.PdfBoxReportWriter;
 import io.github.lukmnh.toolbox.productivity.calculator.presentation.CalculatorTool;
 import io.github.lukmnh.toolbox.productivity.calculator.presentation.CalculatorUseCases;
 import io.github.lukmnh.toolbox.productivity.rename.application.ExecuteRenameUseCase;
@@ -114,7 +118,10 @@ public final class ProductivityToolsProvider implements ToolProvider {
         return new CalculatorTool(new CalculatorUseCases(
                 new CalculateDiscountUseCase(),
                 new SimulateInstallmentUseCase(),
-                new ExportScheduleUseCase(new FastCsvScheduleWriter())));
+                new ExportScheduleUseCase(new FastCsvScheduleWriter()),
+                new ExportPdfUseCase(new PdfBoxReportWriter()),
+                new CalculateTaxUseCase(),
+                new CalculateInvoiceUseCase()));
     }
 
     private static BudgetTool budgetTool() {

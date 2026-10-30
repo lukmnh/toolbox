@@ -23,7 +23,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-/** Tab Simulasi Cicilan: input pinjaman, ringkasan, lalu tabel amortisasi (virtual) + download CSV. */
+/** Tab Simulasi Cicilan: input pinjaman, ringkasan, lalu tabel amortisasi (virtual) + download PDF/CSV. */
 final class InstallmentPane {
 
     private static final double FIELD_WIDTH = 200;
@@ -147,8 +147,14 @@ final class InstallmentPane {
                         column(keys.get(3), row -> CalculatorMessages.money(row.interest()), true),
                         column(keys.get(4), row -> CalculatorMessages.money(row.remaining()), true)));
 
-        HBox download = ToolLayout.downloadButtons(viewModel::download, viewModel::saveAs);
-        download.disableProperty().bind(viewModel.canExport().not());
+        HBox pdf = ToolLayout.downloadButtons(
+                ToolLayout.button(Messages.get("productivity.calculator.download.pdf"), viewModel::downloadPdf),
+                ToolLayout.button(Messages.get("productivity.calculator.saveAs.pdf"), viewModel::savePdfAs));
+        HBox csv = ToolLayout.downloadButtons(
+                ToolLayout.button(Messages.get("productivity.calculator.download.csv"), viewModel::downloadCsv),
+                ToolLayout.button(Messages.get("productivity.calculator.saveAs.csv"), viewModel::saveCsvAs));
+        pdf.disableProperty().bind(viewModel.canExport().not());
+        csv.disableProperty().bind(viewModel.canExport().not());
         VBox card = ToolLayout.card(
                 Messages.get("productivity.calculator.schedule"),
                 List.of(),
@@ -156,7 +162,8 @@ final class InstallmentPane {
                 ToolLayout.row(
                         ToolLayout.hint(Messages.get("productivity.calculator.schedule.csvHint")),
                         ToolLayout.spacer(),
-                        download));
+                        pdf,
+                        csv));
         card.visibleProperty().bind(viewModel.scheduleProperty().isNotNull());
         ToolLayout.collapseWhenHidden(card);
         return card;
