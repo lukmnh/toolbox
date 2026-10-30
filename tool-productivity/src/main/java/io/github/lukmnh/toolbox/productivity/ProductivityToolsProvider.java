@@ -2,14 +2,8 @@ package io.github.lukmnh.toolbox.productivity;
 
 import io.github.lukmnh.toolbox.common.io.AppDirectories;
 import io.github.lukmnh.toolbox.common.security.SecurityLimits;
-import io.github.lukmnh.toolbox.common.tool.BackgroundService;
 import io.github.lukmnh.toolbox.common.tool.Tool;
 import io.github.lukmnh.toolbox.common.tool.ToolProvider;
-import io.github.lukmnh.toolbox.productivity.ambient.application.AmbientPlayer;
-import io.github.lukmnh.toolbox.productivity.ambient.domain.AudioSpec;
-import io.github.lukmnh.toolbox.productivity.ambient.infrastructure.JavaSoundAudioSink;
-import io.github.lukmnh.toolbox.productivity.ambient.presentation.AmbientSoundService;
-import io.github.lukmnh.toolbox.productivity.ambient.presentation.AmbientTool;
 import io.github.lukmnh.toolbox.productivity.budget.application.CreateBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.DeleteBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.DuplicateBudgetUseCase;
@@ -69,22 +63,9 @@ public final class ProductivityToolsProvider implements ToolProvider {
     private static final String BUDGETS_DIRECTORY = "budgets";
     private static final String RENAME_HISTORY_DIRECTORY = "rename-history";
 
-    /**
-     * Satu instance per provider: tool view dan mini-player header mengontrol service yang sama. ToolRegistry me-load
-     * provider sekali lalu memanggil {@link #tools()} dan {@link #backgroundServices()} di instance yang sama.
-     * Konstruktor tidak membuat thread (baru dibuat saat {@code start()}).
-     */
-    private final AmbientSoundService ambientService =
-            new AmbientSoundService(new AmbientPlayer(new JavaSoundAudioSink(), AudioSpec.CD_STEREO));
-
     @Override
     public List<Tool> tools() {
-        return List.of(textTool(), renameTool(), calculatorTool(), budgetTool(), new AmbientTool(ambientService));
-    }
-
-    @Override
-    public List<BackgroundService> backgroundServices() {
-        return List.of(ambientService);
+        return List.of(textTool(), renameTool(), calculatorTool(), budgetTool());
     }
 
     private static TextTool textTool() {

@@ -39,10 +39,32 @@
             <groupId>io.github.lukmnh.toolbox</groupId>
             <artifactId>tool-productivity</artifactId>
         </dependency>
+        <!-- Guide di Home: Markdown → HTML (preview) dan AST → PDF -->
+        <dependency>
+            <groupId>org.commonmark</groupId>
+            <artifactId>commonmark</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
         <finalName>toolbox-app</finalName>
+        <!-- Hanya app.properties yang di-filter (versi dari pom); resource lain disalin apa adanya -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>app.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>app.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

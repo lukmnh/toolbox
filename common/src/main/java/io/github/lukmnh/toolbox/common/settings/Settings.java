@@ -12,7 +12,7 @@ public record Settings(Path downloadDirectory, boolean alwaysAskLocation, Theme 
     }
 
     public static Settings defaults(Path downloadDirectory) {
-        return new Settings(downloadDirectory, false, Theme.SYSTEM);
+        return new Settings(downloadDirectory, false, Theme.LIGHT);
     }
 
     public Settings withDownloadDirectory(Path directory) {

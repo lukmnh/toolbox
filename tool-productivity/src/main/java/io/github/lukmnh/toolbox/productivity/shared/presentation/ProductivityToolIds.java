@@ -7,7 +7,6 @@ public final class ProductivityToolIds {
     public static final String RENAME = "productivity.rename";
     public static final String CALCULATOR = "productivity.calculator";
     public static final String BUDGET = "productivity.budget";
-    public static final String AMBIENT = "productivity.ambient";
 
     private ProductivityToolIds() {}
 }

@@ -61,7 +61,6 @@ Superapp desktop berisi kumpulan utility pribadi untuk PDF, JSON, dan developer 
 | Produktivitas | **Batch Rename** | Rename banyak file dengan aturan bertingkat, preview konflik, two-phase rename + rollback, undo | – (in-place) |
 | Produktivitas | **Kalkulator Cepat** | Diskon ganda (diskon efektif) dan simulasi cicilan anuitas/flat/efektif | ✅ (jadwal cicilan) |
 | Produktivitas | **Budget** | Catat pemasukan & pengeluaran rutin, rata-rata per bulan, ringkasan + grafik, autosave, export `.xlsx` berformula | ✅ (.xlsx) |
-| Produktivitas | **Ambient Sound** | Hujan, white/pink/brown noise prosedural, sleep timer, tetap jalan di background | – |
 
 Kebutuhan dan aturan lengkap tiap tool ada di [docs/business.md](docs/business.md).
 
@@ -492,7 +491,8 @@ Toolbox tidak memakai database. Semua data tersimpan di folder home:
 
 | Path | Isi |
 |---|---|
-| `~/.toolbox/settings.json` | Folder download, tema, ukuran window, state sidebar |
+| `~/.toolbox/settings.properties` | Pilihan tema (light/dark) |
+| `~/.toolbox/guide.md` | Guide di Home hasil edit user (tidak ada = guide bawaan) |
 | `~/.toolbox/recent.json` | Tool dan file JSON terakhir dipakai |
 | `~/.toolbox/signature.png` | Tanda tangan terakhir |
 | `~/.toolbox/budgets/` | Data Budget, 1 file JSON per budget (owner-only, autosave atomic) |
@@ -510,7 +510,7 @@ toolbox/
 ├── tool-pdf/            # Isi & TTD, Gabung, Pisah, Kompres
 ├── tool-json/           # JSON Viewer, JSON Beautify, CSV Split & Merge
 ├── tool-devutils/       # JWT, Encoder/Decoder, Hash, Checksum, Text Diff, Regex, SQL, Cron
-├── tool-productivity/   # Text Tools, Batch Rename, Kalkulator, Budget, Ambient Sound
+├── tool-productivity/   # Text Tools, Batch Rename, Kalkulator, Budget
 ├── app/                 # shell: Home, sidebar, routing, Settings, main class
 ├── tools/               # GenerateSample.java (generator JSON dummy)
 ├── packaging/           # script jpackage + icons/ (opsional)
