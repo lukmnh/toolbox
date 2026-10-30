@@ -1,6 +1,7 @@
 package io.github.lukmnh.toolbox.app.shell;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.BackgroundService;
 import io.github.lukmnh.toolbox.common.tool.Tool;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
 import java.nio.file.Path;
@@ -17,17 +18,26 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 
-/** Kerangka window: header, sidebar yang bisa disembunyikan, dan area konten (Home atau tool aktif). */
+/**
+ * Kerangka window: header (+ indikator background service), sidebar yang bisa disembunyikan, dan area konten (Home
+ * atau tool aktif).
+ */
 public final class MainShell extends BorderPane {
 
     private final List<Tool> tools;
+    private final List<BackgroundService> backgroundServices;
+    private final ToolContext context;
     private final ToolNavigator navigator;
     private final Sidebar sidebar;
     private final Label currentTitle = new Label();
 
-    public MainShell(List<Tool> tools, ToolContext context) {
+    public MainShell(List<Tool> tools, List<BackgroundService> backgroundServices, ToolContext context) {
         this.tools = List.copyOf(tools);
+        this.backgroundServices = List.copyOf(backgroundServices);
+        this.context = context;
         this.navigator = new ToolNavigator(context, this::setCenter);
         this.sidebar = new Sidebar(this.tools, this::openTool, this::showHome);
         getStyleClass().add("main-shell");
@@ -43,11 +53,22 @@ public final class MainShell extends BorderPane {
         Label appName = new Label(Messages.get("app.title"));
         appName.getStyleClass().add("app-name");
         currentTitle.getStyleClass().add("current-tool");
-        HBox header = new HBox(12, toggle, appName, currentTitle);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        HBox header = new HBox(12, toggle, appName, currentTitle, spacer);
+        backgroundServices.forEach(service -> header.getChildren().add(indicator(service)));
         header.setAlignment(Pos.CENTER_LEFT);
         header.setPadding(new Insets(8, 12, 8, 12));
         header.getStyleClass().add("app-header");
         return header;
+    }
+
+    /** Indikator hanya tampil (dan memakan tempat) selama service berjalan. */
+    private Node indicator(BackgroundService service) {
+        Node indicator = service.statusIndicator(context);
+        indicator.visibleProperty().bind(service.runningProperty());
+        indicator.managedProperty().bind(indicator.visibleProperty());
+        return indicator;
     }
 
     public void installShortcuts(Scene scene) {

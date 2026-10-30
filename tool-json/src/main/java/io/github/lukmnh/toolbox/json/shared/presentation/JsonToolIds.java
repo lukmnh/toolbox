@@ -5,6 +5,7 @@ public final class JsonToolIds {
 
     public static final String VIEWER = "json.viewer";
     public static final String BEAUTIFY = "json.beautify";
+    public static final String CSV = "json.csv";
 
     private JsonToolIds() {}
 }

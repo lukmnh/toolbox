@@ -4,7 +4,8 @@ package io.github.lukmnh.toolbox.common.tool;
 public enum ToolCategory {
     PDF("category.pdf"),
     JSON("category.json"),
-    DEV_UTILS("category.devutils");
+    DEV_UTILS("category.devutils"),
+    PRODUCTIVITY("category.productivity");
 
     private final String messageKey;
 

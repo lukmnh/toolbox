@@ -12,6 +12,7 @@ import io.github.lukmnh.toolbox.common.security.OwnerOnlyFiles;
 import io.github.lukmnh.toolbox.common.settings.Settings;
 import io.github.lukmnh.toolbox.common.settings.Theme;
 import io.github.lukmnh.toolbox.common.task.TaskRunner;
+import io.github.lukmnh.toolbox.common.tool.BackgroundService;
 import io.github.lukmnh.toolbox.common.tool.Tool;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
 import io.github.lukmnh.toolbox.common.ui.ErrorDialogs;
@@ -38,6 +39,7 @@ public final class ToolboxApplication extends Application {
 
     private TaskRunner taskRunner;
     private MainShell shell;
+    private List<BackgroundService> backgroundServices = List.of();
 
     @Override
     public void init() {
@@ -65,7 +67,9 @@ public final class ToolboxApplication extends Application {
         taskRunner = new TaskRunner();
         installUncaughtExceptionHandler(stage);
 
-        List<Tool> tools = ToolRegistry.load();
+        ToolRegistry registry = ToolRegistry.load();
+        List<Tool> tools = registry.tools();
+        backgroundServices = registry.backgroundServices();
         // Notifier dibuat setelah shell supaya toast selalu tampil di atas konten
         StackPane shellHost = new StackPane();
         root.getChildren().add(shellHost);
@@ -81,7 +85,7 @@ public final class ToolboxApplication extends Application {
                 stage,
                 // shell dibuat setelah context; lambda baru dipanggil saat user menekan tombol di tool
                 (toolId, file) -> shell.openFile(toolId, file));
-        shell = new MainShell(tools, context);
+        shell = new MainShell(tools, backgroundServices, context);
         shellHost.getChildren().add(shell);
 
         Scene scene = new Scene(root, MIN_WIDTH, MIN_HEIGHT);
@@ -125,8 +129,18 @@ public final class ToolboxApplication extends Application {
         if (shell != null) {
             shell.disposeActiveTool();
         }
+        backgroundServices.forEach(ToolboxApplication::stopQuietly);
         if (taskRunner != null) {
             taskRunner.close();
+        }
+    }
+
+    /** Satu service yang gagal berhenti tidak boleh menghalangi service lain dan proses exit (#22). */
+    private static void stopQuietly(BackgroundService service) {
+        try {
+            service.stop();
+        } catch (RuntimeException e) {
+            LOG.log(Level.ERROR, "Gagal menghentikan background service " + service.id(), e);
         }
     }
 }

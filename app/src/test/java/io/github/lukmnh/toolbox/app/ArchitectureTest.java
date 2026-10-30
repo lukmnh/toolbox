@@ -18,5 +18,6 @@ class ArchitectureTest {
             .resideInAnyPackage(
                     "io.github.lukmnh.toolbox.pdf..",
                     "io.github.lukmnh.toolbox.json..",
-                    "io.github.lukmnh.toolbox.devutils..");
+                    "io.github.lukmnh.toolbox.devutils..",
+                    "io.github.lukmnh.toolbox.productivity..");
 }
