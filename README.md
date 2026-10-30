@@ -60,7 +60,7 @@ Superapp desktop berisi kumpulan utility pribadi untuk PDF, JSON, dan developer 
 | Produktivitas | **Text Tools** | Statistik teks (grapheme, kata, kalimat, waktu baca), case converter, rapikan teks, undo 20 langkah | ✅ |
 | Produktivitas | **Batch Rename** | Rename banyak file dengan aturan bertingkat, preview konflik, two-phase rename + rollback, undo | – (in-place) |
 | Produktivitas | **Kalkulator Cepat** | Diskon ganda (diskon efektif) dan simulasi cicilan anuitas/flat/efektif | ✅ (jadwal cicilan) |
-| Produktivitas | **Budget** | Catat pemasukan & pengeluaran rutin, rata-rata per bulan, ringkasan + grafik, autosave, export `.xlsx` berformula | ✅ (.xlsx) |
+| Produktivitas | **Budget** | Catat pemasukan & pengeluaran rutin, rata-rata per bulan, ringkasan + grafik, autosave, export `.xlsx` berformula & `.pdf`, import ulang dari file export tersebut | ✅ (.xlsx, .pdf) |
 | Produktivitas | **Ambient Sound** | Hujan, white/pink/brown noise prosedural, sleep timer, tetap jalan di background | – |
 
 Kebutuhan dan aturan lengkap tiap tool ada di [docs/business.md](docs/business.md).

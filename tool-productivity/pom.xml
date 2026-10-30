@@ -34,5 +34,10 @@
             <groupId>org.dhatim</groupId>
             <artifactId>fastexcel</artifactId>
         </dependency>
+        <!-- Import Budget: baca sheet data tersembunyi dari .xlsx hasil export -->
+        <dependency>
+            <groupId>org.dhatim</groupId>
+            <artifactId>fastexcel-reader</artifactId>
+        </dependency>
     </dependencies>
 </project>

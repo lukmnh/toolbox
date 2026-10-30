@@ -2,7 +2,7 @@ package io.github.lukmnh.toolbox.productivity.budget.domain;
 
 import java.io.Serial;
 
-/** File JSON melebihi batas ukuran; ditolak sebelum dibaca (Security Requirements #3, #19). */
+/** File budget atau data di dalamnya melebihi batas ukuran; ditolak sebelum dibaca utuh (Security Requirements #3, #19). */
 public final class BudgetFileTooLargeException extends BudgetException {
 
     @Serial

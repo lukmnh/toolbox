@@ -1,6 +1,6 @@
 package io.github.lukmnh.toolbox.productivity.budget.domain;
 
-/** Teks tetap di file Excel. Isinya disediakan presentation (i18n), bukan di-hard-code di infrastructure. */
+/** Teks tetap di file export (Excel & PDF). Isinya disediakan presentation (i18n), bukan di-hard-code di infrastructure. */
 public enum WorkbookLabel {
     SUMMARY_SHEET,
     DEFAULT_SHEET,
@@ -15,6 +15,9 @@ public enum WorkbookLabel {
     HEADER_MONTHLY,
     HEADER_STATUS,
     HEADER_NOTE,
+    HEADER_CATEGORY,
+    CATEGORY_SECTION,
+    CATEGORY_NONE,
     UNIT_DAYS,
     UNIT_WEEKS,
     UNIT_MONTHS,

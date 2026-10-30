@@ -40,8 +40,17 @@ public final class SecurityLimits {
     /** CSV diproses streaming; batas ini hanya menjaga waktu proses tetap wajar. */
     public static final long CSV_MAX_FILE_BYTES = 1024 * MB;
 
-    /** Import JSON Budget dibaca utuh lewat databind (Security Requirements #19). */
+    /**
+     * Data JSON Budget (file autosave atau data yang tertanam di file export) dibaca utuh lewat databind (Security
+     * Requirements #19).
+     */
     public static final long BUDGET_IMPORT_MAX_FILE_BYTES = 10 * MB;
+
+    /** File export Budget (.xlsx/.pdf) yang di-import; dicek sebelum dibuka. */
+    public static final long BUDGET_EXPORT_MAX_FILE_BYTES = 50 * MB;
+
+    /** Total isi ZIP .xlsx setelah di-decompress; mencegah zip bomb saat import Budget. */
+    public static final long BUDGET_XLSX_MAX_UNCOMPRESSED_BYTES = 100 * MB;
 
     public static final int BUDGET_MAX_ITEMS = 10_000;
 

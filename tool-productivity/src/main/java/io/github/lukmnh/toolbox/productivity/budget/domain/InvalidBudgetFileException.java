@@ -17,7 +17,11 @@ public final class InvalidBudgetFileException extends BudgetException {
         UNSUPPORTED_VERSION,
         MISSING_VALUE,
         INVALID_VALUE,
-        NEGATIVE_NUMBER
+        NEGATIVE_NUMBER,
+        /** File .xlsx/.pdf valid tetapi tidak membawa data budget dari export Toolbox. */
+        NOT_TOOLBOX_EXPORT,
+        /** File rusak atau bukan .xlsx/.pdf. */
+        UNREADABLE_FILE
     }
 
     private final String fileName;

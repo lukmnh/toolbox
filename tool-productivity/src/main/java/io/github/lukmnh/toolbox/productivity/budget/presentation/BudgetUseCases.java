@@ -3,9 +3,8 @@ package io.github.lukmnh.toolbox.productivity.budget.presentation;
 import io.github.lukmnh.toolbox.productivity.budget.application.CreateBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.DeleteBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.DuplicateBudgetUseCase;
-import io.github.lukmnh.toolbox.productivity.budget.application.ExportBudgetJsonUseCase;
-import io.github.lukmnh.toolbox.productivity.budget.application.ExportBudgetWorkbookUseCase;
-import io.github.lukmnh.toolbox.productivity.budget.application.ImportBudgetJsonUseCase;
+import io.github.lukmnh.toolbox.productivity.budget.application.ExportBudgetUseCase;
+import io.github.lukmnh.toolbox.productivity.budget.application.ImportBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.ListBudgetsUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.LoadBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.RenameBudgetUseCase;
@@ -21,9 +20,9 @@ public record BudgetUseCases(
         RenameBudgetUseCase rename,
         DuplicateBudgetUseCase duplicate,
         DeleteBudgetUseCase delete,
-        ExportBudgetJsonUseCase exportJson,
-        ImportBudgetJsonUseCase importJson,
-        ExportBudgetWorkbookUseCase exportWorkbook) {
+        ImportBudgetUseCase importFile,
+        ExportBudgetUseCase exportWorkbook,
+        ExportBudgetUseCase exportPdf) {
 
     public BudgetUseCases {
         Objects.requireNonNull(list, "list");
@@ -33,8 +32,8 @@ public record BudgetUseCases(
         Objects.requireNonNull(rename, "rename");
         Objects.requireNonNull(duplicate, "duplicate");
         Objects.requireNonNull(delete, "delete");
-        Objects.requireNonNull(exportJson, "exportJson");
-        Objects.requireNonNull(importJson, "importJson");
+        Objects.requireNonNull(importFile, "importFile");
         Objects.requireNonNull(exportWorkbook, "exportWorkbook");
+        Objects.requireNonNull(exportPdf, "exportPdf");
     }
 }
