@@ -3,6 +3,8 @@ package io.github.lukmnh.toolbox.common.report;
 import io.github.lukmnh.toolbox.common.io.AtomicFiles;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serial;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +41,9 @@ public final class PdfReport {
     private static final float LEADING = 1.45f;
     private static final float CELL_PADDING = 4;
     private static final float RULE_GRAY = 0.75f;
+    /** Batas aman ukuran array di JVM. */
+    private static final int MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
+
     private static final Pattern NUMERIC = Pattern.compile("^[-+]?(Rp\\s?)?[\\d.,\\s]+%?$");
 
     private final String title;
@@ -99,7 +104,8 @@ public final class PdfReport {
     /**
      * Baca lampiran dari PDF hasil {@link #writeTo}. Kosong bila PDF tidak punya lampiran bernama {@code fileName}.
      *
-     * @throws IOException bila file bukan PDF valid atau lampiran melebihi {@code maxBytes}
+     * @throws AttachmentTooLargeException bila isi lampiran (setelah decode) melebihi {@code maxBytes}
+     * @throws IOException bila file bukan PDF valid
      */
     public static Optional<byte[]> readAttachment(Path pdf, String fileName, long maxBytes) throws IOException {
         try (PDDocument document = Loader.loadPDF(pdf.toFile())) {
@@ -118,10 +124,32 @@ public final class PdfReport {
             if (embedded == null) {
                 return Optional.empty();
             }
-            if (embedded.getLength() > maxBytes) {
-                throw new IOException("Lampiran " + fileName + " melebihi batas " + maxBytes + " byte");
+            // Dibaca terbatas setelah decode: /Length hanya ukuran terkompresi, jadi tidak aman untuk cek batas
+            try (InputStream content = embedded.createInputStream()) {
+                byte[] bytes = content.readNBytes(Math.toIntExact(Math.min(maxBytes + 1, MAX_ARRAY_LENGTH)));
+                if (bytes.length > maxBytes) {
+                    throw new AttachmentTooLargeException(fileName, maxBytes);
+                }
+                return Optional.of(bytes);
             }
-            return Optional.of(embedded.toByteArray());
+        }
+    }
+
+    /** Lampiran melebihi batas {@code maxBytes} pada {@link #readAttachment}. */
+    public static final class AttachmentTooLargeException extends IOException {
+
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        private final long maxBytes;
+
+        AttachmentTooLargeException(String fileName, long maxBytes) {
+            super("Lampiran " + fileName + " melebihi batas " + maxBytes + " byte");
+            this.maxBytes = maxBytes;
+        }
+
+        public long maxBytes() {
+            return maxBytes;
         }
     }
 

@@ -9,7 +9,10 @@ import io.github.lukmnh.toolbox.productivity.shared.presentation.ProductivityToo
 import java.util.Set;
 import javafx.scene.Node;
 
-/** Budget pemasukan & pengeluaran: autosave JSON, ringkasan + grafik, export {@code .xlsx} ber-formula. */
+/**
+ * Budget pemasukan & pengeluaran: autosave JSON, ringkasan + grafik, export {@code .xlsx} ber-formula atau {@code .pdf},
+ * dan import ulang dari file export tersebut.
+ */
 public final class BudgetTool implements Tool {
 
     private final BudgetUseCases useCases;

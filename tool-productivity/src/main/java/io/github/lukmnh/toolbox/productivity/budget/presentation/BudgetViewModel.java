@@ -5,9 +5,11 @@ import io.github.lukmnh.toolbox.common.io.TempFiles;
 import io.github.lukmnh.toolbox.common.task.RunningTask;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
 import io.github.lukmnh.toolbox.common.ui.Debounce;
+import io.github.lukmnh.toolbox.productivity.budget.application.ExportBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.domain.Budget;
 import io.github.lukmnh.toolbox.productivity.budget.domain.BudgetEntry;
 import io.github.lukmnh.toolbox.productivity.budget.domain.OpenedBudget;
+import io.github.lukmnh.toolbox.productivity.budget.domain.WorkbookLabels;
 import java.lang.System.Logger.Level;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -40,8 +42,8 @@ final class BudgetViewModel {
 
     private static final System.Logger LOG = System.getLogger(BudgetViewModel.class.getName());
     private static final Duration AUTOSAVE_DELAY = Duration.seconds(1);
-    private static final String JSON_EXTENSION = ".json";
     private static final String XLSX_EXTENSION = ".xlsx";
+    private static final String PDF_EXTENSION = ".pdf";
 
     private final BudgetUseCases useCases;
     private final ToolContext context;
@@ -156,22 +158,21 @@ final class BudgetViewModel {
                 });
     }
 
-    void importJson(Path source) {
-        runStructural(true, () -> refreshed(useCases.importJson().execute(source)), opened -> {
+    /** Import file export Toolbox (.xlsx/.pdf) sebagai budget baru. */
+    void importFile(Path source) {
+        runStructural(true, () -> refreshed(useCases.importFile().execute(source)), opened -> {
             showRefreshed(opened);
             String name = opened.opened().budget().name();
             context.notifier().info(Messages.format("productivity.budget.import.done", name));
         });
     }
 
-    void exportJson() {
-        export(JSON_EXTENSION, (snapshot, target) -> useCases.exportJson().execute(snapshot, target));
+    void exportWorkbook() {
+        export(XLSX_EXTENSION, useCases.exportWorkbook());
     }
 
-    void exportWorkbook() {
-        export(
-                XLSX_EXTENSION,
-                (snapshot, target) -> useCases.exportWorkbook().execute(snapshot, BudgetLabels.workbook(), target));
+    void exportPdf() {
+        export(PDF_EXTENSION, useCases.exportPdf());
     }
 
     /** Perubahan dari user. Nilai tidak valid dari domain (misalnya nama kosong) ditolak dengan peringatan. */
@@ -330,27 +331,24 @@ final class BudgetViewModel {
         saveState.set(SaveState.SAVED);
     }
 
-    private void export(String extension, ExportWork work) {
+    private void export(String extension, ExportBudgetUseCase exporter) {
         Budget snapshot = budget.get();
         if (snapshot == null) {
             return;
         }
+        // Label dibaca di FX thread, sebelum task background berjalan
+        WorkbookLabels labels = BudgetLabels.workbook();
         Path target = tempFiles.createFile(extension);
         RunningTask task = context.tasks()
                 .submit(
                         (progress, cancellation) -> {
-                            work.write(snapshot, target);
+                            exporter.execute(snapshot, labels, target);
                             return target;
                         },
                         file -> context.downloads().download(file, snapshot.name() + extension),
                         error -> BudgetErrorMessages.show(context.owner(), error));
         exports.removeIf(running -> !running.runningProperty().get());
         exports.add(task);
-    }
-
-    @FunctionalInterface
-    private interface ExportWork {
-        void write(Budget snapshot, Path target);
     }
 
     /** Hasil operasi struktural: daftar terbaru + budget yang dibuka. */

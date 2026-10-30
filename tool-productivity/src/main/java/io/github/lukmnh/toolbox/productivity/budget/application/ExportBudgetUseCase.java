@@ -1,16 +1,16 @@
 package io.github.lukmnh.toolbox.productivity.budget.application;
 
 import io.github.lukmnh.toolbox.productivity.budget.domain.Budget;
-import io.github.lukmnh.toolbox.productivity.budget.domain.BudgetWorkbookWriter;
+import io.github.lukmnh.toolbox.productivity.budget.domain.BudgetExportWriter;
 import io.github.lukmnh.toolbox.productivity.budget.domain.WorkbookLabels;
 import java.nio.file.Path;
 
-/** Tulis budget ke {@code .xlsx} (sheet Ringkasan + sheet per daftar, formula Excel). */
-public final class ExportBudgetWorkbookUseCase {
+/** Tulis budget ke file export (format ditentukan {@link BudgetExportWriter}), biasanya temp file sebelum download. */
+public final class ExportBudgetUseCase {
 
-    private final BudgetWorkbookWriter writer;
+    private final BudgetExportWriter writer;
 
-    public ExportBudgetWorkbookUseCase(BudgetWorkbookWriter writer) {
+    public ExportBudgetUseCase(BudgetExportWriter writer) {
         this.writer = writer;
     }
 

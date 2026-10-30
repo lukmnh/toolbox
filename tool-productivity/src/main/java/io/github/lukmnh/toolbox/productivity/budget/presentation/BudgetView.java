@@ -6,11 +6,14 @@ import io.github.lukmnh.toolbox.common.tool.ToolContext;
 import io.github.lukmnh.toolbox.common.ui.Tone;
 import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import java.io.File;
+import java.util.List;
 import javafx.beans.binding.BooleanBinding;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -19,11 +22,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
-/** Layout Budget: header + indikator autosave + export, panel daftar budget di kiri, editor di tengah. */
+/** Layout Budget: header + indikator autosave + import/export (Excel/PDF), panel daftar budget di kiri, editor di tengah. */
 final class BudgetView {
 
     private static final double LIST_DIVIDER = 0.18;
-    private static final String JSON_PATTERN = "*.json";
+    private static final List<String> IMPORT_PATTERNS = List.of("*.xlsx", "*.pdf");
 
     private BudgetView() {}
 
@@ -57,11 +60,13 @@ final class BudgetView {
         Button importButton =
                 ToolLayout.button(Messages.get("productivity.budget.import"), () -> chooseImport(viewModel, context));
         importButton.disableProperty().bind(viewModel.busyProperty());
-        Button exportJson = ToolLayout.button(Messages.get("productivity.budget.export.json"), viewModel::exportJson);
-        exportJson.disableProperty().bind(unavailable);
-        Button exportXlsx =
-                ToolLayout.accentButton(Messages.get("productivity.budget.export.xlsx"), viewModel::exportWorkbook);
-        exportXlsx.disableProperty().bind(unavailable);
+        MenuButton export = new MenuButton(Messages.get("productivity.budget.export"));
+        export.getStyleClass().add("accent");
+        export.getItems()
+                .addAll(
+                        menuItem(Messages.get("productivity.budget.export.xlsx"), viewModel::exportWorkbook),
+                        menuItem(Messages.get("productivity.budget.export.pdf"), viewModel::exportPdf));
+        export.disableProperty().bind(unavailable);
         HBox row = ToolLayout.row(
                 ToolLayout.header(
                         ToolCategory.PRODUCTIVITY,
@@ -70,10 +75,15 @@ final class BudgetView {
                 ToolLayout.spacer(),
                 saveBadge(viewModel),
                 importButton,
-                exportJson,
-                exportXlsx);
+                export);
         row.setAlignment(Pos.TOP_LEFT);
         return row;
+    }
+
+    private static MenuItem menuItem(String text, Runnable action) {
+        MenuItem item = new MenuItem(text);
+        item.setOnAction(event -> action.run());
+        return item;
     }
 
     private static Label saveBadge(BudgetViewModel viewModel) {
@@ -108,10 +118,12 @@ final class BudgetView {
     private static void chooseImport(BudgetViewModel viewModel, ToolContext context) {
         FileChooser chooser = new FileChooser();
         chooser.setTitle(Messages.get("productivity.budget.import.title"));
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(JSON_PATTERN, JSON_PATTERN));
+        chooser.getExtensionFilters()
+                .add(new FileChooser.ExtensionFilter(
+                        Messages.get("productivity.budget.import.filter"), IMPORT_PATTERNS));
         File chosen = chooser.showOpenDialog(context.owner());
         if (chosen != null) {
-            viewModel.importJson(chosen.toPath());
+            viewModel.importFile(chosen.toPath());
         }
     }
 }

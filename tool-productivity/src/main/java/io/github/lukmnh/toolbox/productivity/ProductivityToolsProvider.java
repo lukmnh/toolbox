@@ -7,19 +7,18 @@ import io.github.lukmnh.toolbox.common.tool.ToolProvider;
 import io.github.lukmnh.toolbox.productivity.budget.application.CreateBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.DeleteBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.DuplicateBudgetUseCase;
-import io.github.lukmnh.toolbox.productivity.budget.application.ExportBudgetJsonUseCase;
-import io.github.lukmnh.toolbox.productivity.budget.application.ExportBudgetWorkbookUseCase;
-import io.github.lukmnh.toolbox.productivity.budget.application.ImportBudgetJsonUseCase;
+import io.github.lukmnh.toolbox.productivity.budget.application.ExportBudgetUseCase;
+import io.github.lukmnh.toolbox.productivity.budget.application.ImportBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.ListBudgetsUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.LoadBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.RenameBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.application.SaveBudgetUseCase;
 import io.github.lukmnh.toolbox.productivity.budget.domain.BudgetRepository;
-import io.github.lukmnh.toolbox.productivity.budget.domain.BudgetTransfer;
 import io.github.lukmnh.toolbox.productivity.budget.infrastructure.BudgetJsonCodec;
+import io.github.lukmnh.toolbox.productivity.budget.infrastructure.ExportedBudgetImporter;
 import io.github.lukmnh.toolbox.productivity.budget.infrastructure.FastExcelBudgetWorkbook;
 import io.github.lukmnh.toolbox.productivity.budget.infrastructure.JsonBudgetRepository;
-import io.github.lukmnh.toolbox.productivity.budget.infrastructure.JsonBudgetTransfer;
+import io.github.lukmnh.toolbox.productivity.budget.infrastructure.PdfBudgetReport;
 import io.github.lukmnh.toolbox.productivity.budget.presentation.BudgetTool;
 import io.github.lukmnh.toolbox.productivity.budget.presentation.BudgetUseCases;
 import io.github.lukmnh.toolbox.productivity.calculator.application.CalculateDiscountUseCase;
@@ -101,7 +100,6 @@ public final class ProductivityToolsProvider implements ToolProvider {
     private static BudgetTool budgetTool() {
         BudgetJsonCodec codec = new BudgetJsonCodec();
         BudgetRepository repository = new JsonBudgetRepository(dataDirectory(BUDGETS_DIRECTORY), codec);
-        BudgetTransfer transfer = new JsonBudgetTransfer(codec);
         Clock clock = Clock.systemUTC();
         return new BudgetTool(new BudgetUseCases(
                 new ListBudgetsUseCase(repository),
@@ -111,9 +109,9 @@ public final class ProductivityToolsProvider implements ToolProvider {
                 new RenameBudgetUseCase(repository, clock),
                 new DuplicateBudgetUseCase(repository, clock),
                 new DeleteBudgetUseCase(repository),
-                new ExportBudgetJsonUseCase(transfer),
-                new ImportBudgetJsonUseCase(transfer, repository, clock),
-                new ExportBudgetWorkbookUseCase(new FastExcelBudgetWorkbook())));
+                new ImportBudgetUseCase(new ExportedBudgetImporter(codec), repository, clock),
+                new ExportBudgetUseCase(new FastExcelBudgetWorkbook(codec)),
+                new ExportBudgetUseCase(new PdfBudgetReport(codec))));
     }
 
     private static Path dataDirectory(String name) {

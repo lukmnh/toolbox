@@ -16,8 +16,8 @@ final class SheetNames {
     static final int MAX_LENGTH = 31;
     private static final Pattern FORBIDDEN = Pattern.compile("[\\[\\]:*?/\\\\\\p{Cntrl}]");
     private static final Pattern EDGE_QUOTES = Pattern.compile("^['\\s]+|['\\s]+$");
-    /** Excel memakai nama ini untuk sheet internal riwayat perubahan. */
-    private static final String RESERVED = "history";
+    /** {@code history}: dipakai Excel untuk riwayat perubahan; sheet data Toolbox juga tidak boleh dipakai user. */
+    private static final Set<String> RESERVED = Set.of("history", XlsxBudgetData.SHEET_NAME.toLowerCase(Locale.ROOT));
 
     private static final int FIRST_SUFFIX = 2;
 
@@ -25,7 +25,7 @@ final class SheetNames {
 
     /** @return nama final dengan urutan sama seperti {@code desired} */
     static List<String> assign(List<String> desired, String fallback) {
-        Set<String> taken = new HashSet<>(Set.of(RESERVED));
+        Set<String> taken = new HashSet<>(RESERVED);
         List<String> names = new ArrayList<>(desired.size());
         for (String name : desired) {
             String unique = unique(clean(name, fallback), taken);

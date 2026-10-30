@@ -26,8 +26,8 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 
 /**
- * Baca/tulis file JSON budget dengan Jackson databind. Dipakai penyimpanan dan export/import, sehingga file autosave
- * dan file export memakai skema yang sama. Thread-safe ({@link ObjectMapper} immutable setelah dibuat).
+ * Baca/tulis file JSON budget dengan Jackson databind. Dipakai penyimpanan dan data yang tertanam di file export
+ * (.xlsx/.pdf), sehingga file autosave dan data export memakai skema yang sama. Thread-safe ({@link ObjectMapper} immutable setelah dibuat).
  */
 public final class BudgetJsonCodec {
 
@@ -68,8 +68,29 @@ public final class BudgetJsonCodec {
      */
     public Budget read(Path file) {
         String fileName = file.getFileName().toString();
+        byte[] content;
         try {
-            byte[] content = readLimited(file, fileName);
+            content = readLimited(file, fileName);
+        } catch (IOException e) {
+            throw new BudgetStorageException(fileName, e);
+        }
+        return fromBytes(content, fileName);
+    }
+
+    /**
+     * Validasi JSON yang sudah ada di memori, misalnya data yang tertanam di file export.
+     *
+     * @param fileName nama file asal, hanya untuk pesan error
+     * @throws BudgetFileTooLargeException bila melebihi batas ukuran
+     * @throws InvalidBudgetFileException bila tidak sesuai skema
+     * @throws BudgetLimitExceededException bila jumlah item melebihi batas
+     */
+    public Budget fromBytes(byte[] content, String fileName) {
+        long max = SecurityLimits.BUDGET_IMPORT_MAX_FILE_BYTES;
+        if (content.length > max) {
+            throw new BudgetFileTooLargeException(fileName, content.length, max);
+        }
+        try {
             BudgetDocument document = mapper.readValue(content, BudgetDocument.class);
             if (document == null) {
                 throw new InvalidBudgetFileException(fileName, Problem.MISSING_VALUE, UNKNOWN_LOCATION, null);
@@ -84,7 +105,8 @@ public final class BudgetJsonCodec {
         } catch (JsonProcessingException e) {
             throw new InvalidBudgetFileException(fileName, Problem.MALFORMED_JSON, UNKNOWN_LOCATION, e);
         } catch (IOException e) {
-            throw new BudgetStorageException(fileName, e);
+            // readValue(byte[]) tidak melakukan I/O; tetap dipetakan supaya tidak ada error yang tertelan
+            throw new InvalidBudgetFileException(fileName, Problem.MALFORMED_JSON, UNKNOWN_LOCATION, e);
         }
     }
 
@@ -93,6 +115,11 @@ public final class BudgetJsonCodec {
         try (OutputStream output = Files.newOutputStream(file)) {
             mapper.writeValue(output, BudgetDocumentMapper.toDocument(budget));
         }
+    }
+
+    /** JSON UTF-8 dengan skema yang sama seperti file autosave, untuk ditanam di file export. */
+    public byte[] toBytes(Budget budget) throws IOException {
+        return mapper.writeValueAsBytes(BudgetDocumentMapper.toDocument(budget));
     }
 
     /** Baca maksimal batas + 1 byte, sehingga file yang membesar setelah dicek tetap tidak dibaca utuh. */

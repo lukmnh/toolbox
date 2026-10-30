@@ -1,8 +1,8 @@
 package io.github.lukmnh.toolbox.productivity.budget.infrastructure;
 
 import io.github.lukmnh.toolbox.productivity.budget.domain.Budget;
+import io.github.lukmnh.toolbox.productivity.budget.domain.BudgetExportWriter;
 import io.github.lukmnh.toolbox.productivity.budget.domain.BudgetStorageException;
-import io.github.lukmnh.toolbox.productivity.budget.domain.BudgetWorkbookWriter;
 import io.github.lukmnh.toolbox.productivity.budget.domain.ExpenseSheet;
 import io.github.lukmnh.toolbox.productivity.budget.domain.WorkbookLabel;
 import io.github.lukmnh.toolbox.productivity.budget.domain.WorkbookLabels;
@@ -17,8 +17,11 @@ import java.util.stream.Stream;
 import org.dhatim.fastexcel.Workbook;
 import org.dhatim.fastexcel.Worksheet;
 
-/** {@link BudgetWorkbookWriter} dengan FastExcel (streaming, tanpa Apache POI). */
-public final class FastExcelBudgetWorkbook implements BudgetWorkbookWriter {
+/**
+ * Export {@code .xlsx} dengan FastExcel (streaming, tanpa Apache POI): sheet Ringkasan, satu sheet per daftar, lalu
+ * sheet data tersembunyi untuk import ulang ({@link XlsxBudgetData}).
+ */
+public final class FastExcelBudgetWorkbook implements BudgetExportWriter {
 
     private static final String APPLICATION_NAME = "Toolbox";
     /** FastExcel mewajibkan format versi {@code angka.angka}. */
@@ -27,6 +30,12 @@ public final class FastExcelBudgetWorkbook implements BudgetWorkbookWriter {
     private static final System.Logger LOG = System.getLogger(FastExcelBudgetWorkbook.class.getName());
     private static final String RAW_PREFIX = ".budget-raw-";
     private static final String RAW_SUFFIX = ".xlsx";
+
+    private final BudgetJsonCodec codec;
+
+    public FastExcelBudgetWorkbook(BudgetJsonCodec codec) {
+        this.codec = codec;
+    }
 
     /** Ditulis ke file mentah di folder yang sama, lalu di-repack ke {@code target} (lihat {@link OpcRepacker}). */
     @Override
@@ -37,6 +46,7 @@ public final class FastExcelBudgetWorkbook implements BudgetWorkbookWriter {
             try (OutputStream output = Files.newOutputStream(raw)) {
                 Workbook workbook = new Workbook(output, APPLICATION_NAME, APPLICATION_VERSION);
                 writeSheets(workbook, budget, labels);
+                XlsxBudgetData.write(workbook, codec.toBytes(budget));
                 workbook.finish();
             }
             OpcRepacker.repack(raw, target);
