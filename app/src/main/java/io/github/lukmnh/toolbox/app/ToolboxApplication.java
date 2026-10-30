@@ -27,9 +27,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 /** Bootstrap: merakit layanan shell, memuat tool lewat ServiceLoader, lalu menampilkan window. */
 public final class ToolboxApplication extends Application {
@@ -99,6 +101,14 @@ public final class ToolboxApplication extends Application {
             saveTheme(themeStore, current, notifier);
         });
         shell.installShortcuts(scene);
+        // Dialog (Alert, Dialog) punya Scene sendiri yang tidak mewarisi stylesheet window utama
+        Window.getWindows().addListener((ListChangeListener<Window>) change -> {
+            while (change.next()) {
+                change.getAddedSubList().stream()
+                        .filter(window -> window instanceof Stage && window != stage && window.getScene() != null)
+                        .forEach(window -> window.getScene().getStylesheets().setAll(scene.getStylesheets()));
+            }
+        });
 
         stage.setTitle(Messages.get("app.title"));
         stage.setMinWidth(MIN_WIDTH);
