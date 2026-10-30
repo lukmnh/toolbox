@@ -21,7 +21,7 @@ public final class UndoUnavailableException extends RenameException {
 
     /** @param fileName nama file terkait untuk pesan user, atau kosong */
     public UndoUnavailableException(Reason reason, String fileName) {
-        super("Undo tidak bisa dijalankan: " + reason, null);
+        super("Undo cannot run: " + reason, null);
         this.reason = reason;
         this.fileName = fileName;
     }

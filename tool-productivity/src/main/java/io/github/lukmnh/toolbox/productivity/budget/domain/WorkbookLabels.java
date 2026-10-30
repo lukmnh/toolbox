@@ -12,7 +12,7 @@ public record WorkbookLabels(Map<WorkbookLabel, String> texts) {
         copy.putAll(texts);
         for (WorkbookLabel label : WorkbookLabel.values()) {
             if (copy.get(label) == null) {
-                throw new IllegalArgumentException("Label workbook belum diisi: " + label);
+                throw new IllegalArgumentException("Workbook label not set: " + label);
             }
         }
         texts = Map.copyOf(copy);

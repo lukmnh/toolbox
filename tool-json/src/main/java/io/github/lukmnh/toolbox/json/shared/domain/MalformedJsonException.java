@@ -30,7 +30,7 @@ public final class MalformedJsonException extends JsonToolException {
     /** @param sourceName nama file, atau {@code null} untuk teks yang di-paste */
     public MalformedJsonException(
             Kind kind, String sourceName, long line, long column, ErrorSnippet snippet, String detail) {
-        super("JSON tidak valid (" + kind + ") di " + line + ":" + column + ": " + detail, null);
+        super("Invalid JSON (" + kind + ") at " + line + ":" + column + ": " + detail, null);
         this.kind = kind;
         this.sourceName = sourceName;
         this.line = line;

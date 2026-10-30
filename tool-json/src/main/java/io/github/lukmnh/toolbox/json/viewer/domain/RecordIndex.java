@@ -31,7 +31,7 @@ public final class RecordIndex {
         this.ends = Objects.requireNonNull(ends, "ends");
         this.indexingTime = Objects.requireNonNull(indexingTime, "indexingTime");
         if (starts.size() != ends.size()) {
-            throw new IllegalArgumentException("Jumlah offset awal dan akhir berbeda");
+            throw new IllegalArgumentException("Start and end offset counts differ");
         }
     }
 

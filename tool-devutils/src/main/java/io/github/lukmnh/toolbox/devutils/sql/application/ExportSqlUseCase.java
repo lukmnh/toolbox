@@ -14,7 +14,7 @@ public final class ExportSqlUseCase {
 
     public void execute(String sql, Path target) {
         if (sql.isEmpty()) {
-            throw new IllegalArgumentException("Tidak ada hasil untuk diekspor");
+            throw new IllegalArgumentException("No result to export");
         }
         files.write(target, sql);
     }

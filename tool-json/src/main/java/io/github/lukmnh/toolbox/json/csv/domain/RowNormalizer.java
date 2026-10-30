@@ -17,7 +17,7 @@ public final class RowNormalizer {
 
     public RowNormalizer(int width, MismatchPolicy policy) {
         if (width < 1) {
-            throw new IllegalArgumentException("Lebar tabel minimal 1");
+            throw new IllegalArgumentException("Table width must be at least 1");
         }
         this.width = width;
         this.policy = policy;

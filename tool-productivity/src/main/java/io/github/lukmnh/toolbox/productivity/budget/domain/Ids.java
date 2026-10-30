@@ -17,7 +17,7 @@ final class Ids {
     static String require(String id, String field) {
         Objects.requireNonNull(id, field);
         if (id.isBlank() || id.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException(field + " tidak valid");
+            throw new IllegalArgumentException(field + " is invalid");
         }
         return id;
     }

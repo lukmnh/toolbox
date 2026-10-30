@@ -15,7 +15,7 @@ public final class ExportTextUseCase {
     /** @throws IllegalArgumentException bila teks kosong */
     public void execute(String text, Path target) {
         if (text.isEmpty()) {
-            throw new IllegalArgumentException("Tidak ada teks untuk diekspor");
+            throw new IllegalArgumentException("No text to export");
         }
         files.write(target, text);
     }

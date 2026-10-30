@@ -12,9 +12,9 @@ public final class UnsupportedRegexException extends RegexToolException {
     private final transient List<RegexProblem> problems;
 
     public UnsupportedRegexException(List<RegexProblem> problems) {
-        super("Pola tidak bisa dijalankan: " + problems.size() + " masalah", null);
+        super("Pattern cannot run: " + problems.size() + " problem(s)", null);
         if (problems.isEmpty()) {
-            throw new IllegalArgumentException("Minimal satu masalah");
+            throw new IllegalArgumentException("At least one problem is required");
         }
         this.problems = List.copyOf(problems);
     }

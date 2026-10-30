@@ -9,7 +9,7 @@ public record GroupInfo(int number, String name, Span span) {
         Objects.requireNonNull(name, "name");
         Objects.requireNonNull(span, "span");
         if (number < 1) {
-            throw new IllegalArgumentException("Nomor grup mulai dari 1");
+            throw new IllegalArgumentException("Group numbers start at 1");
         }
     }
 }

@@ -52,7 +52,7 @@ final class CronDescriber {
         if (times.isPresent()) {
             String when = days.text().isEmpty()
                     ? Messages.get("devutils.cron.desc.everyDay")
-                    : days.recurring() ? days.text() : Messages.format("devutils.cron.desc.every", days.text());
+                    : days.recurring() ? days.text() : Messages.format("devutils.cron.desc.onDays", days.text());
             parts.add(Messages.format("devutils.cron.desc.atTimes", when, times.get()));
         } else {
             parts.add(time(schedule));
@@ -277,19 +277,19 @@ final class CronDescriber {
     private static String step(CronFieldKind kind, FieldExpr.Step step) {
         String every = String.valueOf(step.step());
         return switch (step.start()) {
-            case FieldExpr.Any any -> Messages.format("devutils.cron.desc.step", every, unit(kind));
+            case FieldExpr.Any any -> Messages.format("devutils.cron.desc.step", every, units(kind));
             case FieldExpr.Value value ->
                 Messages.format(
-                        "devutils.cron.desc.stepFrom", every, unit(kind), label(kind), format(kind, value.value()));
+                        "devutils.cron.desc.stepFrom", every, units(kind), label(kind), format(kind, value.value()));
             case FieldExpr.Range range ->
                 Messages.format(
                         "devutils.cron.desc.stepRange",
                         every,
-                        unit(kind),
+                        units(kind),
                         label(kind),
                         format(kind, range.from()),
                         format(kind, range.to()));
-            default -> Messages.format("devutils.cron.desc.step", every, unit(kind));
+            default -> Messages.format("devutils.cron.desc.step", every, units(kind));
         };
     }
 
@@ -306,6 +306,11 @@ final class CronDescriber {
 
     private static String unit(CronFieldKind kind) {
         return Messages.get("devutils.cron.unit." + kind.name());
+    }
+
+    /** Bentuk jamak untuk langkah, contoh "every 15 minutes". */
+    private static String units(CronFieldKind kind) {
+        return Messages.get("devutils.cron.units." + kind.name());
     }
 
     private static String label(CronFieldKind kind) {
@@ -349,7 +354,8 @@ final class CronDescriber {
 
     private static void addPart(List<String> parts, String key, long amount) {
         if (amount > 0) {
-            parts.add(Messages.format(key, String.valueOf(amount)));
+            // Angka (bukan String) supaya choice format bisa memilih bentuk tunggal/jamak
+            parts.add(Messages.format(key, amount));
         }
     }
 

@@ -8,7 +8,7 @@ public record WordFrequency(String word, long count) {
     public WordFrequency {
         Objects.requireNonNull(word, "word");
         if (word.isEmpty() || count < 1) {
-            throw new IllegalArgumentException("Kata kosong atau jumlah < 1");
+            throw new IllegalArgumentException("Empty word or count < 1");
         }
     }
 }

@@ -186,7 +186,7 @@ public final class ViewerView extends VBox {
 
             @Override
             public ExportFormat fromString(String text) {
-                throw new UnsupportedOperationException("ChoiceBox tidak bisa diketik");
+                throw new UnsupportedOperationException("ChoiceBox cannot be typed");
             }
         });
         format.valueProperty().bindBidirectional(viewModel.exportFormatProperty());

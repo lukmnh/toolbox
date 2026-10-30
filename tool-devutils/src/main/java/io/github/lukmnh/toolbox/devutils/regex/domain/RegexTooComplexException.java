@@ -12,6 +12,6 @@ public final class RegexTooComplexException extends RegexToolException {
     private static final long serialVersionUID = 1L;
 
     public RegexTooComplexException(Throwable cause) {
-        super("Pola terlalu kompleks untuk teks ini", cause);
+        super("Pattern too complex for this text", cause);
     }
 }

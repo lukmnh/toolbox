@@ -21,7 +21,7 @@ public final class ExportEditedPdfUseCase {
                 overlays.stream().filter(ExportEditedPdfUseCase::hasContent).toList();
         for (Overlay overlay : visible) {
             if (overlay.pageIndex() >= session.pageCount()) {
-                throw new IllegalArgumentException("Overlay di halaman yang tidak ada: " + overlay.pageIndex());
+                throw new IllegalArgumentException("Overlay on a page that does not exist: " + overlay.pageIndex());
             }
         }
         session.export(visible, output, protection);

@@ -14,12 +14,12 @@ public record Category(String id, String name, String color) {
     private static final Pattern HEX_COLOR = Pattern.compile("#[0-9A-F]{6}");
 
     public Category {
-        id = Ids.require(id, "id kategori");
-        name = Texts.requiredName(name, "nama kategori");
-        Objects.requireNonNull(color, "warna kategori");
+        id = Ids.require(id, "category id");
+        name = Texts.requiredName(name, "category name");
+        Objects.requireNonNull(color, "category color");
         color = color.toUpperCase(Locale.ROOT);
         if (!HEX_COLOR.matcher(color).matches()) {
-            throw new IllegalArgumentException("warna kategori harus #RRGGBB");
+            throw new IllegalArgumentException("category color must be #RRGGBB");
         }
     }
 

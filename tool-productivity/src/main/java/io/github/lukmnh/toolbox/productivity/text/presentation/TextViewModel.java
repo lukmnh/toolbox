@@ -37,7 +37,7 @@ final class TextViewModel {
     static final long MAX_BYTES = SecurityLimits.TEXT_TOOLS_MAX_BYTES;
 
     private static final Duration STATS_DELAY = Duration.millis(150);
-    private static final String DOWNLOAD_NAME = "teks.txt";
+    private static final String DOWNLOAD_NAME = "text.txt";
     private static final String TEXT_SUFFIX = ".txt";
 
     private final TextUseCases useCases;

@@ -75,7 +75,7 @@ final class AcroFormAdapter {
                 case FieldValue.Choice choice when field instanceof PDChoice list -> list.setValue(choice.value());
                 default ->
                     throw new FormFieldException(
-                            fieldName, new IllegalArgumentException("Tipe nilai tidak cocok dengan field"));
+                            fieldName, new IllegalArgumentException("Value type does not match the field"));
             }
         } catch (IOException | IllegalArgumentException e) {
             // Biasanya appearance atau font /DA field rusak: tampilkan ke user, jangan crash
@@ -95,7 +95,7 @@ final class AcroFormAdapter {
         PDAcroForm form = document.getDocumentCatalog().getAcroForm();
         PDField field = form == null ? null : form.getField(fieldName);
         if (field == null) {
-            throw new FormFieldException(fieldName, new IllegalArgumentException("Field tidak ditemukan"));
+            throw new FormFieldException(fieldName, new IllegalArgumentException("Field not found"));
         }
         return field;
     }

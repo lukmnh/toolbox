@@ -53,7 +53,7 @@ public final class GenerateKeyPairUseCase {
             return generator.generateKeyPair();
         } catch (GeneralSecurityException e) {
             // Semua algoritma di enum tersedia di JDK 21; kalau tidak, runtime-nya rusak
-            throw new IllegalStateException("Algoritma " + algorithm.label() + " tidak tersedia di JDK", e);
+            throw new IllegalStateException("Algorithm " + algorithm.label() + " is not available in the JDK", e);
         }
     }
 }

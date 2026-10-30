@@ -20,7 +20,7 @@ public final class ExportQrPngUseCase {
     /** @throws IllegalArgumentException bila ukuran di luar {@link #SIZES} */
     public void execute(QrMatrix matrix, int sizePx, Path target) {
         if (sizePx < SIZES.getFirst() || sizePx > SIZES.getLast()) {
-            throw new IllegalArgumentException("Ukuran PNG harus " + SIZES.getFirst() + "–" + SIZES.getLast() + " px");
+            throw new IllegalArgumentException("PNG size must be " + SIZES.getFirst() + "–" + SIZES.getLast() + " px");
         }
         writer.write(matrix.rasterize(sizePx), target);
     }

@@ -123,7 +123,7 @@ public final class MainShell extends BorderPane {
         Tool tool = tools.stream()
                 .filter(candidate -> candidate.id().equals(toolId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Tool tidak terdaftar: " + toolId));
+                .orElseThrow(() -> new IllegalArgumentException("Tool not registered: " + toolId));
         if (openTool(tool)) {
             tool.openFile(file);
         }

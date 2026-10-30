@@ -9,7 +9,7 @@ public record RenamePair(String from, String to) {
         Objects.requireNonNull(from, "from");
         Objects.requireNonNull(to, "to");
         if (from.isBlank() || to.isBlank()) {
-            throw new IllegalArgumentException("Nama file kosong");
+            throw new IllegalArgumentException("Empty file name");
         }
     }
 

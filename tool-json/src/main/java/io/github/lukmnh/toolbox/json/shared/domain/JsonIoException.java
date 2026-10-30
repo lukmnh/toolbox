@@ -12,7 +12,7 @@ public final class JsonIoException extends JsonToolException {
     private final transient Path file;
 
     public JsonIoException(Path file, Throwable cause) {
-        super("Gagal mengakses file: " + file, cause);
+        super("Could not access file: " + file, cause);
         this.file = file;
     }
 

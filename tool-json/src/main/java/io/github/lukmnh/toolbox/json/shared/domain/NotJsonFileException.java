@@ -12,7 +12,7 @@ public final class NotJsonFileException extends JsonToolException {
     private final transient Path file;
 
     public NotJsonFileException(Path file) {
-        super("Bukan file .json: " + file, null);
+        super("Not a .json file: " + file, null);
         this.file = file;
     }
 

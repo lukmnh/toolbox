@@ -34,7 +34,7 @@ public record VCard(
      */
     public String toPayload() {
         if (!hasName()) {
-            throw new IllegalStateException("Nama vCard kosong");
+            throw new IllegalStateException("vCard name is empty");
         }
         StringBuilder card = new StringBuilder("BEGIN:VCARD")
                 .append(CRLF)

@@ -93,7 +93,7 @@ public enum CronTarget {
             case 5 -> CronFieldKind.FIVE;
             case 6 -> CronFieldKind.SIX;
             case 7 -> CronFieldKind.SEVEN;
-            default -> throw new IllegalArgumentException("Jumlah field tidak didukung: " + fieldCount);
+            default -> throw new IllegalArgumentException("Unsupported field count: " + fieldCount);
         };
     }
 }

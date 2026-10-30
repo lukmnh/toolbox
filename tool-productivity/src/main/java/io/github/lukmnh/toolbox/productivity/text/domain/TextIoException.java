@@ -10,7 +10,7 @@ public final class TextIoException extends TextToolException {
     private final String fileName;
 
     public TextIoException(String fileName, Throwable cause) {
-        super("Gagal membaca atau menulis " + fileName, cause);
+        super("Could not read or write " + fileName, cause);
         this.fileName = fileName;
     }
 

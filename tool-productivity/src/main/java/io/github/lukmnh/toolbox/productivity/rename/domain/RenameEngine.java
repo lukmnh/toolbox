@@ -19,7 +19,7 @@ import java.util.regex.PatternSyntaxException;
 public final class RenameEngine {
 
     /** Nama bulan/hari mengikuti bahasa UI. */
-    private static final Locale DATE_LOCALE = Locale.forLanguageTag("id-ID");
+    private static final Locale DATE_LOCALE = Locale.US;
 
     private final List<RenameRule> rules;
     private final PatternReplacer replacer;

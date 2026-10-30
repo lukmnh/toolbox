@@ -11,7 +11,7 @@ public final class SqlFormatFailedException extends SqlToolException {
     private final int statementNumber;
 
     public SqlFormatFailedException(int statementNumber, Throwable cause) {
-        super("Formatter gagal pada statement #" + statementNumber, cause);
+        super("Formatter failed on statement #" + statementNumber, cause);
         this.statementNumber = statementNumber;
     }
 

@@ -18,7 +18,7 @@ public final class MalformedCsvException extends CsvToolException {
     private final Kind kind;
 
     public MalformedCsvException(String fileName, Kind kind, Throwable cause) {
-        super("CSV rusak: " + fileName, cause);
+        super("Malformed CSV: " + fileName, cause);
         this.fileName = fileName;
         this.kind = kind;
     }

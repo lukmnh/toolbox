@@ -30,7 +30,7 @@ final class SqlErrorMessages {
                 // Hanya tipe error: pesan library bisa memuat potongan SQL user (Security Requirements #5)
                 LOG.log(
                         Level.WARNING,
-                        "Formatter SQL gagal: " + e.getCause().getClass().getName());
+                        "SQL formatter failed: " + e.getCause().getClass().getName());
                 yield Messages.format("devutils.sql.error.formatFailed", e.statementNumber());
             }
         };

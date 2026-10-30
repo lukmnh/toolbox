@@ -35,7 +35,7 @@ import javafx.collections.ObservableList;
 final class DiffViewModel {
 
     /** Nama di header unified diff bila kedua sisi hasil paste. */
-    static final String PASTED_FILE_NAME = "teks.txt";
+    static final String PASTED_FILE_NAME = "text.txt";
 
     static final int NO_FOCUS = -1;
     private static final String DIFF_EXTENSION = ".diff";

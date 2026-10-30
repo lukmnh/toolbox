@@ -8,6 +8,6 @@ public final class DiffIoException extends DiffException {
     private static final long serialVersionUID = 1L;
 
     public DiffIoException(String fileName, Throwable cause) {
-        super("Gagal membaca atau menulis " + fileName, fileName, cause);
+        super("Could not read or write " + fileName, fileName, cause);
     }
 }

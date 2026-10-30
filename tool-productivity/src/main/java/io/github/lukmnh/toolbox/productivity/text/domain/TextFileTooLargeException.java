@@ -13,7 +13,7 @@ public final class TextFileTooLargeException extends TextToolException {
     private final long maxBytes;
 
     public TextFileTooLargeException(String fileName, long sizeBytes, long maxBytes) {
-        super("File teks terlalu besar: " + fileName, null);
+        super("Text file too large: " + fileName, null);
         this.fileName = fileName;
         this.sizeBytes = sizeBytes;
         this.maxBytes = maxBytes;

@@ -33,7 +33,7 @@ public record TextStatistics(
                 || paragraphs < 0
                 || lines < 0;
         if (negative) {
-            throw new IllegalArgumentException("Statistik tidak boleh negatif");
+            throw new IllegalArgumentException("Statistics cannot be negative");
         }
         Objects.requireNonNull(readingTime, "readingTime");
         Objects.requireNonNull(speakingTime, "speakingTime");

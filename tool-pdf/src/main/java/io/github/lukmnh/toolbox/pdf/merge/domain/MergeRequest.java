@@ -20,7 +20,7 @@ public record MergeRequest(List<PdfSource> sources, Path output, OutputProtectio
         Objects.requireNonNull(output, "output");
         Objects.requireNonNull(protection, "protection");
         if (sources.size() < MIN_SOURCES) {
-            throw new IllegalArgumentException("Minimal " + MIN_SOURCES + " file untuk digabung");
+            throw new IllegalArgumentException("At least " + MIN_SOURCES + " files are required to merge");
         }
     }
 }

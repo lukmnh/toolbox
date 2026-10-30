@@ -11,7 +11,7 @@ public final class ChecksumIoException extends ChecksumException {
     private final String fileName;
 
     public ChecksumIoException(String fileName, Throwable cause) {
-        super("Gagal mengakses file: " + fileName, cause);
+        super("Could not access file: " + fileName, cause);
         this.fileName = fileName;
     }
 

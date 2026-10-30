@@ -18,7 +18,7 @@ public final class CsvIoException extends CsvToolException {
     private final Operation operation;
 
     public CsvIoException(String fileName, Operation operation, Throwable cause) {
-        super("Gagal mengakses file: " + fileName, cause);
+        super("Could not access file: " + fileName, cause);
         this.fileName = fileName;
         this.operation = operation;
     }

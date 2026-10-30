@@ -16,7 +16,7 @@ public record QrMatrix(int dimension, BitSet dark) {
 
     public QrMatrix {
         if (dimension < 1) {
-            throw new IllegalArgumentException("Dimensi QR tidak valid: " + dimension);
+            throw new IllegalArgumentException("Invalid QR dimension: " + dimension);
         }
         dark = (BitSet) Objects.requireNonNull(dark, "dark").clone();
     }

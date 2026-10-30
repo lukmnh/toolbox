@@ -206,7 +206,7 @@ public final class JacksonJsonFormatter implements JsonFormatter {
             case VALUE_TRUE -> generator.writeBoolean(true);
             case VALUE_FALSE -> generator.writeBoolean(false);
             case VALUE_NULL -> generator.writeNull();
-            default -> throw new IllegalStateException("Token tidak terduga: " + scalar.token());
+            default -> throw new IllegalStateException("Unexpected token: " + scalar.token());
         }
     }
 

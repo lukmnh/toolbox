@@ -11,7 +11,7 @@ public final class CorruptHistoryException extends RenameException {
     private final String id;
 
     public CorruptHistoryException(String id, Throwable cause) {
-        super("Log undo rusak", cause);
+        super("Undo log is damaged", cause);
         this.id = id;
     }
 

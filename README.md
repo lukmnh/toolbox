@@ -56,12 +56,12 @@ Superapp desktop berisi kumpulan utility pribadi untuk PDF, JSON, dan developer 
 | Dev Utils | **Text Diff** | Side-by-side & unified, highlight per kata, export `.diff` (bisa di-`git apply`) | ✅ |
 | Dev Utils | **Regex Tester** | Uji & jelaskan regex **Java, JavaScript, Go, PHP**: highlight per grup, tabel match, replace, timeout anti-backtracking | – |
 | Dev Utils | **SQL Formatter** | Format & minify SQL 10 dialect (MySQL, PostgreSQL, Oracle, SQL Server, …); string & quoted identifier tidak diubah, file s.d. 10 MB | ✅ |
-| Dev Utils | **Cron Builder & Explainer** | Builder + penjelasan bahasa Indonesia + 10 jadwal berikutnya untuk **Unix crontab, Java Spring, Java Quarkus/Quartz, Go (robfig/cron), PHP Laravel**, lengkap dengan snippet kode per target | – |
+| Dev Utils | **Cron Builder & Explainer** | Builder + penjelasan (bahasa Inggris) + 10 jadwal berikutnya untuk **Unix crontab, Java Spring, Java Quarkus/Quartz, Go (robfig/cron), PHP Laravel**, lengkap dengan snippet kode per target | – |
 | Dev Utils | **QR Code Generator** | Teks, URL promo, atau vCard 3.0 menjadi QR (ZXing); error correction L/M/Q/H, ukuran 256–1024 px, quiet zone, preview live | ✅ (.png) |
-| Produktivitas | **Text Tools** | Statistik teks (grapheme, kata, kalimat, waktu baca), case converter, rapikan teks, undo 20 langkah | ✅ |
-| Produktivitas | **Batch Rename** | Rename banyak file dengan aturan bertingkat, preview konflik, two-phase rename + rollback, undo | – (in-place) |
-| Produktivitas | **Kalkulator Cepat** | Diskon ganda (diskon efektif) dan simulasi cicilan anuitas/flat/efektif | ✅ (jadwal cicilan) |
-| Produktivitas | **Budget** | Catat pemasukan & pengeluaran rutin, rata-rata per bulan, ringkasan + grafik, autosave, export `.xlsx` berformula & `.pdf`, import ulang dari file export tersebut | ✅ (.xlsx, .pdf) |
+| Extra Tools | **Text Tools** | Statistik teks (grapheme, kata, kalimat, waktu baca), case converter, rapikan teks, undo 20 langkah | ✅ |
+| Extra Tools | **Batch Rename** | Rename banyak file dengan aturan bertingkat, preview konflik, two-phase rename + rollback, undo | – (in-place) |
+| Extra Tools | **Installment Simulator** | Simulasi cicilan anuitas/flat/efektif + tabel amortisasi, diskon ganda, pajak & PPN, invoice/kuitansi | ✅ (CSV & PDF jadwal cicilan, PDF invoice) |
+| Extra Tools | **Budget** | Catat pemasukan & pengeluaran rutin, rata-rata per bulan, ringkasan + grafik, autosave, export `.xlsx` berformula & `.pdf`, import ulang dari file export tersebut | ✅ (.xlsx, .pdf) |
 
 Kebutuhan dan aturan lengkap tiap tool ada di [docs/business.md](docs/business.md).
 

@@ -17,7 +17,7 @@ public record Budget(String name, Instant created, Instant modified, List<Income
     public static final int MAX_NAME_LENGTH = Texts.MAX_NAME_LENGTH;
 
     public Budget {
-        name = Texts.requiredName(name, "nama budget");
+        name = Texts.requiredName(name, "budget name");
         Objects.requireNonNull(created, "created");
         Objects.requireNonNull(modified, "modified");
         incomes = List.copyOf(incomes);

@@ -32,30 +32,30 @@ class CronDescriberTest {
     @CsvSource(
             delimiter = '|',
             value = {
-                "*/15 8-17 * * 1-5      | UNIX    | Setiap 15 menit, dari jam 08:00 sampai 17:59, hari Senin sampai Jumat",
-                "0 */15 8-17 * * MON-FRI| SPRING  | Setiap 15 menit, dari jam 08:00 sampai 17:59, hari Senin sampai Jumat",
-                "0 0 1 * *              | UNIX    | Setiap tanggal 1 pukul 00:00",
-                "0 0 12 ? * MON-FRI     | QUARKUS | Setiap hari Senin sampai Jumat pukul 12:00",
-                "0 9 * * *              | GO      | Setiap hari pukul 09:00",
-                "0 8,12,17 * * *        | LARAVEL | Setiap hari pukul 08:00, 12:00, dan 17:00",
-                "0 0 12 L * *           | SPRING  | Setiap hari terakhir bulan pukul 12:00",
-                "0 0 12 L-3 * ?         | QUARKUS | Setiap 3 hari sebelum hari terakhir bulan pukul 12:00",
-                "0 0 9 LW * ?           | QUARKUS | Setiap hari kerja terakhir bulan pukul 09:00",
-                "0 9 15W * *            | LARAVEL | Setiap hari kerja terdekat dari tanggal 15 pukul 09:00",
-                "0 9 * * 5#2            | LARAVEL | Setiap hari Jumat ke-2 dalam bulan pukul 09:00",
-                "0 0 12 ? * 6L          | QUARKUS | Setiap hari Jumat terakhir dalam bulan pukul 12:00",
-                "0 0 1 * 1              | UNIX    | Setiap tanggal 1 atau hari Senin pukul 00:00",
-                "0 0 0 1 * MON          | SPRING  | Setiap tanggal 1, hanya jika jatuh pada hari Senin pukul 00:00",
-                "@hourly                | UNIX    | Setiap jam tepat (menit 00)",
-                "30 * * * *             | UNIX    | Setiap jam pada menit ke-30",
-                "* * * * *              | UNIX    | Setiap menit",
-                "0 */2 * * *            | GO      | Setiap 2 jam tepat (menit 00)",
-                "@yearly                | SPRING  | Setiap tanggal 1 pukul 00:00, hanya bulan Januari",
-                "0 0/15 8-17 ? * MON-FRI 2027 | QUARKUS | Setiap 15 menit, dari jam 08:00 sampai 17:59, hari Senin sampai Jumat, hanya tahun 2027",
-                "0 9 * 1-3 *            | UNIX    | Setiap hari pukul 09:00, bulan Januari sampai Maret",
-                "15 9-17 * * *          | UNIX    | Setiap jam pada menit ke-15, dari jam 09:15 sampai 17:15",
-                "0 0 */2 * *            | UNIX    | Setiap 2 hari pukul 00:00",
-                "0 0 * * 0              | UNIX    | Setiap hari Minggu pukul 00:00",
+                "*/15 8-17 * * 1-5      | UNIX    | Every 15 minutes, from 08:00 to 17:59, on Monday through Friday",
+                "0 */15 8-17 * * MON-FRI| SPRING  | Every 15 minutes, from 08:00 to 17:59, on Monday through Friday",
+                "0 0 1 * *              | UNIX    | On day 1 at 00:00",
+                "0 0 12 ? * MON-FRI     | QUARKUS | On Monday through Friday at 12:00",
+                "0 9 * * *              | GO      | Every day at 09:00",
+                "0 8,12,17 * * *        | LARAVEL | Every day at 08:00, 12:00, and 17:00",
+                "0 0 12 L * *           | SPRING  | On the last day of the month at 12:00",
+                "0 0 12 L-3 * ?         | QUARKUS | 3 days before the last day of the month at 12:00",
+                "0 0 9 LW * ?           | QUARKUS | On the last weekday of the month at 09:00",
+                "0 9 15W * *            | LARAVEL | On the weekday nearest day 15 at 09:00",
+                "0 9 * * 5#2            | LARAVEL | On Friday #2 of the month at 09:00",
+                "0 0 12 ? * 6L          | QUARKUS | On the last Friday of the month at 12:00",
+                "0 0 1 * 1              | UNIX    | On day 1 or on Monday at 00:00",
+                "0 0 0 1 * MON          | SPRING  | On day 1, only when it is also on Monday at 00:00",
+                "@hourly                | UNIX    | Every hour, on the hour",
+                "30 * * * *             | UNIX    | Every hour at minute 30",
+                "* * * * *              | UNIX    | Every minute",
+                "0 */2 * * *            | GO      | Every 2 hours, on the hour",
+                "@yearly                | SPRING  | On day 1 at 00:00, only in January",
+                "0 0/15 8-17 ? * MON-FRI 2027 | QUARKUS | Every 15 minutes, from 08:00 to 17:59, on Monday through Friday, only in 2027",
+                "0 9 * 1-3 *            | UNIX    | Every day at 09:00, in January through March",
+                "15 9-17 * * *          | UNIX    | Every hour at minute 15, from 09:15 to 17:15",
+                "0 0 */2 * *            | UNIX    | Every 2 days at 00:00",
+                "0 0 * * 0              | UNIX    | On Sunday at 00:00",
             })
     void describesCommonPatterns(String expression, CronTarget target, String expected) {
         assertEquals(expected, describe(expression.strip(), target));
@@ -64,30 +64,30 @@ class CronDescriberTest {
     @Test
     void secondsAreMentionedOnlyWhenNotZero() {
         assertEquals(
-                "Pada detik ke-30, setiap 5 menit",
+                "At second 30, every 5 minutes",
                 CronDescriber.describe(explain.execute(new CronRequest("30 */5 * * * *", CronTarget.GO, true, JAKARTA))
                         .meaning()));
-        assertEquals("Setiap 10 detik", describe("*/10 * * * * *", CronTarget.SPRING));
-        assertEquals("Setiap hari pukul 08:30:15", describe("15 30 8 * * *", CronTarget.SPRING));
+        assertEquals("Every 10 seconds", describe("*/10 * * * * *", CronTarget.SPRING));
+        assertEquals("Every day at 08:30:15", describe("15 30 8 * * *", CronTarget.SPRING));
     }
 
     @Test
     void goInterval() {
-        assertEquals("Setiap 1 jam 30 menit", describe("@every 1h30m", CronTarget.GO));
-        assertEquals("1 hari 2 jam 5 detik", CronDescriber.duration(Duration.ofSeconds(93_605)));
+        assertEquals("Every 1 hour 30 minutes", describe("@every 1h30m", CronTarget.GO));
+        assertEquals("1 day 2 hours 5 seconds", CronDescriber.duration(Duration.ofSeconds(93_605)));
     }
 
     @Test
     void fieldMeaningForBreakdownTable() {
         assertEquals(
-                "Setiap 15 menit",
+                "Every 15 minutes",
                 CronDescriber.field(CronFieldKind.MINUTE, new FieldExpr.Step(new FieldExpr.Any(), 15)));
-        assertEquals("Jam 08 sampai 17", CronDescriber.field(CronFieldKind.HOUR, new FieldExpr.Range(8, 17)));
-        assertEquals("Setiap bulan", CronDescriber.field(CronFieldKind.MONTH, new FieldExpr.Any()));
+        assertEquals("Hour 08 through 17", CronDescriber.field(CronFieldKind.HOUR, new FieldExpr.Range(8, 17)));
+        assertEquals("Every month", CronDescriber.field(CronFieldKind.MONTH, new FieldExpr.Any()));
         assertEquals(
-                "Setiap 5 menit mulai menit 3",
+                "Every 5 minutes starting minute 3",
                 CronDescriber.field(CronFieldKind.MINUTE, new FieldExpr.Step(new FieldExpr.Value(3), 5)));
-        assertEquals("Tahun 2027", CronDescriber.field(CronFieldKind.YEAR, new FieldExpr.Value(2027)));
-        assertEquals("Konstruk lain: ??", CronDescriber.field(CronFieldKind.MINUTE, new FieldExpr.Raw("??")));
+        assertEquals("In 2027", CronDescriber.field(CronFieldKind.YEAR, new FieldExpr.Value(2027)));
+        assertEquals("Other construct: ??", CronDescriber.field(CronFieldKind.MINUTE, new FieldExpr.Raw("??")));
     }
 }

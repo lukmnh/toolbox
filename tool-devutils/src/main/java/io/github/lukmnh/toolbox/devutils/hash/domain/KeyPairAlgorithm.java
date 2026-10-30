@@ -64,7 +64,7 @@ public enum KeyPairAlgorithm {
             case EC_P256 -> "secp256r1";
             case EC_P384 -> "secp384r1";
             case EC_P521 -> "secp521r1";
-            default -> throw new IllegalStateException(label + " bukan kurva EC");
+            default -> throw new IllegalStateException(label + " is not an EC curve");
         };
     }
 }

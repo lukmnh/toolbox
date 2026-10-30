@@ -5,7 +5,7 @@ public record Span(int start, int end) {
 
     public Span {
         if (start < 0 || end < start) {
-            throw new IllegalArgumentException("Span tidak valid: " + start + ".." + end);
+            throw new IllegalArgumentException("Invalid span: " + start + ".." + end);
         }
     }
 

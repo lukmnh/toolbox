@@ -11,7 +11,7 @@ public final class TooManyFilesException extends RenameException {
     private final int maxFiles;
 
     public TooManyFilesException(int maxFiles) {
-        super("Jumlah file melebihi batas " + maxFiles, null);
+        super("File count exceeds the limit of " + maxFiles, null);
         this.maxFiles = maxFiles;
     }
 

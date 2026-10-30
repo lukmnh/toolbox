@@ -28,7 +28,7 @@ public final class PdfLimitExceededException extends PdfToolException {
     private final long maximum;
 
     public PdfLimitExceededException(Path file, Limit limit, long actual, long maximum) {
-        super("Melebihi batas " + limit + ": " + file.getFileName(), null);
+        super("Exceeds limit " + limit + ": " + file.getFileName(), null);
         this.file = file;
         this.limit = limit;
         this.actual = actual;

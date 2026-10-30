@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 class DateTimeTextsTest {
 
     @Test
-    void indonesianShortFormatWithWib() {
+    void englishShortFormatWithWib() {
         ZonedDateTime time = ZonedDateTime.of(2026, 11, 2, 8, 0, 30, 0, ZoneId.of("Asia/Jakarta"));
-        assertEquals("Sen, 2 Nov 2026 08:00 WIB", DateTimeTexts.HUMAN.format(time));
-        assertEquals("Sen, 2 Nov 2026 08:00:30 WIB", DateTimeTexts.HUMAN_WITH_SECONDS.format(time));
+        assertEquals("Mon, 2 Nov 2026 08:00 WIB", DateTimeTexts.HUMAN.format(time));
+        assertEquals("Mon, 2 Nov 2026 08:00:30 WIB", DateTimeTexts.HUMAN_WITH_SECONDS.format(time));
     }
 }

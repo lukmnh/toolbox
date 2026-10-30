@@ -17,7 +17,7 @@ public record FormatOptions(
         Objects.requireNonNull(dialect, "dialect");
         Objects.requireNonNull(indent, "indent");
         if (blankLinesBetweenQueries < 0 || blankLinesBetweenQueries > MAX_BLANK_LINES) {
-            throw new IllegalArgumentException("Baris kosong antar query harus 0–" + MAX_BLANK_LINES);
+            throw new IllegalArgumentException("Blank lines between queries must be 0–" + MAX_BLANK_LINES);
         }
     }
 }

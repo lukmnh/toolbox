@@ -47,11 +47,11 @@ public final class GuideStore {
     public static String defaultGuide() {
         try (InputStream input = GuideStore.class.getResourceAsStream(DEFAULT_RESOURCE)) {
             if (input == null) {
-                throw new IOException("Resource " + DEFAULT_RESOURCE + " tidak ditemukan");
+                throw new IOException("Resource " + DEFAULT_RESOURCE + " not found");
             }
             return new String(input.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new UncheckedIOException("Gagal membaca guide bawaan", e);
+            throw new UncheckedIOException("Could not read the bundled guide", e);
         }
     }
 }

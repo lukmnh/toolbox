@@ -15,7 +15,7 @@ public final class ExportUnifiedDiffUseCase {
 
     public void execute(UnifiedDiff diff, Path target) {
         if (diff.isEmpty()) {
-            throw new IllegalArgumentException("Tidak ada perbedaan untuk diekspor");
+            throw new IllegalArgumentException("No differences to export");
         }
         files.write(target, diff.text());
     }

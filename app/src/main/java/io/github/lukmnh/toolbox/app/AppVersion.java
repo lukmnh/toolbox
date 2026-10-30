@@ -19,11 +19,11 @@ public final class AppVersion {
     public static String current() {
         try (InputStream input = AppVersion.class.getResourceAsStream(RESOURCE)) {
             if (input == null) {
-                throw new IllegalStateException("Resource " + RESOURCE + " tidak ditemukan");
+                throw new IllegalStateException("Resource " + RESOURCE + " not found");
             }
             return parse(input);
         } catch (IOException e) {
-            throw new UncheckedIOException("Gagal membaca " + RESOURCE, e);
+            throw new UncheckedIOException("Could not read " + RESOURCE, e);
         }
     }
 
@@ -33,7 +33,7 @@ public final class AppVersion {
         String version = properties.getProperty(KEY, "").strip();
         // "${project.version}" berarti resource filtering tidak jalan
         if (version.isEmpty() || version.contains("${")) {
-            throw new IllegalStateException("Versi aplikasi tidak valid di " + RESOURCE + ": '" + version + "'");
+            throw new IllegalStateException("Invalid application version in " + RESOURCE + ": '" + version + "'");
         }
         return version;
     }

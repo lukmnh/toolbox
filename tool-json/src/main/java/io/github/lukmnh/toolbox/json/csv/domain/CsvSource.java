@@ -11,13 +11,13 @@ public record CsvSource(Path file, long sizeBytes, InputFormat detected) {
     /** Ekstensi yang diterima (huruf kecil, tanpa titik). */
     public static final Set<String> EXTENSIONS = Set.of("csv", "tsv", "txt");
 
-    private static final String RESULT_SUFFIX = "_hasil.csv";
+    private static final String RESULT_SUFFIX = "_output.csv";
 
     public CsvSource {
         Objects.requireNonNull(file, "file");
         Objects.requireNonNull(detected, "detected");
         if (sizeBytes < 0) {
-            throw new IllegalArgumentException("Ukuran file negatif");
+            throw new IllegalArgumentException("Negative file size");
         }
     }
 
@@ -25,7 +25,7 @@ public record CsvSource(Path file, long sizeBytes, InputFormat detected) {
         return file.getFileName().toString();
     }
 
-    /** {@code data.csv} → {@code data_hasil.csv}. */
+    /** {@code data.csv} → {@code data_output.csv}. */
     public String resultFileName() {
         String name = fileName();
         int dot = name.lastIndexOf('.');

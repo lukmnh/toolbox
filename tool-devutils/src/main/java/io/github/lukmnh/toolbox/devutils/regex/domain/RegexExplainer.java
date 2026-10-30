@@ -279,7 +279,7 @@ public final class RegexExplainer {
                 // Node komposit (grup, urutan, class, literal, quantifier) ditangani langsung di node()
                 default ->
                     throw new IllegalStateException(
-                            "Bukan node daun: " + node.getClass().getSimpleName());
+                            "Not a leaf node: " + node.getClass().getSimpleName());
             };
         }
 

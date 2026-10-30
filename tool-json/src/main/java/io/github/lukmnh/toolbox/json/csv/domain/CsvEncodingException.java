@@ -12,7 +12,7 @@ public final class CsvEncodingException extends CsvToolException {
     private final CsvEncoding encoding;
 
     public CsvEncodingException(String fileName, CsvEncoding encoding, Throwable cause) {
-        super("Encoding tidak cocok: " + fileName, cause);
+        super("Encoding mismatch: " + fileName, cause);
         this.fileName = fileName;
         this.encoding = encoding;
     }

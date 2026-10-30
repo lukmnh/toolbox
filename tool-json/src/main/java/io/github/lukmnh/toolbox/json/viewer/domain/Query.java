@@ -55,7 +55,7 @@ public sealed interface Query {
             Objects.requireNonNull(path, "path");
             Objects.requireNonNull(operator, "operator");
             if (literal.isContainer()) {
-                throw new IllegalArgumentException("Literal harus scalar");
+                throw new IllegalArgumentException("Literal must be a scalar");
             }
         }
 

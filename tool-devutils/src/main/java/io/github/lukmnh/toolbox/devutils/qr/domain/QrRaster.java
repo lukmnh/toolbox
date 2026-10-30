@@ -11,7 +11,7 @@ public record QrRaster(int side, int[] argb) {
 
     public QrRaster {
         if (side < 1 || argb.length != side * side) {
-            throw new IllegalArgumentException("Ukuran raster tidak cocok: " + side + " vs " + argb.length);
+            throw new IllegalArgumentException("Raster size mismatch: " + side + " vs " + argb.length);
         }
     }
 }

@@ -14,7 +14,7 @@ public record FileEntry(String name, long sizeBytes, Instant lastModified, boole
         Objects.requireNonNull(name, "name");
         Objects.requireNonNull(lastModified, "lastModified");
         if (name.isEmpty() || sizeBytes < 0) {
-            throw new IllegalArgumentException("Entry file tidak valid");
+            throw new IllegalArgumentException("Invalid file entry");
         }
     }
 }

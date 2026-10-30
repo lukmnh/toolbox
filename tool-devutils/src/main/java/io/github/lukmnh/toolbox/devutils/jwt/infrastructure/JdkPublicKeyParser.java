@@ -122,7 +122,7 @@ public final class JdkPublicKeyParser implements PublicKeyParser {
                 // Bukan key jenis ini; lanjut ke KeyFactory berikutnya
                 continue;
             } catch (GeneralSecurityException e) {
-                throw new IllegalStateException("KeyFactory JDK tidak tersedia: " + algorithm, e);
+                throw new IllegalStateException("JDK KeyFactory not available: " + algorithm, e);
             }
         }
         throw new UnreadableKeyException(Reason.UNSUPPORTED_KEY_TYPE);
@@ -185,7 +185,7 @@ public final class JdkPublicKeyParser implements PublicKeyParser {
         } catch (InvalidParameterSpecException e) {
             throw new UnreadableKeyException(Reason.UNSUPPORTED_KEY_TYPE, e);
         } catch (GeneralSecurityException e) {
-            throw new IllegalStateException("Parameter kurva EC JDK tidak tersedia: " + curve, e);
+            throw new IllegalStateException("JDK EC curve parameters not available: " + curve, e);
         }
     }
 
@@ -219,7 +219,7 @@ public final class JdkPublicKeyParser implements PublicKeyParser {
         } catch (InvalidKeySpecException e) {
             throw new UnreadableKeyException(Reason.INVALID_JWK, e);
         } catch (GeneralSecurityException e) {
-            throw new IllegalStateException("KeyFactory JDK tidak tersedia: " + algorithm, e);
+            throw new IllegalStateException("JDK KeyFactory not available: " + algorithm, e);
         }
     }
 

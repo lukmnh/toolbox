@@ -94,7 +94,7 @@ public final class JwtSignatureVerifier {
         } catch (InvalidKeyException e) {
             throw new UnreadableKeyException(UnreadableKeyException.Reason.UNUSABLE_KEY, e);
         } catch (GeneralSecurityException e) {
-            throw new IllegalStateException("Algoritma HMAC JDK tidak tersedia: " + algorithm.jcaName(), e);
+            throw new IllegalStateException("JDK HMAC algorithm not available: " + algorithm.jcaName(), e);
         }
     }
 
@@ -113,7 +113,7 @@ public final class JwtSignatureVerifier {
         } catch (InvalidKeyException | InvalidAlgorithmParameterException e) {
             throw new UnreadableKeyException(UnreadableKeyException.Reason.UNUSABLE_KEY, e);
         } catch (GeneralSecurityException e) {
-            throw new IllegalStateException("Algoritma signature JDK tidak tersedia: " + algorithm.jcaName(), e);
+            throw new IllegalStateException("JDK signature algorithm not available: " + algorithm.jcaName(), e);
         }
     }
 

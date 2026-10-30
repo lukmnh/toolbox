@@ -10,7 +10,7 @@ public final class SqlIoException extends SqlToolException {
     private final String fileName;
 
     public SqlIoException(String fileName, Throwable cause) {
-        super("Gagal membaca atau menulis " + fileName, cause);
+        super("Could not read or write " + fileName, cause);
         this.fileName = fileName;
     }
 

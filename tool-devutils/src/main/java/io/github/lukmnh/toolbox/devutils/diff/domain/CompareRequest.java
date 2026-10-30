@@ -13,7 +13,7 @@ public record CompareRequest(String oldText, String newText, String fileName, Di
         Objects.requireNonNull(newText, "newText");
         Objects.requireNonNull(options, "options");
         if (fileName == null || fileName.isBlank()) {
-            throw new IllegalArgumentException("Nama file wajib diisi");
+            throw new IllegalArgumentException("File name is required");
         }
     }
 }

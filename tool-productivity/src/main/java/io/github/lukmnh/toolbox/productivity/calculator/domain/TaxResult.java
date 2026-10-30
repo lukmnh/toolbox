@@ -16,7 +16,7 @@ public record TaxResult(BigDecimal base, BigDecimal ratePercent, BigDecimal tax,
         Objects.requireNonNull(tax, "tax");
         Objects.requireNonNull(total, "total");
         if (base.add(tax).compareTo(total) != 0) {
-            throw new IllegalArgumentException("DPP + pajak harus sama dengan total");
+            throw new IllegalArgumentException("Tax base + tax must equal the total");
         }
     }
 }

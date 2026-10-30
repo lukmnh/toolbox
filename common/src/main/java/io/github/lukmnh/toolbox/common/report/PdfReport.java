@@ -144,7 +144,7 @@ public final class PdfReport {
         private final long maxBytes;
 
         AttachmentTooLargeException(String fileName, long maxBytes) {
-            super("Lampiran " + fileName + " melebihi batas " + maxBytes + " byte");
+            super("Attachment " + fileName + " exceeds the limit of " + maxBytes + " bytes");
             this.maxBytes = maxBytes;
         }
 

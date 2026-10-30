@@ -9,6 +9,6 @@ public final class InvalidChecksumException extends ChecksumException {
     private static final long serialVersionUID = 1L;
 
     public InvalidChecksumException() {
-        super("Checksum tidak valid", null);
+        super("Invalid checksum", null);
     }
 }

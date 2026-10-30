@@ -11,7 +11,7 @@ public final class PathOutsideFolderException extends RenameException {
     private final String fileName;
 
     public PathOutsideFolderException(String fileName) {
-        super("Path keluar dari folder terpilih", null);
+        super("Path is outside the selected folder", null);
         this.fileName = fileName;
     }
 

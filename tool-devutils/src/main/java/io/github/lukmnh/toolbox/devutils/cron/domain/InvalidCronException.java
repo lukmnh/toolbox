@@ -41,7 +41,7 @@ public final class InvalidCronException extends RuntimeException {
             int max,
             List<Integer> expectedCounts,
             int actualCount) {
-        super("Ekspresi cron tidak valid: " + reason + (field == null ? "" : " di " + field));
+        super("Invalid cron expression: " + reason + (field == null ? "" : " in " + field));
         this.reason = reason;
         this.field = field;
         this.token = token;

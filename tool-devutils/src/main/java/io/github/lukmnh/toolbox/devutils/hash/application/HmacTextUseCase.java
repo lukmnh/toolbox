@@ -57,7 +57,7 @@ public final class HmacTextUseCase {
                     .onUnmappableCharacter(CodingErrorAction.REPORT)
                     .encode(CharBuffer.wrap(key));
         } catch (CharacterCodingException e) {
-            throw new IllegalArgumentException("Secret key berisi karakter yang tidak valid", e);
+            throw new IllegalArgumentException("Secret key contains invalid characters", e);
         }
         byte[] bytes = new byte[encoded.remaining()];
         encoded.get(bytes);

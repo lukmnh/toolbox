@@ -21,7 +21,7 @@ public final class GenerateUuidsUseCase {
     /** @throws IllegalArgumentException bila {@code count} di luar {@value #MIN_COUNT}–{@value #MAX_COUNT} */
     public List<UUID> execute(UuidVersion version, int count) {
         if (count < MIN_COUNT || count > MAX_COUNT) {
-            throw new IllegalArgumentException("Jumlah UUID harus " + MIN_COUNT + "–" + MAX_COUNT + ": " + count);
+            throw new IllegalArgumentException("UUID count must be " + MIN_COUNT + "–" + MAX_COUNT + ": " + count);
         }
         List<UUID> uuids = new ArrayList<>(count);
         for (int index = 0; index < count; index++) {

@@ -10,7 +10,7 @@ public final class RegexIoException extends RegexToolException {
     private final String fileName;
 
     public RegexIoException(String fileName, Throwable cause) {
-        super("Gagal membaca " + fileName, cause);
+        super("Could not read " + fileName, cause);
         this.fileName = fileName;
     }
 

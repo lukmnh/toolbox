@@ -65,7 +65,7 @@ public final class ViewerSession implements RecordSource, AutoCloseable {
     public byte[] raw(int record) {
         long length = index.length(record);
         if (length > MAX_RECORD_BYTES) {
-            throw new IllegalStateException("Record #" + (record + 1) + " lebih dari 2 GB");
+            throw new IllegalStateException("Record #" + (record + 1) + " is larger than 2 GB");
         }
         return file.read(index.start(record), (int) length);
     }

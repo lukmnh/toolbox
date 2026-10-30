@@ -18,7 +18,7 @@ public final class KeyMismatchException extends JwtToolException {
 
     /** @param curveBits ukuran kurva EC key yang diberikan; 0 bila bukan EC */
     public KeyMismatchException(JwtAlgorithm algorithm, KeyType keyType, int curveBits) {
-        super("Key " + keyType + " tidak cocok dengan " + algorithm.headerName());
+        super("Key " + keyType + " does not match " + algorithm.headerName());
         this.algorithm = Objects.requireNonNull(algorithm, "algorithm");
         this.keyType = Objects.requireNonNull(keyType, "keyType");
         this.curveBits = curveBits;

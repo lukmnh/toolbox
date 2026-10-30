@@ -13,7 +13,7 @@ public record ErrorSnippet(String text, int marker) {
 
     public ErrorSnippet {
         if (marker < 0 || marker > text.length()) {
-            throw new IllegalArgumentException("marker di luar teks: " + marker);
+            throw new IllegalArgumentException("marker outside the text: " + marker);
         }
     }
 

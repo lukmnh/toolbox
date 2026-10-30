@@ -24,7 +24,7 @@ public final class InvalidQueryException extends JsonToolException {
     private final String token;
 
     public InvalidQueryException(Reason reason, int position, String token) {
-        super("Query tidak valid (" + reason + ") di posisi " + position + ": '" + token + "'", null);
+        super("Invalid query (" + reason + ") at position " + position + ": '" + token + "'", null);
         this.reason = reason;
         this.position = position;
         this.token = token;

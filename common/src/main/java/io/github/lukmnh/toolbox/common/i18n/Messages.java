@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
  */
 public final class Messages {
 
-    public static final Locale LOCALE = Locale.forLanguageTag("id-ID");
+    public static final Locale LOCALE = Locale.US;
 
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(
             "i18n.messages",

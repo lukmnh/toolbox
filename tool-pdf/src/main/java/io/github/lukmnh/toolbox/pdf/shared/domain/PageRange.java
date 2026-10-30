@@ -15,7 +15,7 @@ public record PageRange(int first, int last) {
 
     public PageRange {
         if (first < 1) {
-            throw new IllegalArgumentException("first harus >= 1: " + first);
+            throw new IllegalArgumentException("first must be >= 1: " + first);
         }
         if (last < first) {
             throw new IllegalArgumentException("last < first: " + first + "-" + last);

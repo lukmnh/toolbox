@@ -19,7 +19,7 @@ public final class EnginePatternFactory {
      */
     public static EnginePattern create(ParseResult parsed, RegexRequest request) {
         if (parsed.flavor() != request.flavor() || !parsed.pattern().equals(request.pattern())) {
-            throw new IllegalArgumentException("Hasil parse tidak sesuai dengan request");
+            throw new IllegalArgumentException("Parse result does not match the request");
         }
         return switch (request.flavor()) {
             case JAVA -> java(parsed, request);

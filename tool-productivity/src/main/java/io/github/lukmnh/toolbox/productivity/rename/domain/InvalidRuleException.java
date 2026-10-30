@@ -18,7 +18,7 @@ public final class InvalidRuleException extends RenameException {
     private final Problem problem;
 
     public InvalidRuleException(Problem problem, Throwable cause) {
-        super("Aturan tidak valid: " + problem, cause);
+        super("Invalid rule: " + problem, cause);
         this.problem = problem;
     }
 

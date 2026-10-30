@@ -34,7 +34,7 @@ public sealed interface RenameRule {
 
         public Numbering {
             if (start < 0 || step < 1 || padding < 0 || padding > MAX_PADDING) {
-                throw new IllegalArgumentException("Parameter penomoran tidak valid");
+                throw new IllegalArgumentException("Invalid numbering parameters");
             }
             Objects.requireNonNull(placement, "placement");
             Objects.requireNonNull(separator, "separator");
@@ -74,7 +74,7 @@ public sealed interface RenameRule {
         public Remove {
             Objects.requireNonNull(mode, "mode");
             if (count < 0 || from < 1 || to < 1) {
-                throw new IllegalArgumentException("Parameter hapus karakter tidak valid");
+                throw new IllegalArgumentException("Invalid remove-characters parameters");
             }
         }
 

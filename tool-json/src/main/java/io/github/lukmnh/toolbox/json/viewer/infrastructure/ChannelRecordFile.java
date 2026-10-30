@@ -38,7 +38,7 @@ final class ChannelRecordFile implements RecordFile {
         try {
             while (buffer.hasRemaining()) {
                 if (channel.read(buffer, offset + buffer.position()) < 0) {
-                    throw new EOFException("File berubah atau terpotong: " + file);
+                    throw new EOFException("File changed or truncated: " + file);
                 }
             }
             return buffer.array();
@@ -182,7 +182,7 @@ final class ChannelRecordFile implements RecordFile {
             case VALUE_NUMBER_INT, VALUE_NUMBER_FLOAT -> NodeType.NUMBER;
             case VALUE_TRUE, VALUE_FALSE -> NodeType.BOOLEAN;
             case VALUE_NULL -> NodeType.NULL;
-            default -> throw new IllegalStateException("Token tidak terduga: " + token);
+            default -> throw new IllegalStateException("Unexpected token: " + token);
         };
     }
 }

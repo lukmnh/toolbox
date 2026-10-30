@@ -112,7 +112,7 @@ public final class JsonBudgetRepository implements BudgetRepository {
     /** Id berasal dari daftar file sendiri, tapi tetap dicek supaya tidak pernah keluar folder budget. */
     private Path fileOf(String id) {
         if (id.isBlank() || !FileNameSanitizer.sanitize(id).equals(id)) {
-            throw new IllegalArgumentException("Id budget tidak valid");
+            throw new IllegalArgumentException("Invalid budget id");
         }
         return directory.resolve(id + EXTENSION);
     }

@@ -24,10 +24,10 @@ public final class GenerateQrUseCase {
      */
     public QrMatrix execute(String payload, QrErrorCorrection errorCorrection, int margin) {
         if (payload.isEmpty()) {
-            throw new IllegalArgumentException("Isi QR kosong");
+            throw new IllegalArgumentException("QR content is empty");
         }
         if (margin < MIN_MARGIN || margin > MAX_MARGIN) {
-            throw new IllegalArgumentException("Margin harus " + MIN_MARGIN + "–" + MAX_MARGIN + ": " + margin);
+            throw new IllegalArgumentException("Margin must be " + MIN_MARGIN + "–" + MAX_MARGIN + ": " + margin);
         }
         return encoder.encode(payload, errorCorrection, margin);
     }

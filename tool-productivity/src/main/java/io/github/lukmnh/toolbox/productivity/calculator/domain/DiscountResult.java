@@ -25,7 +25,7 @@ public record DiscountResult(
         Objects.requireNonNull(effectiveDiscountPercent, "effectiveDiscountPercent");
         steps = List.copyOf(steps);
         if (finalPrice.signum() < 0) {
-            throw new IllegalArgumentException("Harga akhir tidak boleh negatif");
+            throw new IllegalArgumentException("Final price cannot be negative");
         }
     }
 }

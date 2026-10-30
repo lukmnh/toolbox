@@ -17,7 +17,7 @@ public final class RenameFailedException extends RenameException {
      * @param notRestored nama asal file yang tidak berhasil dikembalikan saat rollback
      */
     public RenameFailedException(String fileName, List<String> notRestored, Throwable cause) {
-        super("Rename gagal, " + notRestored.size() + " file gagal di-rollback", cause);
+        super("Rename failed, " + notRestored.size() + " file(s) could not be rolled back", cause);
         this.fileName = fileName;
         this.notRestored = List.copyOf(notRestored);
     }

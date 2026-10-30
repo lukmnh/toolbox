@@ -12,7 +12,7 @@ public record CsvRow(long lineNumber, List<String> fields) {
     public CsvRow {
         fields = List.copyOf(fields);
         if (lineNumber < 1) {
-            throw new IllegalArgumentException("Nomor baris mulai dari 1");
+            throw new IllegalArgumentException("Line numbers start at 1");
         }
     }
 }

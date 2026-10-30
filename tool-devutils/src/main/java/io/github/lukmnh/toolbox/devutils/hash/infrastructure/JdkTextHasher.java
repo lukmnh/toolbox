@@ -19,7 +19,7 @@ public final class JdkTextHasher implements TextHasher {
             return new DigestResult(algorithm.label(), digest, algorithm.insecure());
         } catch (GeneralSecurityException e) {
             // Semua algoritma di enum wajib tersedia di JDK 21; kalau tidak, runtime-nya rusak
-            throw new IllegalStateException("Algoritma " + algorithm.jcaName() + " tidak tersedia di JDK", e);
+            throw new IllegalStateException("Algorithm " + algorithm.jcaName() + " is not available in the JDK", e);
         }
     }
 
@@ -27,7 +27,7 @@ public final class JdkTextHasher implements TextHasher {
     @Override
     public DigestResult hmac(HmacAlgorithm algorithm, byte[] key, byte[] input) {
         if (key.length == 0) {
-            throw new IllegalArgumentException("Secret key HMAC kosong");
+            throw new IllegalArgumentException("HMAC secret key is empty");
         }
         try {
             Mac mac = Mac.getInstance(algorithm.jcaName());
@@ -35,7 +35,7 @@ public final class JdkTextHasher implements TextHasher {
             mac.init(new SecretKeySpec(key, algorithm.jcaName()));
             return new DigestResult(algorithm.label(), mac.doFinal(input), algorithm.insecure());
         } catch (GeneralSecurityException e) {
-            throw new IllegalStateException("Algoritma " + algorithm.jcaName() + " tidak tersedia di JDK", e);
+            throw new IllegalStateException("Algorithm " + algorithm.jcaName() + " is not available in the JDK", e);
         }
     }
 }

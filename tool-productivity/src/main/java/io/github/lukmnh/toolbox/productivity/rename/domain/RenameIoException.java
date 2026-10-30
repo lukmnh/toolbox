@@ -11,7 +11,7 @@ public final class RenameIoException extends RenameException {
     private final String fileName;
 
     public RenameIoException(String fileName, Throwable cause) {
-        super("Gagal mengakses file", cause);
+        super("Could not access file", cause);
         this.fileName = fileName;
     }
 

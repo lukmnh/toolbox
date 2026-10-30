@@ -13,7 +13,7 @@ public record RegexRequest(String pattern, RegexFlavor flavor, Set<RegexFlag> fl
         flags = flags.isEmpty() ? Set.of() : Set.copyOf(EnumSet.copyOf(flags));
         for (RegexFlag flag : flags) {
             if (flag.flavor() != flavor) {
-                throw new IllegalArgumentException("Flag " + flag + " bukan milik " + flavor);
+                throw new IllegalArgumentException("Flag " + flag + " does not belong to " + flavor);
             }
         }
     }

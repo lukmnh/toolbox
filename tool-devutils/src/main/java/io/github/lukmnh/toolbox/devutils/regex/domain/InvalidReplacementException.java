@@ -13,7 +13,7 @@ public final class InvalidReplacementException extends RegexToolException {
 
     /** @param reference teks referensi yang bermasalah, misalnya {@code } */
     public InvalidReplacementException(int position, String reference) {
-        super("Referensi replacement tidak valid: " + reference, null);
+        super("Invalid replacement reference: " + reference, null);
         this.position = position;
         this.reference = reference;
     }

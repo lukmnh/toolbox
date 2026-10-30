@@ -21,7 +21,7 @@ public final class InvalidSelectionException extends RenameException {
 
     /** @param fileName nama file/folder terkait untuk pesan user, atau kosong */
     public InvalidSelectionException(Reason reason, String fileName) {
-        super("Pilihan file tidak valid: " + reason, null);
+        super("Invalid file selection: " + reason, null);
         this.reason = reason;
         this.fileName = fileName;
     }

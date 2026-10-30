@@ -23,7 +23,7 @@ public final class GenerateSecretUseCase {
     /** @throws IllegalArgumentException bila {@code byteLength} di luar 1–{@value #MAX_BYTES} */
     public String execute(int byteLength, SecretEncoding encoding) {
         if (byteLength < 1 || byteLength > MAX_BYTES) {
-            throw new IllegalArgumentException("Panjang secret harus 1–" + MAX_BYTES + " byte: " + byteLength);
+            throw new IllegalArgumentException("Secret length must be 1–" + MAX_BYTES + " bytes: " + byteLength);
         }
         byte[] bytes = new byte[byteLength];
         try {

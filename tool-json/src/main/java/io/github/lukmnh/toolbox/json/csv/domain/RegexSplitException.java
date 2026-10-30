@@ -19,7 +19,7 @@ public final class RegexSplitException extends CsvToolException {
     private final transient Duration timeout;
 
     public RegexSplitException(Reason reason, Duration timeout, Throwable cause) {
-        super("Regex split dihentikan: " + reason, cause);
+        super("Regex split stopped: " + reason, cause);
         this.reason = reason;
         this.timeout = timeout;
     }

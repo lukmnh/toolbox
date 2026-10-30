@@ -13,7 +13,7 @@ public final class UnsupportedAlgorithmException extends JwtToolException {
 
     /** @param algorithmName nilai {@code alg} di header; kosong bila tidak ada */
     public UnsupportedAlgorithmException(String algorithmName) {
-        super("Algoritma tidak didukung: " + algorithmName);
+        super("Unsupported algorithm: " + algorithmName);
         this.algorithmName = Objects.requireNonNull(algorithmName, "algorithmName");
     }
 

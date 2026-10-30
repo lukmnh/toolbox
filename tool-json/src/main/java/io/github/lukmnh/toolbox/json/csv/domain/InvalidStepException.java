@@ -21,7 +21,7 @@ public final class InvalidStepException extends CsvToolException {
      * @param detail nama kolom atau keterangan dari aturan user (bukan isi CSV); kosong bila tidak relevan
      */
     public InvalidStepException(int stepNumber, StepProblem problem, String detail) {
-        super("Langkah " + stepNumber + " tidak valid: " + problem, null);
+        super("Step " + stepNumber + " is invalid: " + problem, null);
         this.stepNumber = stepNumber;
         this.problem = problem;
         this.detail = detail;

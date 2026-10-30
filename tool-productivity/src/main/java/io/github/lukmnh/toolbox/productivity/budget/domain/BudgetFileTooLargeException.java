@@ -13,7 +13,7 @@ public final class BudgetFileTooLargeException extends BudgetException {
     private final long maxBytes;
 
     public BudgetFileTooLargeException(String fileName, long sizeBytes, long maxBytes) {
-        super("File budget terlalu besar: " + fileName, null);
+        super("Budget file too large: " + fileName, null);
         this.fileName = fileName;
         this.sizeBytes = sizeBytes;
         this.maxBytes = maxBytes;

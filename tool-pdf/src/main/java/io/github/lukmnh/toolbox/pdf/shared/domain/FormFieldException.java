@@ -11,7 +11,7 @@ public final class FormFieldException extends PdfToolException {
     private final String fieldName;
 
     public FormFieldException(String fieldName, Throwable cause) {
-        super("Gagal mengisi field '" + fieldName + "'", cause);
+        super("Could not fill field '" + fieldName + "'", cause);
         this.fieldName = fieldName;
     }
 

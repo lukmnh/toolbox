@@ -69,7 +69,7 @@ public final class FileSignatureRepository implements SignatureRepository {
 
     private static void writePng(BufferedImage image, Path file) throws IOException {
         if (!ImageIO.write(image, PNG, file.toFile())) {
-            throw new IOException("Writer PNG tidak tersedia");
+            throw new IOException("PNG writer not available");
         }
     }
 
@@ -93,11 +93,11 @@ public final class FileSignatureRepository implements SignatureRepository {
         }
         try (ImageInputStream input = ImageIO.createImageInputStream(file.toFile())) {
             if (input == null) {
-                throw new IOException("Gambar tidak bisa dibuka");
+                throw new IOException("Image cannot be opened");
             }
             Iterator<ImageReader> readers = ImageIO.getImageReaders(input);
             if (!readers.hasNext()) {
-                throw new IOException("Format gambar tidak didukung");
+                throw new IOException("Unsupported image format");
             }
             ImageReader reader = readers.next();
             try {

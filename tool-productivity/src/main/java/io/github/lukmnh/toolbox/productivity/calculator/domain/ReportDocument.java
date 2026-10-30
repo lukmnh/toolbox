@@ -49,7 +49,7 @@ public record ReportDocument(String title, List<Block> blocks) {
             rows = rows.stream().map(List::copyOf).toList();
             int width = headers.size();
             if (rows.stream().anyMatch(row -> row.size() != width)) {
-                throw new IllegalArgumentException("Jumlah sel tiap baris harus sama dengan jumlah header");
+                throw new IllegalArgumentException("Each row must have as many cells as there are headers");
             }
         }
     }

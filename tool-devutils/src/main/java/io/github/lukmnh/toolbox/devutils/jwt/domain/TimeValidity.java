@@ -17,7 +17,7 @@ public final class TimeValidity {
      */
     public static TimeStatus classify(List<Claim> claims, Instant now, Duration clockSkew) {
         if (clockSkew.isNegative()) {
-            throw new IllegalArgumentException("Clock skew tidak boleh negatif");
+            throw new IllegalArgumentException("Clock skew cannot be negative");
         }
         Optional<Instant> expiresAt = instantOf(claims, "exp");
         Optional<Instant> notBefore = instantOf(claims, "nbf");

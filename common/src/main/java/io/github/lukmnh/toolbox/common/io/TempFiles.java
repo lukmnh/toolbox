@@ -42,7 +42,7 @@ public final class TempFiles implements AutoCloseable {
             created.add(file);
             return file;
         } catch (IOException e) {
-            throw new UncheckedIOException("Gagal membuat temp file", e);
+            throw new UncheckedIOException("Could not create temp file", e);
         }
     }
 
@@ -52,7 +52,7 @@ public final class TempFiles implements AutoCloseable {
             created.add(directory);
             return directory;
         } catch (IOException e) {
-            throw new UncheckedIOException("Gagal membuat temp folder", e);
+            throw new UncheckedIOException("Could not create temp folder", e);
         }
     }
 
@@ -61,7 +61,7 @@ public final class TempFiles implements AutoCloseable {
         try {
             return ensureDirectory(AppDirectories.tempDirectory());
         } catch (IOException e) {
-            throw new UncheckedIOException("Gagal menyiapkan folder temp", e);
+            throw new UncheckedIOException("Could not prepare temp folder", e);
         }
     }
 

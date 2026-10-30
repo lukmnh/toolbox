@@ -12,7 +12,7 @@ public final class RegexTimeoutException extends RuntimeException {
     private final transient Duration timeout;
 
     public RegexTimeoutException(Duration timeout) {
-        super("Regex melewati batas waktu " + timeout.toMillis() + " ms");
+        super("Regex exceeded the time limit of " + timeout.toMillis() + " ms");
         this.timeout = timeout;
     }
 

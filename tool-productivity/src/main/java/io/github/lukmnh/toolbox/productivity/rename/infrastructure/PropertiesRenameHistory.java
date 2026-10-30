@@ -90,7 +90,7 @@ public final class PropertiesRenameHistory implements RenameHistory {
     @Override
     public void delete(String id) {
         if (!ID.matcher(id).matches()) {
-            throw new IllegalArgumentException("Id log undo tidak valid");
+            throw new IllegalArgumentException("Invalid undo log id");
         }
         try {
             Files.deleteIfExists(file(id));

@@ -9,6 +9,6 @@ public final class PlanOutdatedException extends RenameException {
     private static final long serialVersionUID = 1L;
 
     public PlanOutdatedException() {
-        super("Preview sudah tidak sesuai isi folder", null);
+        super("Preview no longer matches the folder content", null);
     }
 }

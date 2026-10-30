@@ -10,7 +10,7 @@ public final class PdfExportException extends RuntimeException {
     private final String fileName;
 
     public PdfExportException(String fileName, Throwable cause) {
-        super("Gagal menulis PDF " + fileName, cause);
+        super("Could not write PDF " + fileName, cause);
         this.fileName = fileName;
     }
 

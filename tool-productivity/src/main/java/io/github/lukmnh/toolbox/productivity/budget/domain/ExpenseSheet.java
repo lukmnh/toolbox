@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 public record ExpenseSheet(String id, String name, List<Category> categories, List<ExpenseItem> items) {
 
     public ExpenseSheet {
-        id = Ids.require(id, "id daftar");
-        name = Texts.requiredName(name, "nama daftar");
+        id = Ids.require(id, "list id");
+        name = Texts.requiredName(name, "list name");
         categories = List.copyOf(categories);
         items = List.copyOf(items);
     }

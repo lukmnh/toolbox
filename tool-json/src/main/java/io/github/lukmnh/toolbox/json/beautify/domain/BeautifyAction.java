@@ -19,7 +19,7 @@ public enum BeautifyAction {
     /** Nama hasil: {@code <nama>.pretty.json} / {@code <nama>.min.json}. */
     public String outputName(String baseName) {
         if (!writesOutput()) {
-            throw new IllegalStateException("Validate tidak menghasilkan file");
+            throw new IllegalStateException("Validate does not produce a file");
         }
         return baseName + outputSuffix;
     }

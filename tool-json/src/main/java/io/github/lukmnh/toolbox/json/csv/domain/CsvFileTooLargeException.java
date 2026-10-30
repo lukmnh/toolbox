@@ -13,7 +13,7 @@ public final class CsvFileTooLargeException extends CsvToolException {
     private final long maxBytes;
 
     public CsvFileTooLargeException(String fileName, long sizeBytes, long maxBytes) {
-        super("File CSV terlalu besar: " + fileName, null);
+        super("CSV file too large: " + fileName, null);
         this.fileName = fileName;
         this.sizeBytes = sizeBytes;
         this.maxBytes = maxBytes;

@@ -18,7 +18,7 @@ public final class TimedRegex {
     public static <T> T run(CharSequence text, Duration timeout, Function<InterruptibleCharSequence, T> work) {
         Objects.requireNonNull(text, "text");
         if (timeout.isNegative() || timeout.isZero()) {
-            throw new IllegalArgumentException("Timeout harus positif");
+            throw new IllegalArgumentException("Timeout must be positive");
         }
         long deadline = System.nanoTime() + timeout.toNanos();
         return work.apply(new InterruptibleCharSequence(text, deadline, timeout));

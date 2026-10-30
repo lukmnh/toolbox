@@ -12,7 +12,7 @@ public final class CorruptPdfException extends PdfToolException {
     private final transient Path file;
 
     public CorruptPdfException(Path file, Throwable cause) {
-        super("PDF tidak valid: " + file, cause);
+        super("Invalid PDF: " + file, cause);
         this.file = file;
     }
 

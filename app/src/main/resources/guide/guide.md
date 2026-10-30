@@ -71,13 +71,14 @@ Decode a JWT header, payload and claims, check its time-based status, and verify
 
 Base64 for text and files (URL-safe, MIME, data URI), URL encode/decode, and a query string parser.
 
-### Hash & Key Generator
+### Hash Generator
 
-Hash text with MD5, SHA-1, SHA-2 or SHA-3, or switch to HMAC mode with a secret key. Generate random keys and UUIDs for configuration, tests and fixtures.
+- **Hash / HMAC**: hash text with MD5, SHA-1, SHA-2 or SHA-3, or switch to HMAC mode with a secret key.
+- **Generate**: create a random secret (hex, Base64 or Base64URL), a key pair as PEM (public and private key), or UUIDs (v4 random or v7 time-ordered) for configuration, tests and fixtures.
 
 ### QR Code Generator
 
-Turn text or a URL into a QR code and download it as an image.
+Turn text, a URL or a contact card (vCard) into a QR code, choose the error correction level, size and quiet zone, and download it as a PNG image.
 
 ### Checksum
 
@@ -109,19 +110,21 @@ Count characters, words, sentences and reading time, change letter case, and cle
 
 Rename many files at once with stacked rules. Preview the new names and conflicts first; the rename is applied safely in two phases and can be undone.
 
-### Quick Calculator
+### Installment Simulator
 
-- **Discounts**: stack several discounts and see the effective discount.
-- **Installment simulator**: compare annuity, flat and effective interest, view the full amortization table, and export the schedule.
-- **Tax / VAT**: add tax to a price or extract it from a tax-inclusive amount.
-- **Invoice generator**: fill in items, quantities and prices, then download a ready-to-send invoice.
+- **Installment**: compare annuity, flat and effective interest, view the full amortization table, and download the schedule as CSV or PDF.
+- **Discount**: stack several discounts plus a fixed deduction and see the effective discount.
+- **Tax & VAT**: add tax to a price or extract it from a tax-inclusive amount.
+- **Invoice**: fill in items, quantities and prices, then download a ready-to-send invoice or receipt as PDF.
 
-### Budget
+Amounts are in Rupiah (`Rp`). Numbers can be typed in Indonesian format (`1.250.000,50`) or plain (`1250000.5`).
+
+### Income & Expense Budget
 
 Track monthly income and recurring expenses, see the average cost per month and what is left over, with a summary and chart. Budgets are saved automatically.
 
-- **Export** a budget to Excel (`.xlsx` with live formulas) or to PDF.
-- **Import** a budget back from a previously exported file to restore it or move it to another computer.
+- **Download** a budget as Excel (`.xlsx` with live formulas) or as PDF.
+- **Import** only accepts Excel or PDF files exported by Toolbox, so you can restore a budget or move it to another computer.
 
 ## Tips
 

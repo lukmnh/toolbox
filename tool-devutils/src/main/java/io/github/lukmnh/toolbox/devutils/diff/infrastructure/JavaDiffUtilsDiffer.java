@@ -85,7 +85,7 @@ public final class JavaDiffUtilsDiffer implements SequenceDiffer {
             case INSERT -> ChunkType.INSERT;
             case DELETE -> ChunkType.DELETE;
             case CHANGE -> ChunkType.CHANGE;
-            case EQUAL -> throw new IllegalArgumentException("EQUAL bukan perubahan");
+            case EQUAL -> throw new IllegalArgumentException("EQUAL is not a change");
         };
     }
 }

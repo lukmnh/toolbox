@@ -8,7 +8,7 @@ public record TextConversion(String output, int inputChars, long inputBytes, int
     public TextConversion {
         Objects.requireNonNull(output, "output");
         if (inputChars < 0 || inputBytes < 0 || outputChars < 0 || outputBytes < 0) {
-            throw new IllegalArgumentException("Panjang tidak boleh negatif");
+            throw new IllegalArgumentException("Length cannot be negative");
         }
     }
 }

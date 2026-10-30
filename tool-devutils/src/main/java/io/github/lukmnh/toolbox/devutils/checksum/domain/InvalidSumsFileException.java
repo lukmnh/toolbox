@@ -14,7 +14,7 @@ public final class InvalidSumsFileException extends ChecksumException {
     private final int lineNumber;
 
     public InvalidSumsFileException(int lineNumber) {
-        super(lineNumber == NO_ENTRIES ? "Tidak ada entry checksum" : "Format salah di baris " + lineNumber, null);
+        super(lineNumber == NO_ENTRIES ? "No checksum entries" : "Wrong format on line " + lineNumber, null);
         this.lineNumber = lineNumber;
     }
 

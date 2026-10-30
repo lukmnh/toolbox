@@ -11,7 +11,7 @@ public final class KeyExportException extends RuntimeException {
     private final String fileName;
 
     public KeyExportException(String fileName, Throwable cause) {
-        super("Gagal menulis " + fileName, cause);
+        super("Could not write " + fileName, cause);
         this.fileName = fileName;
     }
 

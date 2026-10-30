@@ -12,7 +12,7 @@ public record MatchScan(List<RegexMatch> matches, int totalCount, boolean countC
     public MatchScan {
         matches = List.copyOf(matches);
         if (totalCount < matches.size()) {
-            throw new IllegalArgumentException("Total match lebih kecil dari detail");
+            throw new IllegalArgumentException("Total matches is smaller than the details");
         }
     }
 }

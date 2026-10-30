@@ -29,7 +29,7 @@ final class JacksonValueReader {
             case VALUE_TRUE -> TRUE;
             case VALUE_FALSE -> FALSE;
             case VALUE_NULL -> JsonValue.NULL;
-            default -> throw new IllegalStateException("Token tidak terduga: " + token);
+            default -> throw new IllegalStateException("Unexpected token: " + token);
         };
     }
 

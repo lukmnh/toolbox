@@ -20,7 +20,7 @@ public record OutputOptions(
         Objects.requireNonNull(quote, "quote");
         Objects.requireNonNull(lineEnding, "lineEnding");
         if (!CsvEncoding.OUTPUT_CHOICES.contains(encoding)) {
-            throw new IllegalArgumentException("Encoding hasil harus UTF-8");
+            throw new IllegalArgumentException("Output encoding must be UTF-8");
         }
     }
 

@@ -24,7 +24,7 @@ public final class ExportScheduleUseCase {
     /** @param header judul {@link #COLUMN_COUNT} kolom sesuai urutan di atas */
     public void execute(InstallmentSchedule schedule, List<String> header, Path target) {
         if (header.size() != COLUMN_COUNT) {
-            throw new IllegalArgumentException("Header jadwal harus " + COLUMN_COUNT + " kolom");
+            throw new IllegalArgumentException("Schedule header must have " + COLUMN_COUNT + " columns");
         }
         List<List<String>> rows =
                 schedule.rows().stream().map(ExportScheduleUseCase::cells).toList();

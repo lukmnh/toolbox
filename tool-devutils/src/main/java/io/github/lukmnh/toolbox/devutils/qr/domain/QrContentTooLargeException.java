@@ -12,7 +12,7 @@ public final class QrContentTooLargeException extends QrToolException {
     private final QrErrorCorrection errorCorrection;
 
     public QrContentTooLargeException(int payloadBytes, QrErrorCorrection errorCorrection, Throwable cause) {
-        super("Isi " + payloadBytes + " byte terlalu besar untuk QR level " + errorCorrection, cause);
+        super("Content of " + payloadBytes + " bytes is too large for QR level " + errorCorrection, cause);
         this.payloadBytes = payloadBytes;
         this.errorCorrection = errorCorrection;
     }

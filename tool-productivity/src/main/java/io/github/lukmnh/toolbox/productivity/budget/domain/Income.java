@@ -10,10 +10,10 @@ import java.math.BigDecimal;
 public record Income(String id, String name, BigDecimal amount, String note) {
 
     public Income {
-        id = Ids.require(id, "id pemasukan");
-        name = Texts.optional(name, "nama pemasukan");
-        amount = Texts.nonNegative(amount, "nominal pemasukan");
-        note = Texts.optional(note, "catatan pemasukan");
+        id = Ids.require(id, "income id");
+        name = Texts.optional(name, "income name");
+        amount = Texts.nonNegative(amount, "income amount");
+        note = Texts.optional(note, "income note");
     }
 
     public static Income blank() {

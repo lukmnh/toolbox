@@ -12,7 +12,7 @@ public final class DiffFileTooLargeException extends DiffException {
     private final long maxBytes;
 
     public DiffFileTooLargeException(String fileName, long sizeBytes, long maxBytes) {
-        super("File terlalu besar untuk dibandingkan: " + fileName, fileName, null);
+        super("File too large to compare: " + fileName, fileName, null);
         this.sizeBytes = sizeBytes;
         this.maxBytes = maxBytes;
     }

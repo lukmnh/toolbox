@@ -50,7 +50,7 @@ public sealed interface RegexNode {
             Objects.requireNonNull(target, "target");
             Objects.requireNonNull(mode, "mode");
             if (min < 0 || (max != UNBOUNDED && max < min)) {
-                throw new IllegalArgumentException("Quantifier tidak valid");
+                throw new IllegalArgumentException("Invalid quantifier");
             }
         }
     }

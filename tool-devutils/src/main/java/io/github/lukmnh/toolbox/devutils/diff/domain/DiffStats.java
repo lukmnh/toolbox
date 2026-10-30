@@ -5,7 +5,7 @@ public record DiffStats(int added, int deleted, int changed) {
 
     public DiffStats {
         if (added < 0 || deleted < 0 || changed < 0) {
-            throw new IllegalArgumentException("Statistik tidak boleh negatif");
+            throw new IllegalArgumentException("Statistics cannot be negative");
         }
     }
 

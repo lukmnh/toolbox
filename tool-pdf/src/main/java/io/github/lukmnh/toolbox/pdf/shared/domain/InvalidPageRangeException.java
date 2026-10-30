@@ -21,7 +21,7 @@ public final class InvalidPageRangeException extends PdfToolException {
     private final int pageCount;
 
     public InvalidPageRangeException(Reason reason, String token, int pageCount) {
-        super("Range tidak valid (" + reason + "): '" + token + "' untuk " + pageCount + " halaman", null);
+        super("Invalid range (" + reason + "): '" + token + "' for " + pageCount + " pages", null);
         this.reason = reason;
         this.token = token;
         this.pageCount = pageCount;

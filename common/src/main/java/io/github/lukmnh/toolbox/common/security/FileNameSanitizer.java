@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public final class FileNameSanitizer {
 
     public static final int MAX_LENGTH = 200;
-    static final String FALLBACK_NAME = "hasil";
+    static final String FALLBACK_NAME = "output";
 
     /** Karakter terlarang di Windows plus karakter kontrol; {@code /} dan {@code \} mencegah path traversal. */
     private static final Pattern FORBIDDEN = Pattern.compile("[/\\\\:*?\"<>|\\p{Cntrl}]");

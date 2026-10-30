@@ -14,7 +14,7 @@ public final class ExportPemUseCase {
 
     public void execute(String pem, Path target) {
         if (pem.isEmpty()) {
-            throw new IllegalArgumentException("Tidak ada key untuk diekspor");
+            throw new IllegalArgumentException("No key to export");
         }
         files.write(target, pem);
     }

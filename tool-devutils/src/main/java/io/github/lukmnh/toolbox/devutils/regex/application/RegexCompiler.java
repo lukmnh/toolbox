@@ -21,7 +21,7 @@ public final class RegexCompiler {
         engines.forEach(engine -> this.engines.put(engine.kind(), engine));
         for (EngineKind kind : EngineKind.values()) {
             if (!this.engines.containsKey(kind)) {
-                throw new IllegalArgumentException("Engine " + kind + " belum dirakit");
+                throw new IllegalArgumentException("Engine " + kind + " is not wired");
             }
         }
     }

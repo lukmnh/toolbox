@@ -22,8 +22,8 @@ class FileNameSanitizerTest {
                 "CONSOLE.pdf => CONSOLE.pdf",
                 "'  .tersembunyi. ' => tersembunyi",
                 "laporan_edited.pdf => laporan_edited.pdf",
-                "'...' => hasil",
-                "'' => hasil"
+                "'...' => output",
+                "'' => output"
             })
     void sanitizesDangerousNames(String input, String expected) {
         assertEquals(expected, FileNameSanitizer.sanitize(input));

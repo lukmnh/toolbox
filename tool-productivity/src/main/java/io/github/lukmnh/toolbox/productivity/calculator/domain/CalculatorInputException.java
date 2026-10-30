@@ -12,7 +12,7 @@ public final class CalculatorInputException extends RuntimeException {
     private final InputProblem problem;
 
     public CalculatorInputException(InputProblem problem) {
-        super("Input kalkulator tidak valid: " + problem);
+        super("Invalid calculator input: " + problem);
         this.problem = Objects.requireNonNull(problem, "problem");
     }
 

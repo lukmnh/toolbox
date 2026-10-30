@@ -8,6 +8,6 @@ public final class BinaryFileException extends DiffException {
     private static final long serialVersionUID = 1L;
 
     public BinaryFileException(String fileName) {
-        super("File biner tidak bisa dibandingkan: " + fileName, fileName, null);
+        super("Binary file cannot be compared: " + fileName, fileName, null);
     }
 }

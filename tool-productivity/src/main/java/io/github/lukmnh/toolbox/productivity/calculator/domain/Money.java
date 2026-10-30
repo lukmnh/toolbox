@@ -19,7 +19,7 @@ public final class Money {
 
     static int requireScale(int scale) {
         if (scale < 0 || scale > MAX_SCALE) {
-            throw new IllegalArgumentException("Skala uang harus 0–" + MAX_SCALE);
+            throw new IllegalArgumentException("Money scale must be 0–" + MAX_SCALE);
         }
         return scale;
     }

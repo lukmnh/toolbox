@@ -28,7 +28,7 @@ public record SplitStep(
         Objects.requireNonNull(method, "method");
         resultNames = List.copyOf(resultNames);
         if (maxColumns < MIN_COLUMNS || maxColumns > MAX_COLUMNS) {
-            throw new IllegalArgumentException("Maks kolom hasil di luar " + MIN_COLUMNS + ".." + MAX_COLUMNS);
+            throw new IllegalArgumentException("Max output columns outside " + MIN_COLUMNS + ".." + MAX_COLUMNS);
         }
     }
 

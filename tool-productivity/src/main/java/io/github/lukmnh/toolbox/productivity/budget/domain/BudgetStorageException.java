@@ -11,7 +11,7 @@ public final class BudgetStorageException extends BudgetException {
     private final String fileName;
 
     public BudgetStorageException(String fileName, Throwable cause) {
-        super("Gagal mengakses file budget " + fileName, cause);
+        super("Could not access budget file " + fileName, cause);
         this.fileName = fileName;
     }
 

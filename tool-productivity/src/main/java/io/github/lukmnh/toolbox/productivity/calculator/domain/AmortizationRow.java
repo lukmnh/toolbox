@@ -13,7 +13,7 @@ public record AmortizationRow(
         Objects.requireNonNull(interest, "interest");
         Objects.requireNonNull(remaining, "remaining");
         if (month < 1) {
-            throw new IllegalArgumentException("Bulan dimulai dari 1");
+            throw new IllegalArgumentException("Months start at 1");
         }
     }
 }

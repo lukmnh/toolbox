@@ -10,10 +10,10 @@ public record SumsEntry(String checksum, String fileName) {
         Objects.requireNonNull(fileName, "fileName");
         checksum = ChecksumAlgorithm.normalize(checksum);
         if (!ChecksumAlgorithm.isHex(checksum)) {
-            throw new IllegalArgumentException("Checksum harus hex");
+            throw new IllegalArgumentException("Checksum must be hex");
         }
         if (fileName.isEmpty()) {
-            throw new IllegalArgumentException("Nama file kosong");
+            throw new IllegalArgumentException("Empty file name");
         }
     }
 }

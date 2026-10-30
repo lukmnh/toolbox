@@ -26,12 +26,12 @@ public final class UnreadableKeyException extends JwtToolException {
     private final Reason reason;
 
     public UnreadableKeyException(Reason reason) {
-        super("Key tidak bisa dibaca: " + reason);
+        super("Key cannot be read: " + reason);
         this.reason = Objects.requireNonNull(reason, "reason");
     }
 
     public UnreadableKeyException(Reason reason, Throwable cause) {
-        super("Key tidak bisa dibaca: " + reason, cause);
+        super("Key cannot be read: " + reason, cause);
         this.reason = Objects.requireNonNull(reason, "reason");
     }
 

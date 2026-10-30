@@ -69,7 +69,7 @@ public sealed interface CronPreset {
 
     private static void requireRange(int value, int min, int max, String name) {
         if (value < min || value > max) {
-            throw new IllegalArgumentException(name + " harus " + min + "–" + max);
+            throw new IllegalArgumentException(name + " must be " + min + "–" + max);
         }
     }
 }

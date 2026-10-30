@@ -17,7 +17,7 @@ final class Texts {
     static String optional(String text, String field) {
         String value = text == null ? "" : text;
         if (value.length() > MAX_TEXT_LENGTH) {
-            throw new IllegalArgumentException(field + " terlalu panjang");
+            throw new IllegalArgumentException(field + " is too long");
         }
         return value;
     }
@@ -26,7 +26,7 @@ final class Texts {
         Objects.requireNonNull(name, field);
         String stripped = name.strip();
         if (stripped.isEmpty() || stripped.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException(field + " kosong atau terlalu panjang");
+            throw new IllegalArgumentException(field + " is empty or too long");
         }
         return stripped;
     }
@@ -34,7 +34,7 @@ final class Texts {
     static BigDecimal nonNegative(BigDecimal value, String field) {
         Objects.requireNonNull(value, field);
         if (value.signum() < 0) {
-            throw new IllegalArgumentException(field + " tidak boleh negatif");
+            throw new IllegalArgumentException(field + " cannot be negative");
         }
         return value;
     }

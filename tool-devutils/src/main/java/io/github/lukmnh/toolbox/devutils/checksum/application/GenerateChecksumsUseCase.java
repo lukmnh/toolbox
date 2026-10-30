@@ -27,7 +27,7 @@ public final class GenerateChecksumsUseCase {
     public List<FileChecksum> execute(
             List<Path> inputs, ChecksumAlgorithm algorithm, ProgressReporter progress, CancellationToken cancellation) {
         if (inputs.isEmpty()) {
-            throw new IllegalArgumentException("Minimal satu file");
+            throw new IllegalArgumentException("At least one file is required");
         }
         // Folder yang di-drop ditolak di awal, sebelum file lain sempat dihitung
         inputs.stream().filter(input -> !files.isRegularFile(input)).findFirst().ifPresent(input -> {

@@ -294,7 +294,7 @@ public final class ToolLayout {
 
             @Override
             public T fromString(String text) {
-                throw new UnsupportedOperationException("Pilihan tidak bisa diketik");
+                throw new UnsupportedOperationException("Choices cannot be typed");
             }
         };
     }

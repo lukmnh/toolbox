@@ -28,7 +28,7 @@ public record InstallmentSchedule(
         Objects.requireNonNull(totalCost, "totalCost");
         rows = List.copyOf(rows);
         if (rows.isEmpty()) {
-            throw new IllegalArgumentException("Jadwal minimal 1 bulan");
+            throw new IllegalArgumentException("Schedule must be at least 1 month");
         }
     }
 

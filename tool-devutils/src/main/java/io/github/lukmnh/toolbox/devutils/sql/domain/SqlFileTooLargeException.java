@@ -13,7 +13,7 @@ public final class SqlFileTooLargeException extends SqlToolException {
     private final long maxBytes;
 
     public SqlFileTooLargeException(String fileName, long sizeBytes, long maxBytes) {
-        super("File SQL terlalu besar: " + fileName, null);
+        super("SQL file too large: " + fileName, null);
         this.fileName = fileName;
         this.sizeBytes = sizeBytes;
         this.maxBytes = maxBytes;

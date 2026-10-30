@@ -16,7 +16,7 @@ public record CsvSample(InputFormat format, List<String> columns, List<CsvRow> r
         columns = List.copyOf(columns);
         rows = List.copyOf(rows);
         if (columns.isEmpty()) {
-            throw new IllegalArgumentException("Sampel tanpa kolom");
+            throw new IllegalArgumentException("Sample without columns");
         }
     }
 

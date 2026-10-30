@@ -11,7 +11,7 @@ public record DiffChunk(ChunkType type, int oldStart, int oldEnd, int newStart, 
     public DiffChunk {
         Objects.requireNonNull(type, "type");
         if (oldStart < 0 || newStart < 0 || oldEnd < oldStart || newEnd < newStart) {
-            throw new IllegalArgumentException("Range chunk tidak valid");
+            throw new IllegalArgumentException("Invalid chunk range");
         }
     }
 

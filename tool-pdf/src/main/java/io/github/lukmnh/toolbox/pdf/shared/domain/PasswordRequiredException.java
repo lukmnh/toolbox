@@ -13,7 +13,7 @@ public final class PasswordRequiredException extends PdfToolException {
     private final boolean passwordWasGiven;
 
     public PasswordRequiredException(Path file, boolean passwordWasGiven, Throwable cause) {
-        super("Password dibutuhkan untuk " + file, cause);
+        super("Password required for " + file, cause);
         this.file = file;
         this.passwordWasGiven = passwordWasGiven;
     }

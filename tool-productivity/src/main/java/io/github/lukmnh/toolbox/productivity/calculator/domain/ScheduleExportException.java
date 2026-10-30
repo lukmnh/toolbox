@@ -10,7 +10,7 @@ public final class ScheduleExportException extends RuntimeException {
     private final String fileName;
 
     public ScheduleExportException(String fileName, Throwable cause) {
-        super("Gagal menulis jadwal cicilan " + fileName, cause);
+        super("Could not write installment schedule " + fileName, cause);
         this.fileName = fileName;
     }
 

@@ -8,7 +8,7 @@ public record SqlToken(SqlTokenType type, int start, int end) {
     public SqlToken {
         Objects.requireNonNull(type, "type");
         if (start < 0 || end <= start) {
-            throw new IllegalArgumentException("Rentang token tidak valid: " + start + ".." + end);
+            throw new IllegalArgumentException("Invalid token range: " + start + ".." + end);
         }
     }
 

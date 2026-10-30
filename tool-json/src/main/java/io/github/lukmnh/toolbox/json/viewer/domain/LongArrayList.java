@@ -18,7 +18,7 @@ public final class LongArrayList {
 
     public LongArrayList(int initialCapacity) {
         if (initialCapacity < 0) {
-            throw new IllegalArgumentException("Kapasitas negatif: " + initialCapacity);
+            throw new IllegalArgumentException("Negative capacity: " + initialCapacity);
         }
         values = new long[initialCapacity];
     }
@@ -54,7 +54,7 @@ public final class LongArrayList {
 
     private void grow() {
         if (values.length == MAX_CAPACITY) {
-            throw new IllegalStateException("LongArrayList penuh");
+            throw new IllegalStateException("LongArrayList is full");
         }
         long grown = Math.max(DEFAULT_CAPACITY, values.length + ((long) values.length >> 1));
         values = Arrays.copyOf(values, (int) Math.min(grown, MAX_CAPACITY));

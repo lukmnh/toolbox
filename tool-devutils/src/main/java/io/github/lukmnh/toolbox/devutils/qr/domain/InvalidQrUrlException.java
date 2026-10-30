@@ -9,6 +9,6 @@ public final class InvalidQrUrlException extends QrToolException {
     private static final long serialVersionUID = 1L;
 
     public InvalidQrUrlException(Throwable cause) {
-        super("URL tidak valid", cause);
+        super("Invalid URL", cause);
     }
 }

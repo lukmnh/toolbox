@@ -11,7 +11,7 @@ public record FileChecksum(String fileName, long sizeBytes, String checksum, Dur
         Objects.requireNonNull(checksum, "checksum");
         Objects.requireNonNull(duration, "duration");
         if (sizeBytes < 0) {
-            throw new IllegalArgumentException("Ukuran negatif");
+            throw new IllegalArgumentException("Negative size");
         }
     }
 

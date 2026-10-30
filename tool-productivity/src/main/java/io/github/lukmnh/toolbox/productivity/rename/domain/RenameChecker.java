@@ -24,7 +24,7 @@ public final class RenameChecker {
     public static List<NameCheck> check(
             List<String> originalNames, List<String> targetNames, Set<String> folderNames, boolean caseInsensitive) {
         if (originalNames.size() != targetNames.size()) {
-            throw new IllegalArgumentException("Jumlah nama lama dan baru berbeda");
+            throw new IllegalArgumentException("Old and new name counts differ");
         }
         UnaryOperator<String> key = caseInsensitive ? name -> name.toLowerCase(Locale.ROOT) : name -> name;
         Map<String, Integer> targetCounts = new HashMap<>();

@@ -9,6 +9,6 @@ public final class UnsecuredJwtException extends JwtToolException {
     private static final long serialVersionUID = 1L;
 
     public UnsecuredJwtException() {
-        super("alg none tidak pernah valid");
+        super("alg none is never valid");
     }
 }

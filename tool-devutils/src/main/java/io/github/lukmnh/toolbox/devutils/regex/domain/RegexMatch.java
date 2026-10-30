@@ -8,7 +8,7 @@ public record RegexMatch(int start, int end, String value, List<GroupMatch> grou
 
     public RegexMatch {
         if (start < 0 || end < start) {
-            throw new IllegalArgumentException("Posisi match tidak valid");
+            throw new IllegalArgumentException("Invalid match position");
         }
         Objects.requireNonNull(value, "value");
         groups = List.copyOf(groups);

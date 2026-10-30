@@ -9,6 +9,6 @@ public final class JweNotSupportedException extends JwtToolException {
     private static final long serialVersionUID = 1L;
 
     public JweNotSupportedException() {
-        super("JWE tidak didukung");
+        super("JWE is not supported");
     }
 }

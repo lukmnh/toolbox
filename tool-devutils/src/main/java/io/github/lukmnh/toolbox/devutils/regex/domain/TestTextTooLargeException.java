@@ -12,7 +12,7 @@ public final class TestTextTooLargeException extends RegexToolException {
     private final long maxBytes;
 
     public TestTextTooLargeException(String fileName, long sizeBytes, long maxBytes) {
-        super("Teks uji terlalu besar: " + fileName, null);
+        super("Test text too large: " + fileName, null);
         this.fileName = fileName;
         this.sizeBytes = sizeBytes;
         this.maxBytes = maxBytes;

@@ -21,7 +21,7 @@ public final class ImageIoQrPngWriter implements QrPngWriter {
         image.setRGB(0, 0, raster.side(), raster.side(), raster.argb(), 0, raster.side());
         try {
             if (!ImageIO.write(image, PNG, target.toFile())) {
-                throw new QrExportException(name, new IOException("Writer PNG tidak tersedia"));
+                throw new QrExportException(name, new IOException("PNG writer not available"));
             }
         } catch (IOException e) {
             throw new QrExportException(name, e);

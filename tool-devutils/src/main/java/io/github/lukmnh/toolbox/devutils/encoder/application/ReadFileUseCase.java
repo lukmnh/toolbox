@@ -30,7 +30,7 @@ public final class ReadFileUseCase {
     /** @throws IllegalArgumentException bila hasil melebihi batas copy */
     public String fullText(EncodedFile encoded) {
         if (!Base64Limits.canCopy(encoded.outputBytes())) {
-            throw new IllegalArgumentException("Hasil terlalu besar untuk di-copy");
+            throw new IllegalArgumentException("Output too large to copy");
         }
         return files.readText(encoded.output());
     }

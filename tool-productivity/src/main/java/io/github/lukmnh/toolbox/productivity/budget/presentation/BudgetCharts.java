@@ -138,7 +138,7 @@ final class BudgetCharts {
 
         @Override
         public Number fromString(String text) {
-            throw new UnsupportedOperationException("Label sumbu tidak bisa diketik");
+            throw new UnsupportedOperationException("Axis labels cannot be typed");
         }
     }
 }

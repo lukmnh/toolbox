@@ -106,7 +106,7 @@ public final class JdkChecksumFiles implements ChecksumFiles {
             return MessageDigest.getInstance(algorithm.jcaName());
         } catch (NoSuchAlgorithmException e) {
             // SHA-1/256/512 dan MD5 wajib tersedia di setiap JDK; sampai sini berarti runtime rusak
-            throw new IllegalStateException("Algoritma tidak tersedia: " + algorithm.label(), e);
+            throw new IllegalStateException("Algorithm not available: " + algorithm.label(), e);
         }
     }
 

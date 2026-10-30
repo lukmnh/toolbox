@@ -37,7 +37,7 @@ public final class ZxingQrEncoder implements QrEncoder {
                 throw new QrContentTooLargeException(
                         payload.getBytes(StandardCharsets.UTF_8).length, errorCorrection, e);
             }
-            throw new IllegalStateException("ZXing gagal meng-encode QR: " + e.getMessage(), e);
+            throw new IllegalStateException("ZXing failed to encode QR: " + e.getMessage(), e);
         }
     }
 

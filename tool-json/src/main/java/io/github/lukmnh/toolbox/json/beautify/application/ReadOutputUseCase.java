@@ -21,9 +21,9 @@ public final class ReadOutputUseCase {
 
     /** @throws IllegalStateException bila hasil terlalu besar untuk clipboard atau tidak ada file */
     public String fullText(FormatResult result) {
-        Path output = result.outputFile().orElseThrow(() -> new IllegalStateException("Tidak ada file hasil"));
+        Path output = result.outputFile().orElseThrow(() -> new IllegalStateException("No output file"));
         if (!BeautifyLimits.canCopy(result.outputBytes())) {
-            throw new IllegalStateException("Hasil lebih dari 10 MB, gunakan Download");
+            throw new IllegalStateException("Output is larger than 10 MB, use Download");
         }
         return formatter.readText(output, (int) BeautifyLimits.COPY_MAX_BYTES).text();
     }

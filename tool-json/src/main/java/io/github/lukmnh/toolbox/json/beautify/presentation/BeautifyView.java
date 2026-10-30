@@ -260,7 +260,7 @@ public final class BeautifyView extends VBox {
 
             @Override
             public T fromString(String text) {
-                throw new UnsupportedOperationException("ChoiceBox tidak bisa diketik");
+                throw new UnsupportedOperationException("ChoiceBox cannot be typed");
             }
         };
     }

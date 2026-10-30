@@ -30,7 +30,7 @@ public final class InvalidBudgetFileException extends BudgetException {
 
     /** @param location jalur field, misalnya {@code sheets[0].items[3].price}; kosong bila tidak diketahui */
     public InvalidBudgetFileException(String fileName, Problem problem, String location, Throwable cause) {
-        super("File budget tidak valid: " + fileName + " (" + problem + " " + location + ")", cause);
+        super("Invalid budget file: " + fileName + " (" + problem + " " + location + ")", cause);
         this.fileName = fileName;
         this.problem = problem;
         this.location = location;

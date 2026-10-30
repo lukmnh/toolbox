@@ -27,15 +27,15 @@ public record ExpenseItem(
 
     public ExpenseItem {
         id = Ids.require(id, "id item");
-        name = Texts.optional(name, "nama item");
+        name = Texts.optional(name, "item name");
         brand = Texts.optional(brand, "brand");
         netto = Texts.optional(netto, "netto");
-        categoryId = Texts.optional(categoryId, "kategori");
-        price = Texts.nonNegative(price, "harga");
-        duration = Texts.nonNegative(duration, "durasi");
-        Objects.requireNonNull(unit, "satuan");
+        categoryId = Texts.optional(categoryId, "category");
+        price = Texts.nonNegative(price, "price");
+        duration = Texts.nonNegative(duration, "duration");
+        Objects.requireNonNull(unit, "unit");
         Objects.requireNonNull(status, "status");
-        note = Texts.optional(note, "catatan");
+        note = Texts.optional(note, "note");
     }
 
     public static ExpenseItem blank(String categoryId) {

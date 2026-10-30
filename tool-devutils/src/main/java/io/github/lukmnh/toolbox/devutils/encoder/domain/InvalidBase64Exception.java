@@ -22,7 +22,7 @@ public final class InvalidBase64Exception extends EncoderException {
     private final int character;
 
     public InvalidBase64Exception(Reason reason, long position, int character) {
-        super("Base64 tidak valid (" + reason + ") di posisi " + position, null);
+        super("Invalid Base64 (" + reason + ") at position " + position, null);
         this.reason = reason;
         this.position = position;
         this.character = character;

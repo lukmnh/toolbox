@@ -13,7 +13,7 @@ public final class SumsFileTooLargeException extends ChecksumException {
     private final long maxBytes;
 
     public SumsFileTooLargeException(String fileName, long sizeBytes, long maxBytes) {
-        super("File daftar checksum terlalu besar: " + fileName, null);
+        super("Checksum list file too large: " + fileName, null);
         this.fileName = fileName;
         this.sizeBytes = sizeBytes;
         this.maxBytes = maxBytes;

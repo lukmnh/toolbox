@@ -13,7 +13,7 @@ public record RenameLog(Path folder, Instant createdAt, List<RenamePair> pairs) 
         Objects.requireNonNull(createdAt, "createdAt");
         pairs = List.copyOf(pairs);
         if (pairs.isEmpty()) {
-            throw new IllegalArgumentException("Log undo tanpa file");
+            throw new IllegalArgumentException("Undo log without files");
         }
     }
 }

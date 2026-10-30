@@ -44,7 +44,7 @@ public final class OwnerOnlyFiles {
         }
         AclFileAttributeView acl = Files.getFileAttributeView(path, AclFileAttributeView.class);
         if (acl == null) {
-            throw new IOException("File system tidak mendukung permission owner-only: " + path.getFileName());
+            throw new IOException("File system does not support owner-only permissions: " + path.getFileName());
         }
         AclEntry ownerOnly = AclEntry.newBuilder()
                 .setType(AclEntryType.ALLOW)

@@ -13,7 +13,7 @@ public final class InvalidPercentEncodingException extends EncoderException {
 
     /** @param position indeks 0-based karakter {@code %} di input */
     public InvalidPercentEncodingException(int position, String sequence) {
-        super("Percent-encoding rusak di posisi " + position, null);
+        super("Malformed percent-encoding at position " + position, null);
         this.position = position;
         this.sequence = sequence;
     }

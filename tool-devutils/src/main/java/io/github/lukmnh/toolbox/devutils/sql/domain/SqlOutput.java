@@ -12,7 +12,7 @@ public record SqlOutput(String text, int unformattedStatements) {
     public SqlOutput {
         Objects.requireNonNull(text, "text");
         if (unformattedStatements < 0) {
-            throw new IllegalArgumentException("unformattedStatements negatif");
+            throw new IllegalArgumentException("unformattedStatements is negative");
         }
     }
 }

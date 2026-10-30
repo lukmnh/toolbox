@@ -11,7 +11,7 @@ public final class NotCsvFileException extends CsvToolException {
     private final String fileName;
 
     public NotCsvFileException(String fileName) {
-        super("Bukan file CSV: " + fileName, null);
+        super("Not a CSV file: " + fileName, null);
         this.fileName = fileName;
     }
 

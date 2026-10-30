@@ -11,7 +11,7 @@ public final class LruCache<K, V> {
 
     public LruCache(int capacity) {
         if (capacity <= 0) {
-            throw new IllegalArgumentException("Kapasitas harus > 0: " + capacity);
+            throw new IllegalArgumentException("Capacity must be > 0: " + capacity);
         }
         entries = new BoundedMap<>(capacity);
     }

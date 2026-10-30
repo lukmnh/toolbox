@@ -11,7 +11,7 @@ public final class QrExportException extends QrToolException {
     private final String fileName;
 
     public QrExportException(String fileName, Throwable cause) {
-        super("Gagal menulis " + fileName, cause);
+        super("Could not write " + fileName, cause);
         this.fileName = fileName;
     }
 

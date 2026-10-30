@@ -12,7 +12,7 @@ public final class BudgetLimitExceededException extends BudgetException {
     private final int max;
 
     public BudgetLimitExceededException(int count, int max) {
-        super("Jumlah item budget melebihi batas: " + count + " > " + max, null);
+        super("Budget item count exceeds the limit: " + count + " > " + max, null);
         this.count = count;
         this.max = max;
     }

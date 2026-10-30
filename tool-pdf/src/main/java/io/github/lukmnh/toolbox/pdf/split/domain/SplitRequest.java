@@ -19,7 +19,7 @@ public record SplitRequest(
         Objects.requireNonNull(outputDirectory, "outputDirectory");
         Objects.requireNonNull(protection, "protection");
         if (baseName == null || baseName.isBlank()) {
-            throw new IllegalArgumentException("baseName wajib diisi");
+            throw new IllegalArgumentException("baseName is required");
         }
     }
 }

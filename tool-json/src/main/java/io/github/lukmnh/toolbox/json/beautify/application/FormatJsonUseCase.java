@@ -32,7 +32,7 @@ public final class FormatJsonUseCase {
             CancellationToken cancellation) {
         long inputBytes = input.sizeBytes();
         if (options.sortKeys() && !BeautifyLimits.canSortKeys(inputBytes)) {
-            throw new IllegalArgumentException("Sort keys hanya untuk input ≤ 50 MB");
+            throw new IllegalArgumentException("Sort keys is only available for input ≤ 50 MB");
         }
         Path target = options.action().writesOutput() ? output : null;
         long started = System.nanoTime();

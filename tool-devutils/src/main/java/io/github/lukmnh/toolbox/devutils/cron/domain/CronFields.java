@@ -15,7 +15,7 @@ public record CronFields(CronTarget target, List<CronFieldKind> layout, List<Str
         layout = List.copyOf(layout);
         values = List.copyOf(values);
         if (layout.size() != values.size()) {
-            throw new IllegalArgumentException("Jumlah field tidak cocok dengan layout");
+            throw new IllegalArgumentException("Field count does not match the layout");
         }
     }
 
