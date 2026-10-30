@@ -124,7 +124,7 @@ stateDiagram-v2
     Running --> Failed: exception
     Succeeded --> Idle: tampilkan hasil + aktifkan Download
     Cancelled --> Idle: bersihkan temp, kontrol aktif lagi
-    Failed --> Idle: ErrorDialogs (pesan Indonesia + nama file), log ke ~/.toolbox/logs
+    Failed --> Idle: ErrorDialogs (pesan Indonesia + nama file), log ke <folder aplikasi>/logs
 ```
 
 ## E. JSON Viewer (File Besar)

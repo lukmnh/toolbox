@@ -13,11 +13,14 @@ import java.util.List;
 import java.util.Set;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
@@ -28,6 +31,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 /** Tab Base64: kartu opsi di atas, lalu area kerja mode Teks atau mode File. */
@@ -36,6 +41,8 @@ final class Base64Pane extends VBox {
     private static final double EDITOR_HEIGHT = 320;
     private static final double PREVIEW_HEIGHT = 220;
     private static final double IMAGE_PREVIEW_MAX = 360;
+    private static final double FULL_PREVIEW_PADDING = 24;
+    private static final double FULL_PREVIEW_SCREEN_RATIO = 0.8;
 
     private final Base64ViewModel viewModel;
     private final Window owner;
@@ -219,8 +226,15 @@ final class Base64Pane extends VBox {
         copy.disableProperty().bind(viewModel.canCopyFileResult().not());
         Button download = ToolLayout.accentButton(Messages.get("download.button"), viewModel::download);
         Button saveAs = ToolLayout.button(Messages.get("download.saveAs.button"), viewModel::saveAs);
+        Button viewFull = ToolLayout.button(Messages.get("devutils.encoder.file.viewFull"), this::openFullPreview);
+        bindVisible(
+                viewFull,
+                Bindings.createBooleanBinding(
+                        () -> viewModel.fileResultProperty().get() instanceof FileResult.Decoded decoded
+                                && decoded.image() instanceof FileResult.ImagePreview.Allowed,
+                        viewModel.fileResultProperty()));
         HBox actions = ToolLayout.row(
-                summary, ToolLayout.spacer(), copy, ClipboardActions.clearButton(notifier), saveAs, download);
+                summary, ToolLayout.spacer(), viewFull, copy, ClipboardActions.clearButton(notifier), saveAs, download);
 
         VBox card = ToolLayout.card(
                 Messages.get("devutils.encoder.file.result"), List.of(), actions, previewHost, truncated, imageNote);
@@ -266,6 +280,35 @@ final class Base64Pane extends VBox {
                 image.setVisible(true);
             }
         }
+    }
+
+    /** Window ukuran asli; dimensi & byte sudah lolos SecurityLimits di ViewModel, aman decode full-res. */
+    private void openFullPreview() {
+        if (!(viewModel.fileResultProperty().get() instanceof FileResult.Decoded decoded)
+                || !(decoded.image() instanceof FileResult.ImagePreview.Allowed allowed)) {
+            return;
+        }
+        ImageView full = new ImageView(new Image(decoded.output().toUri().toString(), true));
+        // fitTo* bikin gambar kecil tetap di tengah; gambar besar tetap scroll/pan
+        ScrollPane scroll = new ScrollPane(new StackPane(full));
+        scroll.setPannable(true);
+        scroll.setFitToWidth(true);
+        scroll.setFitToHeight(true);
+
+        Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+        double width =
+                Math.min(allowed.size().width() + FULL_PREVIEW_PADDING, screen.getWidth() * FULL_PREVIEW_SCREEN_RATIO);
+        double height = Math.min(
+                allowed.size().height() + FULL_PREVIEW_PADDING, screen.getHeight() * FULL_PREVIEW_SCREEN_RATIO);
+
+        Scene scene = new Scene(scroll, width, height);
+        scene.getStylesheets().setAll(owner.getScene().getStylesheets()); // ikut theme aktif
+        Stage stage = new Stage();
+        stage.initOwner(owner);
+        stage.setTitle(Messages.format(
+                "devutils.encoder.file.viewFull.title", decoded.output().getFileName()));
+        stage.setScene(scene);
+        stage.show();
     }
 
     private void chooseFile() {

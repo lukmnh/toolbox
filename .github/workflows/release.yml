@@ -49,14 +49,17 @@ jobs:
             --dest dist
           echo "ASSET=Toolbox-${VER}-${{ matrix.platform }}.zip" >> "$GITHUB_ENV"
 
+      - name: Add logs folder
+        run: mkdir -p dist/Toolbox/logs
+
       - name: Zip (Linux)
         if: runner.os == 'Linux'
         run: cd dist && zip -qr "../$ASSET" Toolbox
 
       - name: Zip (Windows)
         if: runner.os == 'Windows'
-        shell: pwsh
-        run: Compress-Archive -Path dist/Toolbox -DestinationPath $env:ASSET
+        # 7z, bukan Compress-Archive: Compress-Archive bisa melewatkan folder kosong
+        run: cd dist && 7z a -tzip "../$ASSET" Toolbox
 
       - uses: actions/upload-artifact@v7
         with:

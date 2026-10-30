@@ -248,7 +248,7 @@ Preset kompres:
 | NFR-6 | Platform | Windows 11 dan Ubuntu 22.04/24.04 dengan perilaku identik |
 | NFR-7 | Bahasa | Semua teks UI berbahasa Indonesia dan terpusat di satu file resource |
 | NFR-8 | Tampilan | Modern dan bersih, minimal 1200×800, tema terang dan gelap |
-| NFR-9 | Keandalan | Error tercatat di `~/.toolbox/logs/` (rotasi maks 5 file × 1 MB) |
+| NFR-9 | Keandalan | Gagal, error, dan crash tercatat di `<folder aplikasi>/logs/`, fallback `~/.toolbox/logs/` (rotasi maks 5 file × 1 MB) |
 | NFR-10 | Pemeliharaan | Clean Architecture per tool, dijaga oleh test arsitektur otomatis. Tool baru tidak mengubah tool lain |
 | NFR-11 | Kualitas | Setiap perubahan lulus CI (build, test, format) di Ubuntu dan Windows sebelum merge |
 
@@ -261,7 +261,7 @@ Tanpa database. Semua data lokal di folder home user:
 | `~/.toolbox/settings.json` | Folder download, "selalu tanya lokasi", tema, ukuran/posisi window, state sidebar | |
 | `~/.toolbox/recent.json` | Tool terakhir dipakai, file JSON terakhir dibuka | Maks 4 tool, 10 file |
 | `~/.toolbox/signature.png` | Tanda tangan terakhir | Bisa ditimpa kapan saja |
-| `~/.toolbox/logs/` | Log aplikasi | Tidak berisi isi dokumen atau secret key |
+| `<folder aplikasi>/logs/` | Log aplikasi (fallback `~/.toolbox/logs/` bila folder aplikasi read-only) | Tidak berisi isi dokumen atau secret key |
 
 File sementara dibersihkan saat tool ditutup atau aplikasi keluar.
 

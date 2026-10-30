@@ -1,5 +1,6 @@
 package io.github.lukmnh.toolbox.common.task;
 
+import java.lang.System.Logger.Level;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,6 +14,8 @@ import javafx.concurrent.Task;
  * memanggil callback mana pun.
  */
 public final class TaskRunner implements AutoCloseable {
+
+    private static final System.Logger LOG = System.getLogger(TaskRunner.class.getName());
 
     private final ExecutorService executor;
 
@@ -38,6 +41,8 @@ public final class TaskRunner implements AutoCloseable {
         if (error instanceof TaskCancelledException) {
             return;
         }
+        // Hanya nama tipe: pesan exception bisa memuat isi dokumen user (Security Requirements #5)
+        LOG.log(Level.WARNING, "Background task gagal: " + error.getClass().getName());
         onFailure.accept(error);
     }
 
