@@ -40,6 +40,11 @@ public final class SqlTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixal-database-2-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

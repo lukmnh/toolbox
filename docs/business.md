@@ -154,6 +154,10 @@ Berlaku untuk semua tool PDF, JSON, Base64, dan Text Diff.
 | FR-DU-13 | Text Diff | Copy dan download unified diff (`.diff`) |
 | FR-DU-14 | Base64 | Encode/decode teks: charset, varian Standard/URL-safe/MIME, opsi tanpa padding |
 | FR-DU-15 | Base64 | Encode file ke Base64 (opsi data URI). Decode Base64 ke file dengan deteksi tipe dan preview gambar |
+| FR-DU-16 | Git Builder | Builder 18 command git (clone, add, commit, branch, switch, merge, rebase, pull, push, fetch, stash, log, diff, reset, restore, tag, revert, cherry-pick): penjelasan per token, peringatan opsi destruktif dan opsi yang bentrok. Hanya menyusun command, tidak menjalankan git |
+| FR-DU-17 | Git Builder | Cheatsheet syntax git per grup (setup, inspect, branch, commit, remote, undo, stash) dengan search dan copy per baris |
+| FR-DU-18 | Mock Data | Generator data uji: 13 tipe kolom (sequence, UUID, nama, email, telepon, alamat, kota, integer, decimal, boolean, tanggal, enum, pattern), locale ID/EN, seed reproducible, output JSON / CSV / SQL INSERT |
+| FR-DU-19 | Mock Data | Preview 100 baris; download sampai 100.000 baris secara streaming di background (bisa dibatalkan). CSV lewat formula guard, nama tabel/kolom divalidasi, email hanya domain example.* (RFC 2606) |
 
 ---
 
@@ -259,11 +263,12 @@ Tanpa database. Semua data lokal di folder home user:
 | Lokasi | Isi | Keterangan |
 |---|---|---|
 | `~/.toolbox/settings.json` | Folder download, "selalu tanya lokasi", tema, ukuran/posisi window, state sidebar | |
-| `~/.toolbox/recent.json` | Tool terakhir dipakai, file JSON terakhir dibuka | Maks 4 tool, 10 file |
+| `~/.toolbox/recent.json` | File JSON terakhir dibuka | Maks 10 file |
+| `~/.toolbox/tool-usage.properties` | Tool favorit dan tool terakhir dipakai | Maks 6 recent |
 | `~/.toolbox/signature.png` | Tanda tangan terakhir | Bisa ditimpa kapan saja |
 | `<folder aplikasi>/logs/` | Log aplikasi (fallback `~/.toolbox/logs/` bila folder aplikasi read-only) | Tidak berisi isi dokumen atau secret key |
 
-File sementara dibersihkan saat tool ditutup atau aplikasi keluar.
+File sementara dibersihkan saat tool ditutup atau aplikasi keluar. Tombol **Clear cache** di header menghapus temp, log lama hasil rotasi, dan daftar recent (tool dan file JSON); favorit dan settings tetap.
 
 ## 9. Kriteria Penerimaan Rilis v0.1.0
 

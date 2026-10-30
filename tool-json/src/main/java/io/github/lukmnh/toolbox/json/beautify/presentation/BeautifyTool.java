@@ -48,6 +48,11 @@ public final class BeautifyTool implements Tool {
 
     /** "Open with" untuk {@code .json} diarahkan ke JSON Viewer. */
     @Override
+    public String iconLiteral() {
+        return "remixal-braces-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

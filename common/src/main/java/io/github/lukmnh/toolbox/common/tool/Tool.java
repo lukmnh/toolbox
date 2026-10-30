@@ -21,6 +21,11 @@ public interface Tool {
 
     ToolCategory category();
 
+    /** Literal ikon Ikonli Remix Icon (varian {@code -line}), misalnya {@code "remixal-key-2-line"}. */
+    default String iconLiteral() {
+        return "remixmz-tools-line";
+    }
+
     /** Ekstensi (huruf kecil, tanpa titik) yang bisa dibuka lewat "Open with". Kosong jika tidak ada. */
     Set<String> openableExtensions();
 

@@ -24,6 +24,8 @@ public final class FileLogging {
     private static final String FORMAT_PROPERTY = "java.util.logging.SimpleFormatter.format";
     private static final String FORMAT = "%1$tF %1$tT %4$s %3$s - %5$s%6$s%n";
 
+    private static volatile Path activeDirectory;
+
     private FileLogging() {}
 
     /** Gagal pasang tidak membatalkan startup; folder berikutnya dicoba, alasan ditulis ke stderr. */
@@ -38,12 +40,18 @@ public final class FileLogging {
                 handler.setLevel(Level.WARNING);
                 handler.setFormatter(new SimpleFormatter());
                 Logger.getLogger("").addHandler(handler);
+                activeDirectory = directory;
                 return Optional.of(directory);
             } catch (IOException | SecurityException e) {
                 System.err.println("Tidak bisa menulis log ke " + directory + ": " + e);
             }
         }
         return Optional.empty();
+    }
+
+    /** Folder log yang sedang dipakai; kosong bila {@link #install()} belum dipanggil atau gagal. */
+    public static Optional<Path> directory() {
+        return Optional.ofNullable(activeDirectory);
     }
 
     /** {@code logs} di samping aplikasi hasil jpackage (bisa read-only), fallback {@code ~/.toolbox/logs}. */

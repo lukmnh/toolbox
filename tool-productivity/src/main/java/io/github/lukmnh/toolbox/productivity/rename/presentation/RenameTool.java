@@ -39,6 +39,11 @@ public final class RenameTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixal-file-edit-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

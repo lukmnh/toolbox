@@ -61,6 +61,18 @@
     -tb-group-6-strong: #6f42c1;
     -tb-match: #fde68a;
     -tb-selection: #d10a14;
+    /* --- Aksen kategori: soft = latar tile ikon, strong = glyph/hover border (>= 4.5:1 di atas soft) --- */
+    -tb-cat-pdf: #993c1d;
+    -tb-cat-pdf-soft: #faece7;
+    -tb-cat-json: #185fa5;
+    -tb-cat-json-soft: #e6f1fb;
+    -tb-cat-devutils: #534ab7;
+    -tb-cat-devutils-soft: #eeedfe;
+    -tb-cat-productivity: #0f6e56;
+    -tb-cat-productivity-soft: #e1f5ee;
+    /* Default bila node tidak berada di dalam class kategori */
+    -tb-cat: -tb-text;
+    -tb-cat-soft: -tb-surface-alt;
 
     /* --- Mapping ke token modena --- */
     -fx-base: -tb-surface;
@@ -535,15 +547,23 @@
 }
 .app-name { -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -tb-text; }
 .current-tool { -fx-text-fill: -tb-text-muted; -fx-font-size: 13px; }
-.button.sidebar-toggle {
+/* Brand mark: kotak aksen 10px di depan nama aplikasi */
+.brand-mark {
+    -fx-background-color: -tb-accent;
+    -fx-min-width: 10; -fx-min-height: 10;
+    -fx-max-width: 10; -fx-max-height: 10;
+}
+/* Tombol ikon di header (sidebar, clear cache, tema): ghost, glyph 18px */
+.button.icon-button {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
-    -fx-padding: 4 8 4 8;
-    -fx-font-size: 16px;
-    -fx-text-fill: -tb-text;
+    -fx-background-radius: 6;
+    -fx-padding: 6;
+    -fx-cursor: hand;
 }
-.button.sidebar-toggle:hover { -fx-background-color: -tb-surface-alt; }
-.button.sidebar-toggle:pressed { -fx-background-color: -tb-pressed; }
+.button.icon-button:hover { -fx-background-color: -tb-surface-alt; }
+.button.icon-button:pressed { -fx-background-color: -tb-pressed; }
+.icon-button .ikonli-font-icon { -fx-icon-color: -tb-text; -fx-icon-size: 18; }
 
 /* Toggle tema terang/gelap di header: tombol ghost, tidak pernah tampak "tertekan" */
 .theme-toggle, .button.theme-toggle, .toggle-button.theme-toggle, .toggle-button.theme-toggle:selected {
@@ -580,8 +600,10 @@
     -fx-background-radius: 0;
     -fx-text-fill: -tb-text;
     -fx-padding: 6 8 6 12;
+    -fx-graphic-text-gap: 10;
     -fx-cursor: hand;
 }
+.sidebar-button .ikonli-font-icon { -fx-icon-color: -tb-text-muted; -fx-icon-size: 16; }
 .button.sidebar-button:hover { -fx-background-color: -tb-surface-alt; }
 .button.sidebar-button:pressed { -fx-background-color: -tb-pressed; }
 .button.sidebar-button.active, .button.sidebar-button.active:hover {
@@ -621,32 +643,113 @@
  * HOME
  * ===================================================================================================== */
 .home-view, .home-view > .viewport { -fx-background-color: -tb-bg; }
-.home-title { -fx-font-size: 40px; -fx-font-weight: bold; -fx-text-fill: -tb-text; }
-.home-search { -fx-pref-width: 480; -fx-max-width: 480; }
-/* Judul kategori = headline dengan rule tegas selebar kolom */
-.category-title {
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-text-fill: -tb-text;
-    -fx-border-color: -tb-rule transparent transparent transparent;
-    -fx-border-width: 2 0 0 0;
-    -fx-padding: 8 0 0 0;
-    -fx-max-width: 100000;
+
+/* Hero: eyebrow mono, jumlah tool besar + titik aksen, rule tegas 2px di bawah */
+.home-hero {
+    -fx-border-color: transparent transparent -tb-rule transparent;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 0 0 16 0;
 }
-/* Kartu tool: blok putih, hairline; hover = bingkai hitam + nama tool merah. Lebar border konstan (no layout shift). */
+.home-eyebrow, .section-eyebrow {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -tb-text-muted;
+}
+.home-title { -fx-font-size: 40px; -fx-font-weight: bold; -fx-text-fill: -tb-text; }
+.home-title-dot { -fx-text-fill: -tb-accent; }
+.home-subtitle { -fx-font-size: 16px; -fx-text-fill: -tb-text-muted; }
+
+/* Search: box ber-ikon membungkus TextField tanpa bingkai; :focused di-set dari kode */
+.home-search-box {
+    -fx-background-color: -tb-surface;
+    -fx-background-radius: 8;
+    -fx-border-color: -tb-control-border;
+    -fx-border-radius: 8;
+    -fx-padding: 2 10 2 10;
+    -fx-pref-width: 320;
+    -fx-max-width: 320;
+}
+.home-search-box:focused { -fx-border-color: -tb-focus; }
+.home-search-box .ikonli-font-icon { -fx-icon-color: -tb-text-muted; -fx-icon-size: 16; }
+.home-search-box .text-field, .home-search-box .text-field:focused {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 6 0 6 0;
+}
+.kbd {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 11px;
+    -fx-text-fill: -tb-text-muted;
+    -fx-border-color: -tb-border;
+    -fx-border-radius: 4;
+    -fx-padding: 0 4 0 4;
+}
+
+/* Header kategori: hairline atas, judul kiri, "01 / 4 tools" mono kanan */
+.section-header {
+    -fx-border-color: -tb-border transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 12 0 0 0;
+}
+.category-title { -fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: -tb-text; }
+.category-meta { -fx-font-family: "Monospaced"; -fx-font-size: 11px; -fx-text-fill: -tb-text-muted; }
+
+/* Tile ikon: latar soft + glyph strong dari token kategori (diwarisi lewat looked-up color) */
+.category-pdf { -tb-cat: -tb-cat-pdf; -tb-cat-soft: -tb-cat-pdf-soft; }
+.category-json { -tb-cat: -tb-cat-json; -tb-cat-soft: -tb-cat-json-soft; }
+.category-devutils { -tb-cat: -tb-cat-devutils; -tb-cat-soft: -tb-cat-devutils-soft; }
+.category-productivity { -tb-cat: -tb-cat-productivity; -tb-cat-soft: -tb-cat-productivity-soft; }
+.tool-icon, .tool-icon-small { -fx-background-color: -tb-cat-soft; }
+.tool-icon {
+    -fx-background-radius: 10;
+    -fx-min-width: 36; -fx-min-height: 36;
+    -fx-max-width: 36; -fx-max-height: 36;
+}
+.tool-icon-small {
+    -fx-background-radius: 6;
+    -fx-min-width: 22; -fx-min-height: 22;
+    -fx-max-width: 22; -fx-max-height: 22;
+}
+.tool-icon .ikonli-font-icon, .tool-icon-small .ikonli-font-icon { -fx-icon-color: -tb-cat; }
+.tool-icon .ikonli-font-icon { -fx-icon-size: 20; }
+.tool-icon-small .ikonli-font-icon { -fx-icon-size: 14; }
+
+/* Kartu tool: sudut 12px, hairline; hover = bingkai warna kategori + naik 2px (animasi di kode). Lebar border konstan. */
 .tool-card {
     -fx-background-color: -tb-surface;
-    -fx-background-radius: 0;
+    -fx-background-radius: 12;
     -fx-border-color: -tb-border;
+    -fx-border-radius: 12;
     -fx-border-width: 1;
     -fx-padding: 16;
     -fx-cursor: hand;
 }
-.tool-card:hover { -fx-border-color: -tb-rule; }
+.tool-card:hover { -fx-border-color: -tb-cat; }
 .tool-card:pressed { -fx-background-color: -tb-surface-alt; }
 .tool-card-name { -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -tb-text; }
-.tool-card:hover .tool-card-name { -fx-text-fill: -tb-accent; }
 .tool-card-description { -fx-text-fill: -tb-text-muted; }
+.tool-card-index { -fx-font-family: "Monospaced"; -fx-font-size: 11px; -fx-text-fill: -tb-text-muted; }
+.button.favorite-toggle {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 6;
+    -fx-padding: 4;
+}
+.button.favorite-toggle:hover { -fx-background-color: -tb-surface-alt; }
+.favorite-toggle .ikonli-font-icon { -fx-icon-color: -tb-text-muted; -fx-icon-size: 16; }
+.favorite-toggle:favorite .ikonli-font-icon { -fx-icon-color: -tb-warning; }
+
+/* Recent: pill dengan ikon bulat kecil */
+.button.recent-pill {
+    -fx-background-color: -tb-border, -tb-surface;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 999;
+    -fx-padding: 4 12 4 4;
+    -fx-graphic-text-gap: 8;
+}
+.button.recent-pill:hover { -fx-background-color: -tb-text, -tb-surface-alt; }
+.recent-pill .tool-icon-small { -fx-background-radius: 999; }
 
 /* =====================================================================================================
  * TOOL UMUM (ToolLayout, Tone)

@@ -17,4 +17,9 @@ public enum ToolCategory {
     public String messageKey() {
         return messageKey;
     }
+
+    /** Style class untuk warna aksen kategori, misalnya {@code category-pdf}. */
+    public String styleClass() {
+        return "category-" + messageKey.substring(messageKey.indexOf('.') + 1);
+    }
 }

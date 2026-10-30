@@ -17,7 +17,7 @@ Tool yang tersedia:
 |---|---|
 | PDF | Isi & TTD, Gabung, Pisah, Kompres |
 | Data | JSON Viewer, JSON Beautify, CSV Kolom: Split & Merge |
-| Dev Utils | JWT Debugger, Encoder/Decoder, Hash Generator, Checksum, Text Diff, Regex Tester, SQL Formatter, Cron Builder, QR Code |
+| Dev Utils | JWT Debugger, Encoder/Decoder, Hash Generator, Checksum, Text Diff, Regex Tester, SQL Formatter, Cron Builder, QR Code, Git Command Builder, Mock Data Generator |
 | Extra Tools | Text Tools, Batch Rename, Installment Simulator, Budget |
 
 Detail kebutuhan dan aturan tiap tool: [docs/business.md](docs/business.md).

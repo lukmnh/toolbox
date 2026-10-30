@@ -42,6 +42,11 @@ public final class HashTool implements Tool {
 
     /** Input berupa teks, bukan file. */
     @Override
+    public String iconLiteral() {
+        return "remixal-hashtag";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

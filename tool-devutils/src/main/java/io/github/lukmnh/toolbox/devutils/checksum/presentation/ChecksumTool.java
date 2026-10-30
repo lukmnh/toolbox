@@ -41,6 +41,11 @@ public final class ChecksumTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixal-fingerprint-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

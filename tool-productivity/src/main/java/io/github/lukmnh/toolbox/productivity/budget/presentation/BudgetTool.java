@@ -43,6 +43,11 @@ public final class BudgetTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixmz-wallet-3-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

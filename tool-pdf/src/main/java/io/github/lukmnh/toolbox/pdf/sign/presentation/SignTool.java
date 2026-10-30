@@ -40,6 +40,11 @@ public final class SignTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixmz-quill-pen-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of("pdf");
     }

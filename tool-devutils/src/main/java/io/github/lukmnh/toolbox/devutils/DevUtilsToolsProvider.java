@@ -1,5 +1,6 @@
 package io.github.lukmnh.toolbox.devutils;
 
+import io.github.lukmnh.toolbox.common.security.CsvFormulaGuard;
 import io.github.lukmnh.toolbox.common.tool.Tool;
 import io.github.lukmnh.toolbox.common.tool.ToolProvider;
 import io.github.lukmnh.toolbox.devutils.checksum.application.ExportSumsUseCase;
@@ -30,6 +31,8 @@ import io.github.lukmnh.toolbox.devutils.encoder.domain.Base64Files;
 import io.github.lukmnh.toolbox.devutils.encoder.infrastructure.JdkBase64Files;
 import io.github.lukmnh.toolbox.devutils.encoder.presentation.EncoderTool;
 import io.github.lukmnh.toolbox.devutils.encoder.presentation.EncoderUseCases;
+import io.github.lukmnh.toolbox.devutils.git.application.BuildGitCommandUseCase;
+import io.github.lukmnh.toolbox.devutils.git.presentation.GitTool;
 import io.github.lukmnh.toolbox.devutils.hash.application.ExportPemUseCase;
 import io.github.lukmnh.toolbox.devutils.hash.application.GenerateKeyPairUseCase;
 import io.github.lukmnh.toolbox.devutils.hash.application.GenerateSecretUseCase;
@@ -48,6 +51,12 @@ import io.github.lukmnh.toolbox.devutils.jwt.domain.JwtSignatureVerifier;
 import io.github.lukmnh.toolbox.devutils.jwt.infrastructure.JacksonJwtJson;
 import io.github.lukmnh.toolbox.devutils.jwt.infrastructure.JdkPublicKeyParser;
 import io.github.lukmnh.toolbox.devutils.jwt.presentation.JwtTool;
+import io.github.lukmnh.toolbox.devutils.mock.application.ExportMockUseCase;
+import io.github.lukmnh.toolbox.devutils.mock.application.PreviewMockUseCase;
+import io.github.lukmnh.toolbox.devutils.mock.domain.MockRenderer;
+import io.github.lukmnh.toolbox.devutils.mock.infrastructure.JdkMockFiles;
+import io.github.lukmnh.toolbox.devutils.mock.presentation.MockTool;
+import io.github.lukmnh.toolbox.devutils.mock.presentation.MockUseCases;
 import io.github.lukmnh.toolbox.devutils.qr.application.ExportQrPngUseCase;
 import io.github.lukmnh.toolbox.devutils.qr.application.GenerateQrUseCase;
 import io.github.lukmnh.toolbox.devutils.qr.infrastructure.ImageIoQrPngWriter;
@@ -94,7 +103,9 @@ public final class DevUtilsToolsProvider implements ToolProvider {
                 regexTool(),
                 sqlTool(),
                 cronTool(),
-                qrTool());
+                qrTool(),
+                new GitTool(new BuildGitCommandUseCase()),
+                mockTool());
     }
 
     private static JwtTool jwtTool() {
@@ -159,6 +170,13 @@ public final class DevUtilsToolsProvider implements ToolProvider {
     private static CronTool cronTool() {
         return new CronTool(new CronUseCases(
                 new ExplainCronUseCase(new CronUtilsEngine(), Clock.systemUTC()), new BuildCronUseCase()));
+    }
+
+    private static MockTool mockTool() {
+        // CsvFormulaGuard disuntik di sini: domain hanya boleh JDK (ArchitectureTest)
+        MockRenderer renderer = new MockRenderer(CsvFormulaGuard::neutralize);
+        return new MockTool(new MockUseCases(
+                new PreviewMockUseCase(renderer), new ExportMockUseCase(renderer, new JdkMockFiles())));
     }
 
     private static QrTool qrTool() {

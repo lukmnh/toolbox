@@ -42,6 +42,11 @@ public final class CompressTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixal-file-zip-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

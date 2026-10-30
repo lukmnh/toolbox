@@ -49,6 +49,14 @@
     -tb-group-6-strong: #b39af5;
     -tb-match: #5c4a12;
     -tb-selection: #ff5a52;
+    -tb-cat-pdf: #f5c4b3;
+    -tb-cat-pdf-soft: #712b13;
+    -tb-cat-json: #b5d4f4;
+    -tb-cat-json-soft: #0c447c;
+    -tb-cat-devutils: #cecbf6;
+    -tb-cat-devutils-soft: #3c3489;
+    -tb-cat-productivity: #9fe1cb;
+    -tb-cat-productivity-soft: #085041;
 
     /* Ladder modena: teks terang di latar gelap = off-white, bukan putih murni */
     -fx-light-text-color: #ededed;

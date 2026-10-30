@@ -2,6 +2,8 @@ package io.github.lukmnh.toolbox.app;
 
 import io.github.lukmnh.toolbox.app.routing.OpenWithRouter;
 import io.github.lukmnh.toolbox.app.settings.ThemeStore;
+import io.github.lukmnh.toolbox.app.settings.ToolUsage;
+import io.github.lukmnh.toolbox.app.settings.ToolUsageStore;
 import io.github.lukmnh.toolbox.app.shell.MainShell;
 import io.github.lukmnh.toolbox.app.shell.ToolRegistry;
 import io.github.lukmnh.toolbox.common.download.DownloadLocationResolver;
@@ -90,7 +92,10 @@ public final class ToolboxApplication extends Application {
                 stage,
                 // shell dibuat setelah context; lambda baru dipanggil saat user menekan tombol di tool
                 (toolId, file) -> shell.openFile(toolId, file));
-        shell = new MainShell(tools, context, theme, AppVersion.current());
+        ToolUsageStore usageStore = ToolUsageStore.inDataDirectory();
+        ObjectProperty<ToolUsage> usage = new SimpleObjectProperty<>(usageStore.load());
+        usage.addListener((observable, previous, current) -> saveUsage(usageStore, current, notifier));
+        shell = new MainShell(tools, context, theme, usage, AppVersion.current());
         shellHost.getChildren().add(shell);
 
         Scene scene = new Scene(root, MIN_WIDTH, MIN_HEIGHT);
@@ -141,6 +146,16 @@ public final class ToolboxApplication extends Application {
         } catch (IOException e) {
             LOG.log(Level.WARNING, "Gagal menyimpan pilihan tema", e);
             notifier.warning(Messages.format("app.theme.saveError", ErrorDialogs.describe(e)));
+        }
+    }
+
+    /** Gagal simpan favorit/recent tidak mengganggu kerja user; dicatat ke log dan diberi tahu lewat toast. */
+    private static void saveUsage(ToolUsageStore store, ToolUsage usage, ToastNotifier notifier) {
+        try {
+            store.save(usage);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Gagal menyimpan favorit dan recent tool", e);
+            notifier.warning(Messages.format("app.usage.saveError", ErrorDialogs.describe(e)));
         }
     }
 

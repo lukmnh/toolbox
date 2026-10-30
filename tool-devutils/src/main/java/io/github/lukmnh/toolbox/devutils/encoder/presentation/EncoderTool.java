@@ -41,6 +41,11 @@ public final class EncoderTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixal-code-box-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

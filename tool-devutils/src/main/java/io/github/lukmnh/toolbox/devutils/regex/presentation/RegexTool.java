@@ -39,6 +39,11 @@ public final class RegexTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixal-asterisk";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

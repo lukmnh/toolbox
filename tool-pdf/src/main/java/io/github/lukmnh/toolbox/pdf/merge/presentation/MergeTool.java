@@ -39,6 +39,11 @@ public final class MergeTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixal-file-copy-2-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

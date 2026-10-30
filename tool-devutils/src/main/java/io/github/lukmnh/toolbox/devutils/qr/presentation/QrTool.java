@@ -41,6 +41,11 @@ public final class QrTool implements Tool {
 
     /** Input diketik, bukan file. */
     @Override
+    public String iconLiteral() {
+        return "remixmz-qr-code-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

@@ -40,6 +40,11 @@ public final class DiffTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixmz-split-cells-horizontal";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

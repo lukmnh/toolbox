@@ -43,6 +43,11 @@ public final class CalculatorTool implements Tool {
 
     /** Input berupa angka yang diketik, bukan file. */
     @Override
+    public String iconLiteral() {
+        return "remixal-calculator-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

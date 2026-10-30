@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.lukmnh.toolbox</groupId>
         <artifactId>toolbox-parent</artifactId>
-        <version>1.1.0</version>
+        <version>1.2.0</version>
     </parent>
 
     <artifactId>app</artifactId>
@@ -43,6 +43,15 @@
         <dependency>
             <groupId>org.commonmark</groupId>
             <artifactId>commonmark</artifactId>
+        </dependency>
+        <!-- Ikon shell (Home, sidebar, header); tool cukup mengembalikan literal String -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-remixicon-pack</artifactId>
         </dependency>
     </dependencies>
 

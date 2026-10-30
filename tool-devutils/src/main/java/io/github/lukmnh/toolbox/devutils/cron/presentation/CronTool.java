@@ -39,6 +39,11 @@ public final class CronTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixmz-time-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

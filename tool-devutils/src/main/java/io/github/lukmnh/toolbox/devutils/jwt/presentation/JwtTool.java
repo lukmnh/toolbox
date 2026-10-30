@@ -42,6 +42,11 @@ public final class JwtTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixal-key-2-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

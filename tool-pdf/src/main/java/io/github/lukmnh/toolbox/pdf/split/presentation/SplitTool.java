@@ -42,6 +42,11 @@ public final class SplitTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixmz-scissors-cut-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return Set.of();
     }

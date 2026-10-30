@@ -1,9 +1,13 @@
 package io.github.lukmnh.toolbox.app.shell;
 
+import io.github.lukmnh.toolbox.app.settings.AppCache;
+import io.github.lukmnh.toolbox.app.settings.ToolUsage;
 import io.github.lukmnh.toolbox.common.i18n.Messages;
 import io.github.lukmnh.toolbox.common.settings.Theme;
 import io.github.lukmnh.toolbox.common.tool.Tool;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
+import io.github.lukmnh.toolbox.common.ui.ByteSizeFormat;
+import io.github.lukmnh.toolbox.common.ui.ErrorDialogs;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -34,22 +38,31 @@ public final class MainShell extends BorderPane {
     private final List<Tool> tools;
     private final ToolContext context;
     private final ObjectProperty<Theme> theme;
+    private final ObjectProperty<ToolUsage> usage;
     private final ToolNavigator navigator;
     private final Sidebar sidebar;
     private final Label currentTitle = new Label();
+    private final AppCache cache = AppCache.forCurrentSession();
     private HomeView home;
 
     /**
      * @param theme tema aktif; toggle di header mengubah properti ini, pemilik (Application) menerapkan stylesheet dan
      *     menyimpannya
+     * @param usage favorit dan recent; shell mengubahnya, pemilik (Application) yang menyimpan
      * @param version versi aplikasi untuk footer
      */
-    public MainShell(List<Tool> tools, ToolContext context, ObjectProperty<Theme> theme, String version) {
+    public MainShell(
+            List<Tool> tools,
+            ToolContext context,
+            ObjectProperty<Theme> theme,
+            ObjectProperty<ToolUsage> usage,
+            String version) {
         this.tools = List.copyOf(tools);
         this.context = context;
         this.theme = theme;
+        this.usage = usage;
         this.navigator = new ToolNavigator(context, this::setCenter);
-        this.sidebar = new Sidebar(this.tools, this::openTool, this::showHome);
+        this.sidebar = new Sidebar(this.tools, usage, this::openTool, this::showHome);
         getStyleClass().add("main-shell");
         setTop(header());
         setLeft(sidebar);
@@ -58,31 +71,72 @@ public final class MainShell extends BorderPane {
     }
 
     private HBox header() {
-        Button toggle = new Button("☰");
-        toggle.getStyleClass().add("sidebar-toggle");
+        Button toggle = iconButton("remixmz-menu-line", "app.nav.toggle");
         toggle.setOnAction(event -> toggleSidebar());
+        Region mark = new Region();
+        mark.getStyleClass().add("brand-mark");
         Label appName = new Label(Messages.get("app.title"));
         appName.getStyleClass().add("app-name");
         currentTitle.getStyleClass().add("current-tool");
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        HBox header = new HBox(12, toggle, appName, currentTitle, spacer, themeToggle());
+        HBox header = new HBox(12, toggle, mark, appName, currentTitle, spacer, clearCacheButton(), themeToggle());
         header.setAlignment(Pos.CENTER_LEFT);
         header.setPadding(new Insets(8, 12, 8, 12));
         header.getStyleClass().add("app-header");
         return header;
     }
 
-    /** Label tombol = tema tujuan, supaya jelas apa yang terjadi saat diklik. */
-    private Button themeToggle() {
+    /** Tombol ikon tanpa teks: tooltip + accessibleText wajib supaya tetap terbaca screen reader. */
+    private static Button iconButton(String literal, String tooltipKey) {
         Button button = new Button();
-        button.getStyleClass().add("theme-toggle");
-        button.setTooltip(new Tooltip(Messages.get("app.theme.tooltip")));
-        button.textProperty()
+        button.setGraphic(ToolIcon.glyph(literal));
+        button.getStyleClass().add("icon-button");
+        button.setTooltip(new Tooltip(Messages.get(tooltipKey)));
+        button.setAccessibleText(Messages.get(tooltipKey));
+        return button;
+    }
+
+    /** Ikon & accessible text = tema tujuan, supaya jelas apa yang terjadi saat diklik. */
+    private Button themeToggle() {
+        Button button = iconButton("remixmz-moon-line", "app.theme.tooltip");
+        button.graphicProperty()
+                .bind(theme.map(
+                        current -> ToolIcon.glyph(current == Theme.DARK ? "remixmz-sun-line" : "remixmz-moon-line")));
+        button.accessibleTextProperty()
                 .bind(theme.map(
                         current -> Messages.get(current == Theme.DARK ? "app.theme.toLight" : "app.theme.toDark")));
         button.setOnAction(event -> theme.set(theme.get().toggled()));
         return button;
+    }
+
+    private Button clearCacheButton() {
+        Button button = iconButton("remixal-delete-bin-line", "app.cache.tooltip");
+        button.setOnAction(event -> clearCache());
+        return button;
+    }
+
+    /** Konfirmasi dulu (dengan ukuran), lalu tutup tool aktif karena temp miliknya ikut terhapus. */
+    private void clearCache() {
+        boolean confirmed = ErrorDialogs.confirm(
+                context.owner(),
+                Messages.get("app.cache.confirm.header"),
+                Messages.format("app.cache.confirm.detail", ByteSizeFormat.format(cache.size())),
+                Messages.get("app.cache.confirm.button"));
+        if (!confirmed || !navigator.closeActive()) {
+            return;
+        }
+        disposeHome();
+        AppCache.Result result = cache.clear();
+        usage.set(usage.get().withoutRecent());
+        showHomeView();
+        String freed = ByteSizeFormat.format(result.freed());
+        if (result.remaining() > 0) {
+            context.notifier()
+                    .warning(Messages.format("app.cache.partial", freed, ByteSizeFormat.format(result.remaining())));
+        } else {
+            context.notifier().info(Messages.format("app.cache.done", freed));
+        }
     }
 
     private HBox footer(String version) {
@@ -101,6 +155,17 @@ public final class MainShell extends BorderPane {
         scene.getAccelerators().put(new KeyCodeCombination(KeyCode.H, KeyCombination.SHORTCUT_DOWN), this::showHome);
         scene.getAccelerators()
                 .put(new KeyCodeCombination(KeyCode.B, KeyCombination.SHORTCUT_DOWN), this::toggleSidebar);
+        scene.getAccelerators().put(new KeyCodeCombination(KeyCode.K, KeyCombination.SHORTCUT_DOWN), this::focusSearch);
+    }
+
+    /** Ctrl+K dari mana saja: kembali ke Home (bisa dibatalkan user bila ada perubahan) lalu fokus ke search. */
+    private void focusSearch() {
+        if (home == null) {
+            showHome();
+        }
+        if (home != null) {
+            home.focusSearch();
+        }
     }
 
     private void toggleSidebar() {
@@ -112,6 +177,7 @@ public final class MainShell extends BorderPane {
         if (!navigator.open(tool)) {
             return false;
         }
+        usage.set(usage.get().withOpened(tool.id()));
         disposeHome();
         currentTitle.setText("› " + tool.name());
         sidebar.highlight(Optional.of(tool));
@@ -137,7 +203,7 @@ public final class MainShell extends BorderPane {
     }
 
     private void showHomeView() {
-        home = new HomeView(tools, this::openTool, context, theme);
+        home = new HomeView(tools, usage, this::openTool, context, theme);
         setCenter(home);
         currentTitle.setText("");
         sidebar.highlight(Optional.empty());

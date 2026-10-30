@@ -44,6 +44,11 @@ public final class CsvTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixmz-table-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return OPENABLE_EXTENSIONS;
     }

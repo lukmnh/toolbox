@@ -43,6 +43,11 @@ public final class TextTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixmz-text";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return TEXT_EXTENSIONS;
     }

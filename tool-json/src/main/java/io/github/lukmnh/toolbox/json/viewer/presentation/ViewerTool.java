@@ -41,6 +41,11 @@ public final class ViewerTool implements Tool {
     }
 
     @Override
+    public String iconLiteral() {
+        return "remixal-file-search-line";
+    }
+
+    @Override
     public Set<String> openableExtensions() {
         return ViewerViewModel.EXTENSIONS;
     }
