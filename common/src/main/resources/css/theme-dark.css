@@ -1,18 +1,55 @@
-/* Tema gelap: dimuat SETELAH theme-light.css dan hanya mengganti variabel warna. */
+/*
+ * Tema gelap: dimuat SETELAH theme-light.css dan hanya mengganti token warna (struktur Swiss identik).
+ * Aksen dicerahkan (#FF5A52) agar AA sebagai teks di atas surface gelap; teks di atas aksen jadi near-black.
+ */
 .root {
-    -tb-bg: #16181d;
-    -tb-surface: #1f2228;
-    -tb-surface-alt: #2a2e36;
-    -tb-border: #353a44;
-    -tb-text: #e6e8eb;
-    -tb-text-muted: #9aa3ad;
-    -tb-accent: #5b8def;
-    -tb-accent-hover: #7aa3f3;
-    -tb-accent-text: #0d1117;
-    -tb-success: #3fb950;
-    -tb-warning: #d29922;
-    -tb-danger: #f85149;
-    -tb-selection: #7aa3f3;
-}
+    -tb-bg: #0e0e0e;
+    -tb-surface: #161616;
+    -tb-surface-alt: #212121;
+    -tb-pressed: #2c2c2c;
+    -tb-canvas: #0a0a0a;
+    -tb-code-bg: #111111;
+    -tb-border: #2e2e2e;
+    -tb-control-border: #7a7a7a;
+    -tb-rule: #ededed;
+    -tb-text: #ededed;
+    -tb-text-muted: #a3a3a3;
+    -tb-accent: #ff5a52;
+    -tb-accent-hover: #ff7b74;
+    -tb-accent-text: #111111;
+    -tb-accent-soft: #2b1513;
+    -tb-focus: #ff5a52;
+    -tb-highlight: #6b2420;
+    -tb-highlight-text: #ededed;
+    -tb-info: #8dbbe6;
+    -tb-info-soft: #13202c;
+    -tb-success: #78c892;
+    -tb-success-soft: #12231a;
+    -tb-warning: #e6b25a;
+    -tb-warning-soft: #2a2112;
+    -tb-danger: #ff8a80;
+    -tb-danger-soft: #2c1615;
+    -tb-scroll-thumb: #444444;
+    -tb-diff-insert: #10261a;
+    -tb-diff-insert-word: #1f5133;
+    -tb-diff-delete: #2a1314;
+    -tb-diff-delete-word: #6b2224;
+    -tb-diff-change: #2a2210;
+    -tb-group-1: #2c2f6b;
+    -tb-group-1-strong: #8f98f5;
+    -tb-group-2: #0f3d2b;
+    -tb-group-2-strong: #4fd1a0;
+    -tb-group-3: #4a3410;
+    -tb-group-3-strong: #f0b84a;
+    -tb-group-4: #5a1a2e;
+    -tb-group-4-strong: #f47aa0;
+    -tb-group-5: #0f3550;
+    -tb-group-5-strong: #5bb4f0;
+    -tb-group-6: #3a2266;
+    -tb-group-6-strong: #b39af5;
+    -tb-match: #5c4a12;
+    -tb-selection: #ff5a52;
 
-.page-canvas, .page-canvas > .viewport { -fx-background-color: #0d0f12; }
+    /* Ladder modena: teks terang di latar gelap = off-white, bukan putih murni */
+    -fx-light-text-color: #ededed;
+}

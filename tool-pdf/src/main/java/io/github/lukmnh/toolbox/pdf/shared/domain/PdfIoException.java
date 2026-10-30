@@ -12,7 +12,7 @@ public final class PdfIoException extends PdfToolException {
     private final transient Path file;
 
     public PdfIoException(Path file, Throwable cause) {
-        super("Gagal mengakses file: " + file, cause);
+        super("Could not access file: " + file, cause);
         this.file = file;
     }
 

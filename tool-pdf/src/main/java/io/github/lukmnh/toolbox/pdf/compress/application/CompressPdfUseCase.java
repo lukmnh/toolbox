@@ -55,10 +55,10 @@ public final class CompressPdfUseCase {
 
     private static CompressResult finish(CompressionSession session, CompressRequest request, int recompressed) {
         long originalSize = session.originalSize();
-        long resultSize = recompressed == 0 ? originalSize : session.save(request.output());
+        long resultSize = recompressed == 0 ? originalSize : session.save(request.output(), request.protection());
         if (resultSize >= originalSize) {
-            session.copyOriginal(request.output());
-            return new CompressResult(request.output(), originalSize, originalSize, 0, true);
+            long copiedSize = session.copyOriginal(request.output(), request.protection());
+            return new CompressResult(request.output(), originalSize, copiedSize, 0, true);
         }
         return new CompressResult(request.output(), originalSize, resultSize, recompressed, false);
     }

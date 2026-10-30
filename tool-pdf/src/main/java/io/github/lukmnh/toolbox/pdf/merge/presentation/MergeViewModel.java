@@ -7,6 +7,7 @@ import io.github.lukmnh.toolbox.common.tool.ToolContext;
 import io.github.lukmnh.toolbox.pdf.merge.application.MergePdfUseCase;
 import io.github.lukmnh.toolbox.pdf.merge.domain.MergeRequest;
 import io.github.lukmnh.toolbox.pdf.merge.domain.MergeResult;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfFailureHandler;
 import java.nio.file.Path;
@@ -34,6 +35,7 @@ public final class MergeViewModel {
     private final ObservableList<PdfSource> files = FXCollections.observableArrayList();
     private final BooleanProperty busy = new SimpleBooleanProperty();
     private final ObjectProperty<MergeResult> result = new SimpleObjectProperty<>();
+    private final BooleanProperty removeProtection = new SimpleBooleanProperty();
     private final ObjectProperty<RunningTask> currentTask = new SimpleObjectProperty<>();
     private RunningTask runningTask;
 
@@ -43,6 +45,7 @@ public final class MergeViewModel {
         this.tempFiles = tempFiles;
         // Hasil lama tidak berlaku lagi begitu daftar atau urutan file berubah
         files.addListener((ListChangeListener<PdfSource>) change -> result.set(null));
+        removeProtection.addListener((observable, previous, current) -> result.set(null));
     }
 
     public ObservableList<PdfSource> files() {
@@ -51,6 +54,10 @@ public final class MergeViewModel {
 
     public BooleanProperty busyProperty() {
         return busy;
+    }
+
+    public BooleanProperty removeProtectionProperty() {
+        return removeProtection;
     }
 
     public ReadOnlyObjectProperty<MergeResult> resultProperty() {
@@ -88,13 +95,14 @@ public final class MergeViewModel {
     }
 
     public void merge() {
-        List<PdfSource> sources = List.copyOf(files);
-        Path output = tempFiles.createFile(".pdf");
+        MergeRequest request = new MergeRequest(
+                List.copyOf(files),
+                tempFiles.createFile(".pdf"),
+                removeProtection.get() ? OutputProtection.REMOVE : OutputProtection.KEEP);
         busy.set(true);
         runningTask = context.tasks()
                 .submit(
-                        (progress, cancellation) ->
-                                mergeUseCase.execute(new MergeRequest(sources, output), progress, cancellation),
+                        (progress, cancellation) -> mergeUseCase.execute(request, progress, cancellation),
                         result::set,
                         error -> PdfFailureHandler.handle(context.owner(), error, this::retryWithPassword));
         // Juga menangani pembatalan, yang tidak memanggil callback mana pun

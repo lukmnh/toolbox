@@ -21,7 +21,7 @@ public sealed interface Overlay permits Overlay.Text, Overlay.Image {
             requireValidPage(pageIndex);
             Objects.requireNonNull(text, "text");
             if (fontSize <= 0) {
-                throw new IllegalArgumentException("fontSize harus positif: " + fontSize);
+                throw new IllegalArgumentException("fontSize must be positive: " + fontSize);
             }
         }
 
@@ -37,14 +37,14 @@ public sealed interface Overlay permits Overlay.Text, Overlay.Image {
             requireValidPage(pageIndex);
             Objects.requireNonNull(image, "image");
             if (width <= 0 || height <= 0) {
-                throw new IllegalArgumentException("Ukuran gambar harus positif: " + width + "x" + height);
+                throw new IllegalArgumentException("Image size must be positive: " + width + "x" + height);
             }
         }
     }
 
     private static void requireValidPage(int pageIndex) {
         if (pageIndex < 0) {
-            throw new IllegalArgumentException("pageIndex negatif: " + pageIndex);
+            throw new IllegalArgumentException("pageIndex is negative: " + pageIndex);
         }
     }
 }

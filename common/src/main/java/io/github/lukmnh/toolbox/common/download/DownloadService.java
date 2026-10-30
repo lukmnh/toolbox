@@ -2,6 +2,7 @@ package io.github.lukmnh.toolbox.common.download;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
 import io.github.lukmnh.toolbox.common.io.AtomicFiles;
+import io.github.lukmnh.toolbox.common.security.FileNameSanitizer;
 import io.github.lukmnh.toolbox.common.settings.Settings;
 import io.github.lukmnh.toolbox.common.task.TaskRunner;
 import io.github.lukmnh.toolbox.common.ui.ErrorDialogs;
@@ -25,6 +26,9 @@ import javafx.stage.Window;
  *
  * <p>File sumber tidak dipindah, sehingga user bisa men-download ulang. Penyalinan berjalan di background,
  * lalu toast "Buka file / Buka folder" ditampilkan. Semua method harus dipanggil dari FX thread.
+ *
+ * <p>Nama yang disarankan tool berasal dari nama file input (tidak dipercaya), jadi selalu disanitasi di sini
+ * (Security Requirements #6).
  */
 public final class DownloadService {
 
@@ -54,22 +58,24 @@ public final class DownloadService {
             return;
         }
         Path directory = settings.get().downloadDirectory();
-        deliverFile(source, suggestedName, () -> UniqueFileNamer.uniqueFile(directory, suggestedName));
+        String safeName = FileNameSanitizer.sanitize(suggestedName);
+        deliverFile(source, safeName, () -> UniqueFileNamer.uniqueFile(directory, safeName));
     }
 
     /** "Simpan sebagai…": user memilih lokasi dan nama. */
     public void saveAs(Path source, String suggestedName) {
+        String safeName = FileNameSanitizer.sanitize(suggestedName);
         FileChooser chooser = new FileChooser();
         chooser.setTitle(Messages.get("download.saveAs.title"));
-        chooser.setInitialFileName(suggestedName);
+        chooser.setInitialFileName(safeName);
         existingDownloadDirectory().ifPresent(chooser::setInitialDirectory);
-        extensionFilter(suggestedName).ifPresent(chooser.getExtensionFilters()::add);
+        extensionFilter(safeName).ifPresent(chooser.getExtensionFilters()::add);
         File chosen = chooser.showSaveDialog(owner.get());
         if (chosen == null) {
             return;
         }
-        Path target = withExtensionOf(chosen.toPath(), suggestedName);
-        deliverFile(source, suggestedName, () -> target);
+        Path target = withExtensionOf(chosen.toPath(), safeName);
+        deliverFile(source, safeName, () -> target);
     }
 
     /** Output multi-file: isi {@code sourceDirectory} disalin ke subfolder unik di folder download. */
@@ -78,7 +84,10 @@ public final class DownloadService {
             saveDirectoryAs(sourceDirectory, suggestedDirectoryName);
             return;
         }
-        deliverDirectory(sourceDirectory, suggestedDirectoryName, settings.get().downloadDirectory());
+        deliverDirectory(
+                sourceDirectory,
+                FileNameSanitizer.sanitize(suggestedDirectoryName),
+                settings.get().downloadDirectory());
     }
 
     public void saveDirectoryAs(Path sourceDirectory, String suggestedDirectoryName) {
@@ -87,7 +96,7 @@ public final class DownloadService {
         existingDownloadDirectory().ifPresent(chooser::setInitialDirectory);
         File chosen = chooser.showDialog(owner.get());
         if (chosen != null) {
-            deliverDirectory(sourceDirectory, suggestedDirectoryName, chosen.toPath());
+            deliverDirectory(sourceDirectory, FileNameSanitizer.sanitize(suggestedDirectoryName), chosen.toPath());
         }
     }
 
@@ -121,7 +130,10 @@ public final class DownloadService {
             files = entries.filter(Files::isRegularFile).sorted().toList();
         }
         for (Path file : files) {
-            AtomicFiles.copy(file, targetDirectory.resolve(file.getFileName().toString()));
+            AtomicFiles.copy(
+                    file,
+                    targetDirectory.resolve(
+                            FileNameSanitizer.sanitize(file.getFileName().toString())));
         }
     }
 

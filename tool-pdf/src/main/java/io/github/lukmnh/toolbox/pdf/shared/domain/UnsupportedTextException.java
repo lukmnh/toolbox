@@ -11,7 +11,7 @@ public final class UnsupportedTextException extends PdfToolException {
     private final String text;
 
     public UnsupportedTextException(String text, Throwable cause) {
-        super("Karakter tidak didukung font: " + text, cause);
+        super("Characters not supported by the font: " + text, cause);
         this.text = text;
     }
 

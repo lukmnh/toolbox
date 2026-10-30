@@ -7,10 +7,10 @@ public record PdfDocumentInfo(Path file, int pageCount, long sizeBytes) {
 
     public PdfDocumentInfo {
         if (pageCount < 0) {
-            throw new IllegalArgumentException("pageCount negatif: " + pageCount);
+            throw new IllegalArgumentException("pageCount is negative: " + pageCount);
         }
         if (sizeBytes < 0) {
-            throw new IllegalArgumentException("sizeBytes negatif: " + sizeBytes);
+            throw new IllegalArgumentException("sizeBytes is negative: " + sizeBytes);
         }
     }
 }

@@ -1,14 +1,17 @@
 package io.github.lukmnh.toolbox.pdf.split.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.ToolCategory;
 import io.github.lukmnh.toolbox.common.ui.TaskStatusBar;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
+import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfControls;
 import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfFileChooser;
-import io.github.lukmnh.toolbox.pdf.shared.presentation.ToolLayout;
 import java.util.function.Consumer;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -30,18 +33,19 @@ public final class SplitView extends VBox {
         getStyleClass().add("tool-view");
         setPadding(new Insets(ToolLayout.SPACING * 2));
 
-        VBox dropZone = ToolLayout.dropZone(
+        VBox dropZone = PdfControls.dropZone(
                 Messages.get("pdf.drop.single"),
                 () -> PdfFileChooser.chooseOne(owner).ifPresent(viewModel::openFile));
-        ToolLayout.acceptPdfDrops(this, files -> viewModel.openFile(files.getFirst()), warn);
+        PdfControls.acceptPdfDrops(this, files -> viewModel.openFile(files.getFirst()), warn);
 
         getChildren()
                 .addAll(
-                        ToolLayout.header(Messages.get("pdf.split.name"), Messages.get("pdf.split.hint")),
+                        ToolLayout.header(
+                                ToolCategory.PDF, Messages.get("pdf.split.name"), Messages.get("pdf.split.hint")),
                         dropZone,
                         infoLabel(),
                         buildOptions(),
-                        buildActions());
+                        buildActions(owner));
     }
 
     private Label infoLabel() {
@@ -84,7 +88,7 @@ public final class SplitView extends VBox {
         return options;
     }
 
-    private VBox buildActions() {
+    private VBox buildActions(Window owner) {
         Button split = new Button(Messages.get("pdf.split.run"));
         split.getStyleClass().add("accent");
         split.disableProperty().bind(viewModel.canSplit().not());
@@ -111,6 +115,7 @@ public final class SplitView extends VBox {
         resultRow.visibleProperty().bind(viewModel.resultProperty().isNotNull());
         resultRow.managedProperty().bind(resultRow.visibleProperty());
 
-        return new VBox(ToolLayout.SPACING, split, status, resultRow);
+        CheckBox removeProtection = PdfControls.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
+        return new VBox(ToolLayout.SPACING, removeProtection, split, status, resultRow);
     }
 }

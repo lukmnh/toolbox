@@ -1,5 +1,6 @@
 package io.github.lukmnh.toolbox.pdf.split.domain;
 
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PageRange;
 import java.nio.file.Path;
 
@@ -9,7 +10,7 @@ public interface SplitSession extends AutoCloseable {
     int pageCount();
 
     /** Tulis halaman dalam {@code range} ke file {@code output}. */
-    void extract(PageRange range, Path output);
+    void extract(PageRange range, Path output, OutputProtection protection);
 
     @Override
     void close();

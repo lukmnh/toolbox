@@ -1,33 +1,86 @@
 package io.github.lukmnh.toolbox.app.shell;
 
+import io.github.lukmnh.toolbox.app.guide.GuideStore;
+import io.github.lukmnh.toolbox.app.guide.GuideView;
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.settings.Theme;
 import io.github.lukmnh.toolbox.common.tool.Tool;
 import io.github.lukmnh.toolbox.common.tool.ToolCategory;
+import io.github.lukmnh.toolbox.common.tool.ToolContext;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-/** Home: kotak search + grid kartu tool per kategori. */
-final class HomeView extends ScrollPane {
+/** Home: tab "Tools" (search + grid kartu tool per kategori) dan tab "Guide" (editor + preview panduan). */
+final class HomeView extends BorderPane {
 
     private static final double CARD_WIDTH = 260;
     private static final double GAP = 16;
 
+    private enum Section {
+        TOOLS("app.home.tab.tools"),
+        GUIDE("app.home.tab.guide");
+
+        private final String messageKey;
+
+        Section(String messageKey) {
+            this.messageKey = messageKey;
+        }
+    }
+
     private final List<Tool> tools;
     private final Consumer<Tool> onOpen;
+    private final ToolContext context;
+    private final ObservableValue<Theme> theme;
     private final VBox sections = new VBox(GAP * 1.5);
+    private final ScrollPane toolsPane = new ScrollPane();
+    private GuideView guide;
 
-    HomeView(List<Tool> tools, Consumer<Tool> onOpen) {
+    HomeView(List<Tool> tools, Consumer<Tool> onOpen, ToolContext context, ObservableValue<Theme> theme) {
         this.tools = tools;
         this.onOpen = onOpen;
+        this.context = context;
+        this.theme = theme;
         getStyleClass().add("home-view");
-        setFitToWidth(true);
+
+        ObjectProperty<Section> section = new SimpleObjectProperty<>(Section.TOOLS);
+        HBox switcher =
+                ToolLayout.segmented(section, List.of(Section.values()), option -> Messages.get(option.messageKey));
+        switcher.setPadding(new Insets(GAP * 2, GAP * 2, GAP, GAP * 2));
+        setTop(switcher);
+
+        buildToolsPane();
+        section.addListener((observable, previous, current) -> show(current));
+        show(section.get());
+    }
+
+    private void show(Section section) {
+        if (section == Section.TOOLS) {
+            setCenter(toolsPane);
+            return;
+        }
+        // Lazy: WebView + baca file guide hanya saat tab Guide dibuka
+        if (guide == null) {
+            guide = new GuideView(context, theme, GuideStore.inDataDirectory());
+        }
+        setCenter(guide);
+    }
+
+    private void buildToolsPane() {
+        toolsPane.getStyleClass().add("home-view");
+        toolsPane.setFitToWidth(true);
 
         Label title = new Label(Messages.get("app.home.title"));
         title.getStyleClass().add("home-title");
@@ -37,9 +90,16 @@ final class HomeView extends ScrollPane {
         search.textProperty().addListener((observable, previous, query) -> render(query));
 
         VBox content = new VBox(GAP, title, search, sections);
-        content.setPadding(new Insets(GAP * 2));
-        setContent(content);
+        content.setPadding(new Insets(GAP, GAP * 2, GAP * 2, GAP * 2));
+        toolsPane.setContent(content);
         render("");
+    }
+
+    /** Dipanggil shell saat Home diganti view lain atau aplikasi ditutup. */
+    void dispose() {
+        if (guide != null) {
+            guide.dispose();
+        }
     }
 
     private void render(String query) {

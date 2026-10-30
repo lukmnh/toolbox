@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.lukmnh.toolbox.common.task.CancellationToken;
 import io.github.lukmnh.toolbox.pdf.shared.domain.FormFieldException;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
+import io.github.lukmnh.toolbox.pdf.shared.domain.PdfLimitExceededException;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import io.github.lukmnh.toolbox.pdf.shared.infrastructure.FontResolver;
 import io.github.lukmnh.toolbox.pdf.shared.infrastructure.PdfLoader;
@@ -22,6 +24,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Stream;
 import org.apache.pdfbox.Loader;
@@ -68,7 +71,7 @@ class PdfBoxEditorTest {
         Overlay.Image signature = new Overlay.Image(0, 60, 50, 40, 30, solid(Color.BLACK));
 
         try (EditSession session = editor.open(PdfSource.of(source))) {
-            export.execute(session, List.of(signature), output, CancellationToken.none());
+            export.execute(session, List.of(signature), output, OutputProtection.KEEP, CancellationToken.none());
         }
 
         BufferedImage page = render(output);
@@ -90,7 +93,7 @@ class PdfBoxEditorTest {
         Overlay.Text text = new Overlay.Text(0, 40, 100, "HHHH", 20);
 
         try (EditSession session = editor.open(PdfSource.of(source))) {
-            export.execute(session, List.of(text), output, CancellationToken.none());
+            export.execute(session, List.of(text), output, OutputProtection.KEEP, CancellationToken.none());
         }
 
         BufferedImage page = render(output);
@@ -108,7 +111,11 @@ class PdfBoxEditorTest {
 
         try (EditSession session = editor.open(PdfSource.of(source))) {
             export.execute(
-                    session, List.of(new Overlay.Text(0, 40, 100, "HH\nHH", 20)), output, CancellationToken.none());
+                    session,
+                    List.of(new Overlay.Text(0, 40, 100, "HH\nHH", 20)),
+                    output,
+                    OutputProtection.KEEP,
+                    CancellationToken.none());
         }
 
         BufferedImage page = render(output);
@@ -140,7 +147,7 @@ class PdfBoxEditorTest {
             assertEquals(
                     new FormField.Text("nama", "Budi Santoso", false),
                     session.formFields().getFirst());
-            export.execute(session, List.of(), output, CancellationToken.none());
+            export.execute(session, List.of(), output, OutputProtection.KEEP, CancellationToken.none());
         }
 
         try (PDDocument result = Loader.loadPDF(output.toFile())) {
@@ -166,10 +173,47 @@ class PdfBoxEditorTest {
 
         try (EditSession session = editor.open(PdfSource.of(source))) {
             Overlay.Image signature = new Overlay.Image(0, 60, 50, 40, 30, solid(Color.BLACK));
-            export.execute(session, List.of(signature), temp.resolve("out.pdf"), CancellationToken.none());
+            export.execute(
+                    session,
+                    List.of(signature),
+                    temp.resolve("out.pdf"),
+                    OutputProtection.KEEP,
+                    CancellationToken.none());
 
             BufferedImage preview = session.render(0, ONE_PIXEL_PER_POINT);
             assertLight(preview, 80, 65);
+        }
+    }
+
+    @Test
+    void exportOfEncryptedPdfKeepsPasswordUnlessRemovalChosen() throws IOException {
+        Path source = TestPdfs.encrypted(temp.resolve("rahasia.pdf"), 1);
+        Path kept = temp.resolve("tetap.pdf");
+        Path removed = temp.resolve("tanpa-password.pdf");
+        Overlay.Text text = new Overlay.Text(0, 40, 100, "Disetujui", 12);
+
+        try (EditSession session = editor.open(new PdfSource(source, TestPdfs.USER_PASSWORD))) {
+            export.execute(session, List.of(text), kept, OutputProtection.KEEP, CancellationToken.none());
+            export.execute(session, List.of(text), removed, OutputProtection.REMOVE, CancellationToken.none());
+        }
+
+        assertTrue(TestPdfs.needsUserPassword(kept));
+        assertTrue(TestPdfs.extractText(removed).contains("Disetujui"));
+    }
+
+    @Test
+    void renderExceedingTimeoutIsRejectedAndSessionStaysLocked() throws IOException {
+        Path source = TestPdfs.withGeometry(temp.resolve("in.pdf"), 0, PDRectangle.A4);
+        // Timeout 0: render apa pun dianggap terlalu lama, mensimulasikan PDF yang membuat renderer macet
+        PdfBoxEditor slowEditor = new PdfBoxEditor(new PdfLoader(), new FontResolver(), Duration.ZERO);
+
+        try (EditSession session = slowEditor.open(PdfSource.of(source))) {
+            PdfLimitExceededException error =
+                    assertThrows(PdfLimitExceededException.class, () -> session.render(0, ONE_PIXEL_PER_POINT));
+            assertEquals(PdfLimitExceededException.Limit.RENDER_TIME, error.limit());
+            assertEquals(1, error.actual());
+
+            assertThrows(PdfLimitExceededException.class, session::pageCount);
         }
     }
 

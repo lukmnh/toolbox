@@ -8,6 +8,7 @@ import io.github.lukmnh.toolbox.common.task.RunningTask;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
 import io.github.lukmnh.toolbox.common.ui.ErrorDialogs;
 import io.github.lukmnh.toolbox.pdf.shared.domain.FontSpec;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PreviewScale;
 import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfErrorMessages;
@@ -67,6 +68,9 @@ public final class SignViewModel {
     private final ObservableList<FormField> formFields = FXCollections.observableArrayList();
     private final ObjectProperty<OverlayItem> selected = new SimpleObjectProperty<>();
     private final BooleanProperty dirty = new SimpleBooleanProperty();
+    // Opt-in (Security Requirements #1): TTD tidak pernah ditulis ke disk tanpa centang dari user
+    private final BooleanProperty rememberSignature = new SimpleBooleanProperty(false);
+    private final BooleanProperty removeProtection = new SimpleBooleanProperty(false);
     private final BooleanProperty busy = new SimpleBooleanProperty();
     private final StringProperty fontFamily =
             new SimpleStringProperty(Font.getDefault().getFamily());
@@ -75,6 +79,9 @@ public final class SignViewModel {
     private final Set<RunningTask> activeTasks = new HashSet<>();
     private EditSession session;
     private long renderGeneration;
+    /** Pixel gambar per pixel preview untuk {@link #pageImage}: 1 di layar 100%, 2 di layar 200%. */
+    private double pagePixelScale = 1;
+
     private boolean disposed;
 
     public SignViewModel(SignUseCases useCases, ToolContext context, TempFiles tempFiles) {
@@ -102,6 +109,10 @@ public final class SignViewModel {
         return pageImage;
     }
 
+    double pagePixelScale() {
+        return pagePixelScale;
+    }
+
     ObjectProperty<EditMode> modeProperty() {
         return mode;
     }
@@ -124,6 +135,14 @@ public final class SignViewModel {
 
     ObjectProperty<OverlayItem> selectedProperty() {
         return selected;
+    }
+
+    BooleanProperty rememberSignatureProperty() {
+        return rememberSignature;
+    }
+
+    BooleanProperty removeProtectionProperty() {
+        return removeProtection;
     }
 
     ReadOnlyBooleanProperty dirtyProperty() {
@@ -207,11 +226,16 @@ public final class SignViewModel {
         EditSession current = session;
         int index = pageIndex.get();
         long generation = ++renderGeneration;
+        // Dibaca di FX thread; window bisa pindah ke monitor dengan skala berbeda di antara dua render
+        double outputScale = context.owner().getOutputScaleX();
+        double pixelScale = (double) PreviewScale.renderDpi(outputScale) / PreviewScale.PREVIEW_DPI;
         submit(
-                () -> SwingFXUtils.toFXImage(useCases.render().execute(current, index), null),
+                () -> SwingFXUtils.toFXImage(useCases.render().execute(current, index, outputScale), null),
                 image -> {
                     // Abaikan hasil render lama bila user sudah pindah halaman lagi
                     if (generation == renderGeneration) {
+                        // Skala di-set sebelum gambar, karena binding ukuran canvas membaca keduanya
+                        pagePixelScale = pixelScale;
                         pageImage.set(image);
                     }
                 },
@@ -337,13 +361,25 @@ public final class SignViewModel {
 
     void saveDrawnSignature(List<SignatureStroke> strokes) {
         submit(
-                () -> useCases.saveDrawnSignature().execute(strokes),
+                () -> useCases.saveDrawnSignature().execute(strokes, rememberSignature.get()),
                 drawn -> drawn.ifPresent(this::setSignature),
                 this::showError);
     }
 
     void importSignature(Path imageFile) {
-        submit(() -> useCases.importSignature().execute(imageFile), this::setSignature, this::showError);
+        boolean remember = rememberSignature.get();
+        submit(() -> useCases.importSignature().execute(imageFile, remember), this::setSignature, this::showError);
+    }
+
+    /** Tombol "Hapus TTD tersimpan": file di disk dihapus, TTD aktif di sesi ini tetap bisa dipakai. */
+    void forgetSavedSignature() {
+        submit(
+                () -> {
+                    useCases.forgetSavedSignature().execute();
+                    return Boolean.TRUE;
+                },
+                done -> context.notifier().info(Messages.get("pdf.sign.signature.forgotten")),
+                this::showError);
     }
 
     private void setSignature(BufferedImage image) {
@@ -373,8 +409,9 @@ public final class SignViewModel {
         EditSession current = session;
         List<Overlay> snapshot = overlays.stream().map(OverlayItem::toOverlay).toList();
         Path output = tempFiles.createFile(".pdf");
+        OutputProtection protection = removeProtection.get() ? OutputProtection.REMOVE : OutputProtection.KEEP;
         submitCancellable(
-                cancellation -> useCases.export().execute(current, snapshot, output, cancellation),
+                cancellation -> useCases.export().execute(current, snapshot, output, protection, cancellation),
                 exported -> {
                     dirty.set(false);
                     deliver.accept(exported);

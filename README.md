@@ -8,7 +8,8 @@ Superapp desktop berisi kumpulan utility pribadi untuk PDF, JSON, dan developer 
 > |---|---|
 > | Tool PDF (Isi & TTD, Gabung, Pisah, Kompres) | ✅ Selesai + test, lihat [Implementasi PDF](#implementasi-pdf) |
 > | Shell `app` | ⚠️ Minimal: Home, sidebar, Open with, `Ctrl+H`/`Ctrl+B`. Belum ada: halaman Settings, "Terakhir dipakai", simpan ukuran window, log ke file |
-> | Tool JSON & Dev Utils | ⏳ Belum dimulai |
+> | Tool JSON (Viewer, Beautify) | ✅ Selesai + test |
+> | Tool Dev Utils | ✅ JWT Debugger, Encoder/Decoder, Hash, Checksum, Text Diff, Regex Tester, SQL Formatter, Cron Builder, QR Code + test |
 > | Packaging & release | ⏳ Belum dimulai |
 
 - Satu aplikasi, satu menu: pilih tool dari Home, pindah tool lewat sidebar.
@@ -45,13 +46,22 @@ Superapp desktop berisi kumpulan utility pribadi untuk PDF, JSON, dan developer 
 | PDF | **Gabung** | Gabung banyak PDF dengan urutan yang bisa diatur | ✅ |
 | PDF | **Pisah** | Pisah per halaman atau per range (`1-3, 5, 8-10`) | ✅ |
 | PDF | **Kompres** | Kompres gambar di PDF dengan 3 preset, teks/vektor tidak disentuh | ✅ |
-| JSON | **JSON Viewer** | Viewer file besar: tabel/tree, filter query, sort, export JSON/JSONL/CSV | ✅ |
-| JSON | **JSON Beautify** | Format, minify, validate. Input paste atau upload `.json` | ✅ |
-| Dev Utils | **Hash Generator** | MD5, SHA-1, SHA-2, SHA3 untuk teks, plus mode HMAC | – |
+| Data | **JSON Viewer** | Viewer file besar: tabel/tree, filter query, sort, export JSON/JSONL/CSV | ✅ |
+| Data | **JSON Beautify** | Format, minify, validate. Input paste atau upload `.json` | ✅ |
+| Data | **CSV Kolom: Split & Merge** | Pisah/gabung/atur kolom CSV secara streaming: deteksi delimiter & encoding, pipeline langkah, formula guard | ✅ |
+| Dev Utils | **JWT Debugger** | Decode header/payload/claims, status waktu, verifikasi signature HS/RS/PS/ES/EdDSA secara offline | – |
+| Dev Utils | **Encoder / Decoder** | Base64 teks & file (URL-safe, MIME, data URI) + URL encode/decode & parser query string | ✅ (Base64 file) |
+| Dev Utils | **Hash Generator** | MD5, SHA-1, SHA-2, SHA3 untuk teks, plus mode HMAC; tab Generate: random secret (hex/Base64/Base64URL), key pair PEM (RSA 2048–4096, EC P-256/384/521, Ed25519), UUID v4/v7 tanpa input | ✅ (.pem) |
 | Dev Utils | **Checksum** | Generate & verify checksum file, format `sha256sum` | ✅ |
-| Dev Utils | **Regex Tester** | Uji regex Java: highlight, group, replace, aman dari backtracking | – |
-| Dev Utils | **Text Diff** | Side-by-side & unified, highlight per kata, export `.diff` | ✅ |
-| Dev Utils | **Base64** | Encode/decode teks & file, URL-safe, MIME, data URI | ✅ |
+| Dev Utils | **Text Diff** | Side-by-side & unified, highlight per kata, export `.diff` (bisa di-`git apply`) | ✅ |
+| Dev Utils | **Regex Tester** | Uji & jelaskan regex **Java, JavaScript, Go, PHP**: highlight per grup, tabel match, replace, timeout anti-backtracking | – |
+| Dev Utils | **SQL Formatter** | Format & minify SQL 10 dialect (MySQL, PostgreSQL, Oracle, SQL Server, …); string & quoted identifier tidak diubah, file s.d. 10 MB | ✅ |
+| Dev Utils | **Cron Builder & Explainer** | Builder + penjelasan (bahasa Inggris) + 10 jadwal berikutnya untuk **Unix crontab, Java Spring, Java Quarkus/Quartz, Go (robfig/cron), PHP Laravel**, lengkap dengan snippet kode per target | – |
+| Dev Utils | **QR Code Generator** | Teks, URL promo, atau vCard 3.0 menjadi QR (ZXing); error correction L/M/Q/H, ukuran 256–1024 px, quiet zone, preview live | ✅ (.png) |
+| Extra Tools | **Text Tools** | Statistik teks (grapheme, kata, kalimat, waktu baca), case converter, rapikan teks, undo 20 langkah | ✅ |
+| Extra Tools | **Batch Rename** | Rename banyak file dengan aturan bertingkat, preview konflik, two-phase rename + rollback, undo | – (in-place) |
+| Extra Tools | **Installment Simulator** | Simulasi cicilan anuitas/flat/efektif + tabel amortisasi, diskon ganda, pajak & PPN, invoice/kuitansi | ✅ (CSV & PDF jadwal cicilan, PDF invoice) |
+| Extra Tools | **Budget** | Catat pemasukan & pengeluaran rutin, rata-rata per bulan, ringkasan + grafik, autosave, export `.xlsx` berformula & `.pdf`, import ulang dari file export tersebut | ✅ (.xlsx, .pdf) |
 
 Kebutuhan dan aturan lengkap tiap tool ada di [docs/business.md](docs/business.md).
 
@@ -101,10 +111,10 @@ Menjalankan aplikasi setelah build (sama di Linux dan Windows):
 
 ```bash
 ./mvnw package -DskipTests
-java -jar app/target/toolbox-app.jar
+java -Xmx320m -jar app/target/toolbox-app.jar
 
 # Simulasi "Open with" dengan argumen file
-java -jar app/target/toolbox-app.jar ~/Downloads/contoh.pdf
+java -Xmx320m -jar app/target/toolbox-app.jar ~/Downloads/contoh.pdf
 ```
 
 `toolbox-app.jar` memuat `Class-Path` ke `app/target/libs/`, jadi folder `libs/` harus tetap berada di sebelah jar.
@@ -379,8 +389,8 @@ Di Windows, ganti `./mvnw` dengan `.\mvnw.cmd`.
 **3. Jalankan.**
 
 ```bash
-java -jar app/target/toolbox-app.jar                     # buka Home
-java -jar app/target/toolbox-app.jar ~/Downloads/a.pdf   # langsung ke Isi & TTD
+java -Xmx320m -jar app/target/toolbox-app.jar                     # buka Home
+java -Xmx320m -jar app/target/toolbox-app.jar ~/Downloads/a.pdf   # langsung ke Isi & TTD
 ```
 
 Saat pertama kali merender PDF, PDFBox membangun cache font sistem (beberapa detik, log `Building on-disk font cache`). Ini hanya terjadi sekali.
@@ -482,9 +492,12 @@ Toolbox tidak memakai database. Semua data tersimpan di folder home:
 
 | Path | Isi |
 |---|---|
-| `~/.toolbox/settings.json` | Folder download, tema, ukuran window, state sidebar |
+| `~/.toolbox/settings.properties` | Pilihan tema (light/dark) |
+| `~/.toolbox/guide.md` | Guide di Home hasil edit user (tidak ada = guide bawaan) |
 | `~/.toolbox/recent.json` | Tool dan file JSON terakhir dipakai |
 | `~/.toolbox/signature.png` | Tanda tangan terakhir |
+| `~/.toolbox/budgets/` | Data Budget, 1 file JSON per budget (owner-only, autosave atomic) |
+| `~/.toolbox/rename-history/` | Log undo Batch Rename, 20 terakhir (owner-only) |
 | `~/.toolbox/logs/` | Log aplikasi (maks 5 file × 1 MB) |
 
 Folder download default: `%USERPROFILE%\Downloads` (Windows), atau `XDG_DOWNLOAD_DIR` dengan fallback `~/Downloads` (Linux). Bisa diganti di **Settings**.
@@ -496,8 +509,9 @@ toolbox/
 ├── pom.xml              # parent: versi, dependencyManagement, pluginManagement
 ├── common/              # kontrak Tool, download, task runner, settings, UI reusable, i18n, tema CSS
 ├── tool-pdf/            # Isi & TTD, Gabung, Pisah, Kompres
-├── tool-json/           # JSON Viewer, JSON Beautify
-├── tool-devutils/       # Hash, Checksum, Regex, Text Diff, Base64
+├── tool-json/           # JSON Viewer, JSON Beautify, CSV Split & Merge
+├── tool-devutils/       # JWT, Encoder/Decoder, Hash, Checksum, Text Diff, Regex, SQL, Cron, QR
+├── tool-productivity/   # Text Tools, Batch Rename, Installment Simulator, Budget
 ├── app/                 # shell: Home, sidebar, routing, Settings, main class
 ├── tools/               # GenerateSample.java (generator JSON dummy)
 ├── packaging/           # script jpackage + icons/ (opsional)
@@ -512,9 +526,12 @@ Tech stack:
 | Bahasa | Java 21 (`record`, `sealed interface`, pattern matching `switch`, virtual threads) |
 | UI | JavaFX dari Liberica JDK Full (tanpa FXML, styling via CSS) |
 | PDF | Apache PDFBox 3.x |
-| JSON | Jackson (streaming `jackson-core`) |
-| Diff | java-diff-utils |
-| Hash, Base64, Regex | JDK standard library |
+| JSON | Jackson (streaming `jackson-core`): tool JSON + header/payload/JWK di JWT Debugger |
+| Diff | java-diff-utils (Myers linear-space) |
+| Regex | `java.util.regex` (Java; JavaScript & PHP lewat terjemahan) + RE2/J (Go) |
+| SQL | sql-formatter (vertical-blank), di-format per statement; minify pakai tokenizer sendiri |
+| Cron | cron-utils (definisi bawaan Unix/Spring 5.3/Quartz + definisi sendiri untuk Go & Laravel) |
+| Hash, HMAC, Checksum, Base64, URL, crypto JWT | JDK standard library |
 | Build | Maven multi-module + Wrapper, Spotless, Enforcer |
 | Test | JUnit 5, ArchUnit |
 

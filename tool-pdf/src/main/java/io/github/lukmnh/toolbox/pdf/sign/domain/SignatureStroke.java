@@ -10,10 +10,10 @@ public record SignatureStroke(List<StrokePoint> points, InkColor color, double w
         points = List.copyOf(points);
         Objects.requireNonNull(color, "color");
         if (points.isEmpty()) {
-            throw new IllegalArgumentException("Goresan minimal 1 titik");
+            throw new IllegalArgumentException("A stroke needs at least 1 point");
         }
         if (width <= 0) {
-            throw new IllegalArgumentException("Tebal pena harus positif: " + width);
+            throw new IllegalArgumentException("Pen width must be positive: " + width);
         }
     }
 }

@@ -12,7 +12,7 @@ public record PageBox(double lowerLeftX, double lowerLeftY, double width, double
 
     public PageBox {
         if (width <= 0 || height <= 0) {
-            throw new IllegalArgumentException("Ukuran halaman harus positif: " + width + "x" + height);
+            throw new IllegalArgumentException("Page size must be positive: " + width + "x" + height);
         }
         rotation = normalize(rotation);
     }
@@ -20,7 +20,7 @@ public record PageBox(double lowerLeftX, double lowerLeftY, double width, double
     private static int normalize(int rotation) {
         int normalized = Math.floorMod(rotation, FULL_TURN);
         if (normalized % QUARTER_TURN != 0) {
-            throw new IllegalArgumentException("Rotasi harus kelipatan 90: " + rotation);
+            throw new IllegalArgumentException("Rotation must be a multiple of 90: " + rotation);
         }
         return normalized;
     }

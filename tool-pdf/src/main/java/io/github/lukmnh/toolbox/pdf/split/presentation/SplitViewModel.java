@@ -7,6 +7,7 @@ import io.github.lukmnh.toolbox.common.task.RunningTask;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
 import io.github.lukmnh.toolbox.common.ui.ByteSizeFormat;
 import io.github.lukmnh.toolbox.pdf.shared.application.InspectPdfUseCase;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfDocumentInfo;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfFailureHandler;
@@ -39,6 +40,7 @@ public final class SplitViewModel {
     private final ObjectProperty<SplitChoice> mode = new SimpleObjectProperty<>(SplitChoice.EACH_PAGE);
     private final StringProperty rangeSpecification = new SimpleStringProperty("");
     private final ObjectProperty<SplitResult> result = new SimpleObjectProperty<>();
+    private final BooleanProperty removeProtection = new SimpleBooleanProperty();
     private final BooleanProperty busy = new SimpleBooleanProperty();
     private final ObjectProperty<RunningTask> currentTask = new SimpleObjectProperty<>();
     private RunningTask runningTask;
@@ -51,6 +53,7 @@ public final class SplitViewModel {
         this.tempFiles = tempFiles;
         mode.addListener((observable, previous, current) -> result.set(null));
         rangeSpecification.addListener((observable, previous, current) -> result.set(null));
+        removeProtection.addListener((observable, previous, current) -> result.set(null));
     }
 
     public ReadOnlyObjectProperty<PdfDocumentInfo> infoProperty() {
@@ -63,6 +66,10 @@ public final class SplitViewModel {
 
     public StringProperty rangeSpecificationProperty() {
         return rangeSpecification;
+    }
+
+    public BooleanProperty removeProtectionProperty() {
+        return removeProtection;
     }
 
     public ReadOnlyObjectProperty<SplitResult> resultProperty() {
@@ -105,7 +112,12 @@ public final class SplitViewModel {
         SplitMode splitMode = mode.get() == SplitChoice.EACH_PAGE
                 ? new SplitMode.EachPage()
                 : new SplitMode.Ranges(rangeSpecification.get());
-        SplitRequest request = new SplitRequest(current, splitMode, tempFiles.createDirectory(), baseName(current));
+        SplitRequest request = new SplitRequest(
+                current,
+                splitMode,
+                tempFiles.createDirectory(),
+                baseName(current),
+                removeProtection.get() ? OutputProtection.REMOVE : OutputProtection.KEEP);
         track(context.tasks()
                 .submit(
                         (progress, cancellation) -> splitUseCase.execute(request, progress, cancellation),

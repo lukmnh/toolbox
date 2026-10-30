@@ -14,6 +14,7 @@ import io.github.lukmnh.toolbox.pdf.shared.infrastructure.FontResolver;
 import io.github.lukmnh.toolbox.pdf.shared.infrastructure.PdfBoxInspector;
 import io.github.lukmnh.toolbox.pdf.shared.infrastructure.PdfLoader;
 import io.github.lukmnh.toolbox.pdf.sign.application.ExportEditedPdfUseCase;
+import io.github.lukmnh.toolbox.pdf.sign.application.ForgetSavedSignatureUseCase;
 import io.github.lukmnh.toolbox.pdf.sign.application.ImportSignatureImageUseCase;
 import io.github.lukmnh.toolbox.pdf.sign.application.LoadLastSignatureUseCase;
 import io.github.lukmnh.toolbox.pdf.sign.application.OpenDocumentUseCase;
@@ -58,7 +59,8 @@ public final class PdfToolsProvider implements ToolProvider {
                 new ExportEditedPdfUseCase(),
                 new SaveDrawnSignatureUseCase(signatures, new SignatureRasterizer()),
                 new ImportSignatureImageUseCase(signatures, new SignatureImageCleaner()),
-                new LoadLastSignatureUseCase(signatures));
+                new LoadLastSignatureUseCase(signatures),
+                new ForgetSavedSignatureUseCase(signatures));
         return new SignTool(useCases);
     }
 }

@@ -9,6 +9,7 @@ import io.github.lukmnh.toolbox.common.task.ProgressReporter;
 import io.github.lukmnh.toolbox.pdf.merge.application.MergePdfUseCase;
 import io.github.lukmnh.toolbox.pdf.merge.domain.MergeRequest;
 import io.github.lukmnh.toolbox.pdf.merge.domain.MergeResult;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PasswordRequiredException;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import io.github.lukmnh.toolbox.pdf.shared.infrastructure.PdfLoader;
@@ -53,9 +54,14 @@ class PdfBoxMergerTest {
 
         MergeResult result = merge(List.of(PdfSource.of(plain), new PdfSource(locked, TestPdfs.USER_PASSWORD)), output);
         assertEquals(3, result.pageCount());
+        // Proteksi sumber terenkripsi ikut ke hasil gabungan
+        assertTrue(TestPdfs.needsUserPassword(output));
     }
 
     private MergeResult merge(List<PdfSource> sources, Path output) {
-        return useCase.execute(new MergeRequest(sources, output), ProgressReporter.NONE, CancellationToken.none());
+        return useCase.execute(
+                new MergeRequest(sources, output, OutputProtection.KEEP),
+                ProgressReporter.NONE,
+                CancellationToken.none());
     }
 }

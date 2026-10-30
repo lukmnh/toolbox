@@ -1,5 +1,6 @@
 package io.github.lukmnh.toolbox.pdf.merge.domain;
 
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import java.nio.file.Path;
 
@@ -11,7 +12,7 @@ public interface MergeSession extends AutoCloseable {
 
     int pageCount();
 
-    void save(Path output);
+    void save(Path output, OutputProtection protection);
 
     @Override
     void close();

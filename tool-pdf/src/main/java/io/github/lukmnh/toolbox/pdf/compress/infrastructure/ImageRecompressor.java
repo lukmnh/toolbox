@@ -1,5 +1,6 @@
 package io.github.lukmnh.toolbox.pdf.compress.infrastructure;
 
+import io.github.lukmnh.toolbox.common.security.SecurityLimits;
 import io.github.lukmnh.toolbox.pdf.compress.domain.CompressionPreset;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -68,6 +69,11 @@ final class ImageRecompressor {
             return false;
         }
         if (image.getBitsPerComponent() == 1) {
+            return false;
+        }
+        // Dimensi dari dictionary (/Width /Height) dicek sebelum getImage(): gambar raksasa dibiarkan apa adanya
+        // daripada di-decode dan menghabiskan heap (decompression bomb)
+        if (Math.max(image.getWidth(), image.getHeight()) > SecurityLimits.IMAGE_MAX_DIMENSION) {
             return false;
         }
         List<COSName> filters = image.getStream().getFilters();

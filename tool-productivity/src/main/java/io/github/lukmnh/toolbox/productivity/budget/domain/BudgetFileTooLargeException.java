@@ -1,0 +1,33 @@
+package io.github.lukmnh.toolbox.productivity.budget.domain;
+
+import java.io.Serial;
+
+/** File budget atau data di dalamnya melebihi batas ukuran; ditolak sebelum dibaca utuh (Security Requirements #3, #19). */
+public final class BudgetFileTooLargeException extends BudgetException {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private final String fileName;
+    private final long sizeBytes;
+    private final long maxBytes;
+
+    public BudgetFileTooLargeException(String fileName, long sizeBytes, long maxBytes) {
+        super("Budget file too large: " + fileName, null);
+        this.fileName = fileName;
+        this.sizeBytes = sizeBytes;
+        this.maxBytes = maxBytes;
+    }
+
+    public String fileName() {
+        return fileName;
+    }
+
+    public long sizeBytes() {
+        return sizeBytes;
+    }
+
+    public long maxBytes() {
+        return maxBytes;
+    }
+}

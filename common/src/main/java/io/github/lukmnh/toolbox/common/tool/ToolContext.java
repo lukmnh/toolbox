@@ -16,7 +16,8 @@ public record ToolContext(
         Notifier notifier,
         Supplier<Settings> settings,
         HostServices hostServices,
-        Window owner) {
+        Window owner,
+        ToolOpener tools) {
 
     public ToolContext {
         Objects.requireNonNull(downloads, "downloads");
@@ -25,5 +26,6 @@ public record ToolContext(
         Objects.requireNonNull(settings, "settings");
         Objects.requireNonNull(hostServices, "hostServices");
         Objects.requireNonNull(owner, "owner");
+        Objects.requireNonNull(tools, "tools");
     }
 }

@@ -1,15 +1,18 @@
 package io.github.lukmnh.toolbox.pdf.merge.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.ToolCategory;
 import io.github.lukmnh.toolbox.common.ui.TaskStatusBar;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
+import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfControls;
 import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfFileChooser;
-import io.github.lukmnh.toolbox.pdf.shared.presentation.ToolLayout;
 import java.util.function.Consumer;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -36,10 +39,10 @@ public final class MergeView extends BorderPane {
         this.warn = warn;
         getStyleClass().add("tool-view");
         setPadding(new Insets(ToolLayout.SPACING * 2));
-        setTop(ToolLayout.header(Messages.get("pdf.merge.name"), Messages.get("pdf.merge.hint")));
+        setTop(ToolLayout.header(ToolCategory.PDF, Messages.get("pdf.merge.name"), Messages.get("pdf.merge.hint")));
         setCenter(buildList());
         setRight(buildSideButtons(owner));
-        setBottom(buildActions());
+        setBottom(buildActions(owner));
         BorderPane.setMargin(getCenter(), new Insets(ToolLayout.SPACING, 0, ToolLayout.SPACING, 0));
         BorderPane.setMargin(getRight(), new Insets(ToolLayout.SPACING, 0, ToolLayout.SPACING, ToolLayout.SPACING));
     }
@@ -48,7 +51,7 @@ public final class MergeView extends BorderPane {
         list.setItems(viewModel.files());
         list.setPlaceholder(new Label(Messages.get("pdf.merge.empty")));
         list.setCellFactory(view -> new ReorderableCell());
-        ToolLayout.acceptPdfDrops(list, viewModel::addFiles, warn);
+        PdfControls.acceptPdfDrops(list, viewModel::addFiles, warn);
         return list;
     }
 
@@ -81,7 +84,7 @@ public final class MergeView extends BorderPane {
         return button;
     }
 
-    private VBox buildActions() {
+    private VBox buildActions(Window owner) {
         Button merge = new Button(Messages.get("pdf.merge.run"));
         merge.getStyleClass().add("accent");
         merge.disableProperty().bind(viewModel.canMerge().not());
@@ -107,7 +110,8 @@ public final class MergeView extends BorderPane {
 
         TaskStatusBar status = new TaskStatusBar();
         viewModel.currentTaskProperty().addListener((observable, previous, task) -> status.track(task));
-        return new VBox(ToolLayout.SPACING, new HBox(ToolLayout.SPACING, merge), status, resultRow);
+        CheckBox removeProtection = PdfControls.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
+        return new VBox(ToolLayout.SPACING, removeProtection, new HBox(ToolLayout.SPACING, merge), status, resultRow);
     }
 
     private int selectedIndex() {

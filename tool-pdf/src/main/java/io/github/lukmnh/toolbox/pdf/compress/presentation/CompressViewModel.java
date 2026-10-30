@@ -11,6 +11,7 @@ import io.github.lukmnh.toolbox.pdf.compress.domain.CompressRequest;
 import io.github.lukmnh.toolbox.pdf.compress.domain.CompressResult;
 import io.github.lukmnh.toolbox.pdf.compress.domain.CompressionPreset;
 import io.github.lukmnh.toolbox.pdf.shared.application.InspectPdfUseCase;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfDocumentInfo;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfFailureHandler;
@@ -38,6 +39,7 @@ public final class CompressViewModel {
     private final ObjectProperty<PdfDocumentInfo> info = new SimpleObjectProperty<>();
     private final ObjectProperty<CompressionPreset> preset = new SimpleObjectProperty<>(CompressionPreset.DEFAULT);
     private final ObjectProperty<CompressResult> result = new SimpleObjectProperty<>();
+    private final BooleanProperty removeProtection = new SimpleBooleanProperty();
     private final BooleanProperty busy = new SimpleBooleanProperty();
     private final ObjectProperty<RunningTask> currentTask = new SimpleObjectProperty<>();
     private RunningTask runningTask;
@@ -52,6 +54,7 @@ public final class CompressViewModel {
         this.context = context;
         this.tempFiles = tempFiles;
         preset.addListener((observable, previous, current) -> result.set(null));
+        removeProtection.addListener((observable, previous, current) -> result.set(null));
     }
 
     public ReadOnlyObjectProperty<PdfDocumentInfo> infoProperty() {
@@ -60,6 +63,10 @@ public final class CompressViewModel {
 
     public ObjectProperty<CompressionPreset> presetProperty() {
         return preset;
+    }
+
+    public BooleanProperty removeProtectionProperty() {
+        return removeProtection;
     }
 
     public ReadOnlyObjectProperty<CompressResult> resultProperty() {
@@ -95,7 +102,11 @@ public final class CompressViewModel {
 
     public void compress() {
         PdfSource current = source.get();
-        CompressRequest request = new CompressRequest(current, preset.get(), tempFiles.createFile(".pdf"));
+        CompressRequest request = new CompressRequest(
+                current,
+                preset.get(),
+                tempFiles.createFile(".pdf"),
+                removeProtection.get() ? OutputProtection.REMOVE : OutputProtection.KEEP);
         track(context.tasks()
                 .submit(
                         (progress, cancellation) -> compressUseCase.execute(request, progress, cancellation),

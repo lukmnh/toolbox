@@ -2,8 +2,9 @@ package io.github.lukmnh.toolbox.pdf.sign.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
 import io.github.lukmnh.toolbox.common.ui.TaskStatusBar;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
+import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfControls;
 import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfFileChooser;
-import io.github.lukmnh.toolbox.pdf.shared.presentation.ToolLayout;
 import io.github.lukmnh.toolbox.pdf.sign.domain.EditDefaults;
 import java.io.File;
 import java.nio.file.Path;
@@ -15,6 +16,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Spinner;
@@ -59,7 +61,7 @@ public final class SignView extends BorderPane {
         viewModel.currentTaskProperty().addListener((observable, previous, task) -> status.track(task));
         setBottom(status);
 
-        ToolLayout.acceptPdfDrops(this, files -> openIfConfirmed(files.getFirst()), viewModel::warn);
+        PdfControls.acceptPdfDrops(this, files -> openIfConfirmed(files.getFirst()), viewModel::warn);
         // Begitu halaman pertama selesai dirender, sesuaikan zoom ke lebar area
         viewModel.pageImageProperty().addListener((observable, previous, image) -> {
             if (previous == null && image != null) {
@@ -81,6 +83,7 @@ public final class SignView extends BorderPane {
         saveAs.setOnAction(event -> viewModel.saveAs());
         HBox downloads = ToolLayout.downloadButtons(download, saveAs);
         downloads.disableProperty().bind(viewModel.sourceProperty().isNull());
+        CheckBox removeProtection = PdfControls.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
 
         HBox bar = toolbar(
                 open,
@@ -89,6 +92,7 @@ public final class SignView extends BorderPane {
                 new Separator(),
                 zoomControls(),
                 ToolLayout.spacer(),
+                removeProtection,
                 downloads);
         bar.getStyleClass().add("tool-toolbar");
         return bar;
@@ -217,7 +221,12 @@ public final class SignView extends BorderPane {
         StackPane thumbnailFrame = new StackPane(thumbnail);
         thumbnailFrame.getStyleClass().add("signature-thumbnail");
         Tooltip.install(thumbnailFrame, new Tooltip(Messages.get("pdf.sign.signature.current")));
-        return toolbar(draw, upload, thumbnailFrame);
+        CheckBox remember = new CheckBox(Messages.get("pdf.sign.signature.remember"));
+        remember.setTooltip(new Tooltip(Messages.get("pdf.sign.signature.remember.tooltip")));
+        remember.selectedProperty().bindBidirectional(viewModel.rememberSignatureProperty());
+        Button forget = new Button(Messages.get("pdf.sign.signature.forget"));
+        forget.setOnAction(event -> viewModel.forgetSavedSignature());
+        return toolbar(draw, upload, thumbnailFrame, remember, forget);
     }
 
     private static HBox toolbar(Node... children) {
@@ -230,7 +239,7 @@ public final class SignView extends BorderPane {
     // ---------- Area tengah ----------
 
     private StackPane center() {
-        VBox placeholder = ToolLayout.dropZone(
+        VBox placeholder = PdfControls.dropZone(
                 Messages.get("pdf.sign.drop"),
                 () -> PdfFileChooser.chooseOne(owner).ifPresent(this::openIfConfirmed));
         placeholder.visibleProperty().bind(viewModel.sourceProperty().isNull());

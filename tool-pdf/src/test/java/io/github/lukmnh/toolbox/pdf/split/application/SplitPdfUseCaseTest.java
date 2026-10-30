@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import io.github.lukmnh.toolbox.common.task.CancellationToken;
 import io.github.lukmnh.toolbox.common.task.ProgressReporter;
 import io.github.lukmnh.toolbox.pdf.shared.domain.InvalidPageRangeException;
+import io.github.lukmnh.toolbox.pdf.shared.domain.OutputProtection;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PageRange;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
 import io.github.lukmnh.toolbox.pdf.split.domain.PdfSplitter;
@@ -67,7 +68,8 @@ class SplitPdfUseCaseTest {
     }
 
     private SplitResult split(SplitMode mode) {
-        SplitRequest request = new SplitRequest(PdfSource.of(Path.of("laporan.pdf")), mode, OUT, "laporan");
+        SplitRequest request =
+                new SplitRequest(PdfSource.of(Path.of("laporan.pdf")), mode, OUT, "laporan", OutputProtection.KEEP);
         return useCase.execute(request, ProgressReporter.NONE, CancellationToken.none());
     }
 
@@ -101,7 +103,7 @@ class SplitPdfUseCaseTest {
         }
 
         @Override
-        public void extract(PageRange range, Path output) {
+        public void extract(PageRange range, Path output, OutputProtection protection) {
             extracted.put(output.getFileName().toString(), range);
         }
 
