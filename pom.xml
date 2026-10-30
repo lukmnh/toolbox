@@ -6,7 +6,7 @@
 
     <groupId>io.github.lukmnh.toolbox</groupId>
     <artifactId>toolbox-parent</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <name>Toolbox</name>
@@ -36,6 +36,8 @@
         <cron-utils.version>9.2.1</cron-utils.version>
         <fastcsv.version>4.4.0</fastcsv.version>
         <fastexcel.version>0.20.2</fastexcel.version>
+        <zxing.version>3.5.4</zxing.version>
+        <commonmark.version>0.31.0</commonmark.version>
         <!-- Transitive cron-utils (2.0.7) & ArchUnit; dikunci supaya satu versi -->
         <slf4j.version>2.0.19</slf4j.version>
         <junit.version>5.14.4</junit.version>
@@ -103,6 +105,21 @@
                 <groupId>org.dhatim</groupId>
                 <artifactId>fastexcel</artifactId>
                 <version>${fastexcel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dhatim</groupId>
+                <artifactId>fastexcel-reader</artifactId>
+                <version>${fastexcel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>${zxing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.commonmark</groupId>
+                <artifactId>commonmark</artifactId>
+                <version>${commonmark.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.java-diff-utils</groupId>
