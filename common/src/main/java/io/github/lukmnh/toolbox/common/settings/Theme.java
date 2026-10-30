@@ -1,7 +1,11 @@
 package io.github.lukmnh.toolbox.common.settings;
 
+/** Tema UI. {@link #LIGHT} adalah default bila user belum pernah memilih. */
 public enum Theme {
-    SYSTEM,
     LIGHT,
-    DARK
+    DARK;
+
+    public Theme toggled() {
+        return this == DARK ? LIGHT : DARK;
+    }
 }
