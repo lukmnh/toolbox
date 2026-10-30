@@ -1,10 +1,11 @@
 package io.github.lukmnh.toolbox.devutils.jwt.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.ToolCategory;
+import io.github.lukmnh.toolbox.common.ui.ClipboardActions;
 import io.github.lukmnh.toolbox.common.ui.Notifier;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.ClipboardActions;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.Tone;
+import io.github.lukmnh.toolbox.common.ui.Tone;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import java.util.List;
 import java.util.function.Function;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -46,10 +47,13 @@ public final class JwtView extends ScrollPane {
     public JwtView(JwtViewModel viewModel, Notifier notifier) {
         this.viewModel = viewModel;
         this.notifier = notifier;
-        VBox page = DevLayout.page();
+        VBox page = ToolLayout.page();
         page.getChildren()
                 .addAll(
-                        DevLayout.header(Messages.get("devutils.jwt.name"), Messages.get("devutils.jwt.hint")),
+                        ToolLayout.header(
+                                ToolCategory.DEV_UTILS,
+                                Messages.get("devutils.jwt.name"),
+                                Messages.get("devutils.jwt.hint")),
                         buildTokenCard(),
                         buildBadgeRow(),
                         buildColumns());
@@ -59,49 +63,49 @@ public final class JwtView extends ScrollPane {
     }
 
     private VBox buildTokenCard() {
-        TextArea token = DevLayout.codeArea(true);
+        TextArea token = ToolLayout.codeArea(true);
         token.setPromptText(Messages.get("devutils.jwt.token.prompt"));
         token.setPrefRowCount(TOKEN_ROWS);
         token.textProperty().bindBidirectional(viewModel.tokenProperty());
-        Label error = DevLayout.inlineMessage(Tone.DANGER);
+        Label error = ToolLayout.inlineMessage(Tone.DANGER);
         error.textProperty().bind(viewModel.decodeErrorProperty());
-        Label warning = DevLayout.inlineMessage(Tone.WARNING);
+        Label warning = ToolLayout.inlineMessage(Tone.WARNING);
         warning.textProperty().bind(viewModel.decodeWarningProperty());
-        Button clear = DevLayout.button(
+        Button clear = ToolLayout.button(
                 Messages.get("devutils.jwt.token.clear"),
                 () -> viewModel.tokenProperty().set(""));
-        return DevLayout.card(
+        return ToolLayout.card(
                 Messages.get("devutils.jwt.token.title"),
                 List.of(clear, ClipboardActions.clearButton(notifier)),
                 token,
-                DevLayout.hint(Messages.get("devutils.jwt.token.hint")),
+                ToolLayout.hint(Messages.get("devutils.jwt.token.hint")),
                 error,
                 warning);
     }
 
     private HBox buildBadgeRow() {
-        HBox row = DevLayout.row(
+        HBox row = ToolLayout.row(
                 caption("devutils.jwt.badge.format"),
                 badge(viewModel.formatStatusProperty()),
                 caption("devutils.jwt.badge.time"),
                 badge(viewModel.timeStatusProperty()),
                 caption("devutils.jwt.badge.signature"),
                 badge(viewModel.signatureStatusProperty()),
-                DevLayout.spacer(),
+                ToolLayout.spacer(),
                 badge(viewModel.algorithmStatusProperty()));
-        row.setSpacing(DevLayout.SPACING);
+        row.setSpacing(ToolLayout.SPACING);
         return row;
     }
 
     private HBox buildColumns() {
-        VBox left = new VBox(DevLayout.SPACING, buildHeaderCard(), buildPayloadCard(), buildSignatureCard());
-        VBox right = new VBox(DevLayout.SPACING, buildClaimsCard(), buildVerifyCard());
+        VBox left = new VBox(ToolLayout.SPACING, buildHeaderCard(), buildPayloadCard(), buildSignatureCard());
+        VBox right = new VBox(ToolLayout.SPACING, buildClaimsCard(), buildVerifyCard());
         // prefWidth 0 + hgrow membuat dua kolom selalu sama lebar
         for (VBox column : List.of(left, right)) {
             column.setPrefWidth(0);
             HBox.setHgrow(column, Priority.ALWAYS);
         }
-        return new HBox(DevLayout.SPACING * 1.5, left, right);
+        return new HBox(ToolLayout.SPACING * 1.5, left, right);
     }
 
     private VBox buildHeaderCard() {
@@ -113,22 +117,22 @@ public final class JwtView extends ScrollPane {
     }
 
     private VBox codeCard(String titleKey, ObservableValue<String> text, int rows) {
-        TextArea area = DevLayout.codeArea(false);
+        TextArea area = ToolLayout.codeArea(false);
         area.setPrefRowCount(rows);
         area.textProperty().bind(text);
-        return DevLayout.card(
+        return ToolLayout.card(
                 Messages.get(titleKey), List.of(ClipboardActions.copyButton(text::getValue, notifier)), area);
     }
 
     private VBox buildSignatureCard() {
-        TextField signature = DevLayout.codeField();
+        TextField signature = ToolLayout.codeField();
         signature.setEditable(false);
         signature.textProperty().bind(viewModel.signatureProperty());
-        return DevLayout.card(
+        return ToolLayout.card(
                 Messages.get("devutils.jwt.signature.title"),
                 List.of(ClipboardActions.copyButton(viewModel.signatureProperty()::get, notifier)),
                 signature,
-                DevLayout.hint(Messages.get("devutils.jwt.signature.hint")));
+                ToolLayout.hint(Messages.get("devutils.jwt.signature.hint")));
     }
 
     private VBox buildClaimsCard() {
@@ -141,11 +145,11 @@ public final class JwtView extends ScrollPane {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         table.setPlaceholder(new Label(Messages.get("devutils.jwt.claims.empty")));
         table.setPrefHeight(CLAIMS_HEIGHT);
-        return DevLayout.card(
+        return ToolLayout.card(
                 Messages.get("devutils.jwt.claims.title"),
                 List.of(),
                 table,
-                DevLayout.hint(Messages.get("devutils.jwt.claims.hint")));
+                ToolLayout.hint(Messages.get("devutils.jwt.claims.hint")));
     }
 
     private static TableColumn<ClaimRow, String> column(String titleKey, Function<ClaimRow, String> value) {
@@ -156,36 +160,36 @@ public final class JwtView extends ScrollPane {
     }
 
     private VBox buildVerifyCard() {
-        Label hint = DevLayout.hint("");
+        Label hint = ToolLayout.hint("");
         hint.textProperty().bind(viewModel.verifyHint());
 
         PasswordField secret = new PasswordField();
         secret.setPromptText(Messages.get("devutils.jwt.verify.secret.prompt"));
         CheckBox base64 = new CheckBox(Messages.get("devutils.jwt.verify.secret.base64"));
         base64.selectedProperty().bindBidirectional(viewModel.secretBase64Property());
-        VBox secretBox = new VBox(DevLayout.GAP, secret, base64);
+        VBox secretBox = new VBox(ToolLayout.GAP, secret, base64);
         showOnlyIn(secretBox, KeyMode.SECRET);
 
-        TextArea publicKey = DevLayout.codeArea(true);
+        TextArea publicKey = ToolLayout.codeArea(true);
         publicKey.setPromptText(Messages.get("devutils.jwt.verify.publicKey.prompt"));
         publicKey.setPrefRowCount(KEY_ROWS);
         publicKey.textProperty().bindBidirectional(viewModel.publicKeyTextProperty());
         showOnlyIn(publicKey, KeyMode.PUBLIC_KEY);
 
-        Button verify = DevLayout.accentButton(Messages.get("devutils.jwt.verify.button"), () -> verify(secret));
+        Button verify = ToolLayout.accentButton(Messages.get("devutils.jwt.verify.button"), () -> verify(secret));
         verify.disableProperty().bind(viewModel.canVerify().not());
-        Label result = DevLayout.inlineMessage(Tone.INFO);
+        Label result = ToolLayout.inlineMessage(Tone.INFO);
         bindInline(result, viewModel.verifyResultProperty());
 
-        return DevLayout.card(
+        return ToolLayout.card(
                 Messages.get("devutils.jwt.verify.title"),
                 List.of(),
                 hint,
                 secretBox,
                 publicKey,
-                DevLayout.row(
-                        DevLayout.labeled(Messages.get("devutils.jwt.verify.skew"), skewSpinner()),
-                        DevLayout.spacer(),
+                ToolLayout.row(
+                        ToolLayout.labeled(Messages.get("devutils.jwt.verify.skew"), skewSpinner()),
+                        ToolLayout.spacer(),
                         verify),
                 result);
     }
@@ -212,7 +216,7 @@ public final class JwtView extends ScrollPane {
 
     private void showOnlyIn(Node node, KeyMode mode) {
         node.visibleProperty().bind(viewModel.keyModeProperty().isEqualTo(mode));
-        DevLayout.collapseWhenHidden(node);
+        ToolLayout.collapseWhenHidden(node);
     }
 
     private static Label caption(String key) {
@@ -222,14 +226,14 @@ public final class JwtView extends ScrollPane {
     }
 
     private static Label badge(ReadOnlyObjectProperty<StatusText> state) {
-        Label badge = DevLayout.badge(state.get().text(), state.get().tone());
-        state.addListener((observable, previous, current) -> DevLayout.update(badge, current.text(), current.tone()));
+        Label badge = ToolLayout.badge(state.get().text(), state.get().tone());
+        state.addListener((observable, previous, current) -> ToolLayout.update(badge, current.text(), current.tone()));
         return badge;
     }
 
     private static void bindInline(Label label, ReadOnlyObjectProperty<StatusText> state) {
-        DevLayout.update(label, state.get().text(), state.get().tone());
-        state.addListener((observable, previous, current) -> DevLayout.update(label, current.text(), current.tone()));
+        ToolLayout.update(label, state.get().text(), state.get().tone());
+        state.addListener((observable, previous, current) -> ToolLayout.update(label, current.text(), current.tone()));
     }
 
     /** Disalin per karakter supaya tidak membuat {@link String} yang tidak bisa di-wipe. */

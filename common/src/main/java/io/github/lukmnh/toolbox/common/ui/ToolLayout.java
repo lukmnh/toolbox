@@ -14,8 +14,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.TransferMode;
@@ -170,6 +172,18 @@ public final class ToolLayout {
         return area;
     }
 
+    public static TextField codeField() {
+        TextField field = new TextField();
+        field.getStyleClass().add("code-field");
+        return field;
+    }
+
+    /** Font monospace tanpa latar kode, untuk kontrol yang sudah punya gaya sendiri. */
+    public static <T extends Control> T mono(T control) {
+        control.getStyleClass().add("mono");
+        return control;
+    }
+
     public static Label statText() {
         Label label = new Label();
         label.getStyleClass().add("stat-text");
@@ -209,9 +223,15 @@ public final class ToolLayout {
 
     /** Baris tombol Download (utama) dan Simpan sebagai…. */
     public static HBox downloadButtons(Runnable onDownload, Runnable onSaveAs) {
-        HBox row = row(
-                accentButton(Messages.get("download.button"), onDownload),
+        return downloadButtons(
+                button(Messages.get("download.button"), onDownload),
                 button(Messages.get("download.saveAs.button"), onSaveAs));
+    }
+
+    /** Varian untuk tombol yang sudah dibuat pemanggil (misalnya karena state disable-nya di-bind). */
+    public static HBox downloadButtons(Button download, Button saveAs) {
+        download.getStyleClass().add("accent");
+        HBox row = row(download, saveAs);
         row.setAlignment(Pos.CENTER_RIGHT);
         return row;
     }

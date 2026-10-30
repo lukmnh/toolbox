@@ -1,10 +1,10 @@
 package io.github.lukmnh.toolbox.devutils.regex.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.ui.Tone;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.regex.domain.Explanation;
 import io.github.lukmnh.toolbox.devutils.regex.domain.RegexProblem;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.Tone;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -37,7 +37,7 @@ final class ExplainerPane {
     }
 
     private Node build() {
-        rows.setPadding(new Insets(DevLayout.GAP));
+        rows.setPadding(new Insets(ToolLayout.GAP));
         viewModel.evaluationProperty().addListener((observable, previous, current) -> refresh(current));
         refresh(null);
         ScrollPane scroll = new ScrollPane(rows);
@@ -50,11 +50,11 @@ final class ExplainerPane {
         rows.getChildren().clear();
         viewModel.hoveredSpanProperty().set(null);
         if (evaluation == null) {
-            rows.getChildren().add(DevLayout.hint(Messages.get("devutils.regex.explain.empty")));
+            rows.getChildren().add(ToolLayout.hint(Messages.get("devutils.regex.explain.empty")));
             return;
         }
         for (RegexProblem problem : viewModel.visibleProblems()) {
-            Label message = DevLayout.inlineMessage(Tone.DANGER);
+            Label message = ToolLayout.inlineMessage(Tone.DANGER);
             message.setText(
                     RegexMessages.problem(problem, viewModel.flavorProperty().get()));
             rows.getChildren().add(message);
@@ -78,7 +78,7 @@ final class ExplainerPane {
         text.setWrapText(true);
         HBox.setHgrow(text, Priority.ALWAYS);
 
-        HBox row = new HBox(DevLayout.GAP, bar, token, text);
+        HBox row = new HBox(ToolLayout.GAP, bar, token, text);
         row.setAlignment(Pos.CENTER_LEFT);
         row.getStyleClass().add("explain-row");
         HBox.setMargin(bar, new Insets(0, 0, 0, explanation.depth() * INDENT));

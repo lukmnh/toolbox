@@ -1,8 +1,9 @@
 package io.github.lukmnh.toolbox.devutils.regex.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.ToolCategory;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
@@ -28,7 +29,7 @@ final class RegexView {
         tabs.getStyleClass().addAll("underline-tabs", "regex-tabs");
         tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabs.setPrefHeight(TABS_HEIGHT);
-        VBox right = DevLayout.card(tabs);
+        VBox right = ToolLayout.card(tabs);
         right.getStyleClass().add("regex-tabs-card");
         VBox.setVgrow(tabs, Priority.ALWAYS);
 
@@ -37,12 +38,15 @@ final class RegexView {
             column.setPrefWidth(0);
             HBox.setHgrow(column, Priority.ALWAYS);
         }
-        HBox columns = new HBox(DevLayout.SPACING, left, right);
+        HBox columns = new HBox(ToolLayout.SPACING, left, right);
 
-        VBox page = DevLayout.page();
+        VBox page = ToolLayout.page();
         page.getChildren()
                 .addAll(
-                        DevLayout.header(Messages.get("devutils.regex.name"), Messages.get("devutils.regex.hint")),
+                        ToolLayout.header(
+                                ToolCategory.DEV_UTILS,
+                                Messages.get("devutils.regex.name"),
+                                Messages.get("devutils.regex.hint")),
                         PatternPane.create(viewModel),
                         columns);
         ScrollPane scroll = new ScrollPane(page);

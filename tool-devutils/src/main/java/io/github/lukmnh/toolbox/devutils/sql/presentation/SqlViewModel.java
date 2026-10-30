@@ -6,7 +6,7 @@ import io.github.lukmnh.toolbox.common.task.CancellationToken;
 import io.github.lukmnh.toolbox.common.task.RunningTask;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
 import io.github.lukmnh.toolbox.common.ui.ByteSizeFormat;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.ClipboardActions;
+import io.github.lukmnh.toolbox.common.ui.ClipboardActions;
 import io.github.lukmnh.toolbox.devutils.sql.domain.FormatOptions;
 import io.github.lukmnh.toolbox.devutils.sql.domain.IndentStyle;
 import io.github.lukmnh.toolbox.devutils.sql.domain.LoadedSql;

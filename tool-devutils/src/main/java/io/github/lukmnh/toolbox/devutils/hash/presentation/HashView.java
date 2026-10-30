@@ -1,12 +1,13 @@
 package io.github.lukmnh.toolbox.devutils.hash.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.ToolCategory;
+import io.github.lukmnh.toolbox.common.ui.ClipboardActions;
 import io.github.lukmnh.toolbox.common.ui.Notifier;
+import io.github.lukmnh.toolbox.common.ui.Tone;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.hash.domain.DigestEncoding;
 import io.github.lukmnh.toolbox.devutils.hash.domain.DigestResult;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.ClipboardActions;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.Tone;
 import java.util.List;
 import java.util.Map;
 import javafx.beans.binding.Bindings;
@@ -42,7 +43,7 @@ public final class HashView extends VBox {
     public HashView(HashViewModel viewModel, Notifier notifier) {
         this.viewModel = viewModel;
         this.notifier = notifier;
-        VBox page = DevLayout.page();
+        VBox page = ToolLayout.page();
         VBox.setVgrow(page, Priority.ALWAYS);
         ScrollPane results = new ScrollPane(buildResultsCard());
         results.setFitToWidth(true);
@@ -50,7 +51,10 @@ public final class HashView extends VBox {
         VBox.setVgrow(results, Priority.ALWAYS);
         page.getChildren()
                 .addAll(
-                        DevLayout.header(Messages.get("devutils.hash.name"), Messages.get("devutils.hash.hint")),
+                        ToolLayout.header(
+                                ToolCategory.DEV_UTILS,
+                                Messages.get("devutils.hash.name"),
+                                Messages.get("devutils.hash.hint")),
                         buildInputCard(),
                         buildHmacCard(),
                         results);
@@ -61,12 +65,12 @@ public final class HashView extends VBox {
     }
 
     private VBox buildInputCard() {
-        TextArea input = DevLayout.codeArea(true);
+        TextArea input = ToolLayout.codeArea(true);
         input.setPromptText(Messages.get("devutils.hash.input.prompt"));
         input.setPrefRowCount(INPUT_ROWS);
         input.textProperty().bindBidirectional(viewModel.textProperty());
 
-        Label stats = DevLayout.statText();
+        Label stats = ToolLayout.statText();
         stats.textProperty()
                 .bind(Bindings.createStringBinding(
                         () -> viewModel.outcomeProperty().get() == null
@@ -74,27 +78,27 @@ public final class HashView extends VBox {
                                 : viewModel.statsText(
                                         viewModel.outcomeProperty().get()),
                         viewModel.outcomeProperty()));
-        HBox options = DevLayout.row(
+        HBox options = ToolLayout.row(
                 stats,
-                DevLayout.spacer(),
+                ToolLayout.spacer(),
                 caption("devutils.hash.mode"),
-                DevLayout.segmented(
+                ToolLayout.segmented(
                         viewModel.modeProperty(),
                         List.of(HashMode.values()),
                         mode -> Messages.get(MODE_LABELS.get(mode))),
                 caption("devutils.hash.format"),
-                DevLayout.segmented(
+                ToolLayout.segmented(
                         viewModel.encodingProperty(),
                         List.of(DigestEncoding.values()),
                         encoding -> Messages.get(ENCODING_LABELS.get(encoding))));
-        return DevLayout.card(Messages.get("devutils.hash.input"), List.of(), input, options);
+        return ToolLayout.card(Messages.get("devutils.hash.input"), List.of(), input, options);
     }
 
     private VBox buildHmacCard() {
         PasswordField key = new PasswordField();
         key.setPromptText(Messages.get("devutils.hash.hmac.prompt"));
         HBox.setHgrow(key, Priority.ALWAYS);
-        Button compute = DevLayout.accentButton(Messages.get("devutils.hash.hmac.compute"), () -> {
+        Button compute = ToolLayout.accentButton(Messages.get("devutils.hash.hmac.compute"), () -> {
             char[] secret = toChars(key.getCharacters());
             // Field UI dikosongkan segera supaya key tidak tertinggal di node (Security Requirements #7)
             key.clear();
@@ -102,24 +106,24 @@ public final class HashView extends VBox {
         });
         compute.disableProperty().bind(key.lengthProperty().isEqualTo(0));
         key.setOnAction(event -> compute.fire());
-        VBox card = DevLayout.card(
+        VBox card = ToolLayout.card(
                 Messages.get("devutils.hash.hmac.title"),
                 List.of(),
-                DevLayout.row(key, compute),
-                DevLayout.hint(Messages.get("devutils.hash.hmac.hint")));
+                ToolLayout.row(key, compute),
+                ToolLayout.hint(Messages.get("devutils.hash.hmac.hint")));
         card.visibleProperty().bind(viewModel.modeProperty().isEqualTo(HashMode.HMAC));
-        DevLayout.collapseWhenHidden(card);
+        ToolLayout.collapseWhenHidden(card);
         return card;
     }
 
     private VBox buildResultsCard() {
-        Label kind = DevLayout.badge(Messages.get("devutils.hash.mode.hmac"), Tone.INFO);
+        Label kind = ToolLayout.badge(Messages.get("devutils.hash.mode.hmac"), Tone.INFO);
         kind.visibleProperty()
                 .bind(Bindings.createBooleanBinding(
                         () -> viewModel.outcomeProperty().get() != null
                                 && viewModel.outcomeProperty().get().hmac(),
                         viewModel.outcomeProperty()));
-        Label empty = DevLayout.inlineMessage(Tone.NEUTRAL);
+        Label empty = ToolLayout.inlineMessage(Tone.NEUTRAL);
         empty.textProperty()
                 .bind(Bindings.createStringBinding(
                         () -> viewModel.outcomeProperty().get() != null
@@ -130,7 +134,7 @@ public final class HashView extends VBox {
                                                 : "devutils.hash.empty"),
                         viewModel.outcomeProperty(),
                         viewModel.modeProperty()));
-        return DevLayout.card(
+        return ToolLayout.card(
                 Messages.get("devutils.hash.results"),
                 List.of(kind, ClipboardActions.clearButton(notifier)),
                 empty,
@@ -157,7 +161,7 @@ public final class HashView extends VBox {
         nameColumn.setMinWidth(NAME_COLUMN_WIDTH);
         nameColumn.setPrefWidth(NAME_COLUMN_WIDTH);
         if (result.insecure()) {
-            Label badge = DevLayout.badge(Messages.get("devutils.hash.insecure"), Tone.WARNING);
+            Label badge = ToolLayout.badge(Messages.get("devutils.hash.insecure"), Tone.WARNING);
             badge.setTooltip(new Tooltip(Messages.get("devutils.hash.insecure.tooltip")));
             nameColumn.getChildren().add(badge);
         }
@@ -167,7 +171,7 @@ public final class HashView extends VBox {
         value.setMinWidth(0);
         value.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(value, Priority.ALWAYS);
-        HBox row = DevLayout.row(nameColumn, value, ClipboardActions.copyButton(value::getText, notifier));
+        HBox row = ToolLayout.row(nameColumn, value, ClipboardActions.copyButton(value::getText, notifier));
         row.getStyleClass().add("result-row");
         return row;
     }

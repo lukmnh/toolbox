@@ -1,12 +1,12 @@
 package io.github.lukmnh.toolbox.devutils.encoder.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.ui.ClipboardActions;
 import io.github.lukmnh.toolbox.common.ui.Notifier;
+import io.github.lukmnh.toolbox.common.ui.Tone;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.encoder.domain.ParsedUrl;
 import io.github.lukmnh.toolbox.devutils.encoder.domain.SpaceEncoding;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.ClipboardActions;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.Tone;
 import java.util.List;
 import java.util.function.Function;
 import javafx.beans.binding.Bindings;
@@ -35,7 +35,7 @@ final class UrlPane extends VBox {
     private final Notifier notifier;
 
     UrlPane(UrlViewModel viewModel, Notifier notifier) {
-        super(DevLayout.SPACING);
+        super(ToolLayout.SPACING);
         this.viewModel = viewModel;
         this.notifier = notifier;
         getChildren().addAll(buildCodecCard(), buildParserCard());
@@ -45,76 +45,76 @@ final class UrlPane extends VBox {
 
     private VBox buildCodecCard() {
         HBox spaces =
-                DevLayout.segmented(viewModel.spacesProperty(), List.of(SpaceEncoding.values()), UrlPane::spaceLabel);
-        VBox spacesBox = DevLayout.labeled(Messages.get("devutils.encoder.url.spaces"), spaces);
+                ToolLayout.segmented(viewModel.spacesProperty(), List.of(SpaceEncoding.values()), UrlPane::spaceLabel);
+        VBox spacesBox = ToolLayout.labeled(Messages.get("devutils.encoder.url.spaces"), spaces);
         spacesBox.visibleProperty().bind(viewModel.modeProperty().isEqualTo(UrlMode.COMPONENT));
-        DevLayout.collapseWhenHidden(spacesBox);
-        HBox options = DevLayout.row(
-                DevLayout.labeled(
+        ToolLayout.collapseWhenHidden(spacesBox);
+        HBox options = ToolLayout.row(
+                ToolLayout.labeled(
                         Messages.get("devutils.encoder.url.mode"),
-                        DevLayout.segmented(viewModel.modeProperty(), List.of(UrlMode.values()), UrlPane::modeLabel)),
-                DevLayout.labeled(
+                        ToolLayout.segmented(viewModel.modeProperty(), List.of(UrlMode.values()), UrlPane::modeLabel)),
+                ToolLayout.labeled(
                         Messages.get("devutils.encoder.url.direction"),
-                        DevLayout.segmented(
+                        ToolLayout.segmented(
                                 viewModel.directionProperty(),
                                 List.of(Direction.values()),
                                 Base64Pane::directionLabel)),
                 spacesBox,
-                DevLayout.spacer(),
-                DevLayout.button(Messages.get("devutils.encoder.swap"), viewModel::swap));
-        options.setSpacing(DevLayout.SPACING * 2);
+                ToolLayout.spacer(),
+                ToolLayout.button(Messages.get("devutils.encoder.swap"), viewModel::swap));
+        options.setSpacing(ToolLayout.SPACING * 2);
 
-        TextArea input = DevLayout.codeArea(true);
+        TextArea input = ToolLayout.codeArea(true);
         input.setPrefRowCount(EDITOR_ROWS);
         input.setPromptText(Messages.get("devutils.encoder.url.input.prompt"));
         input.textProperty().bindBidirectional(viewModel.inputProperty());
-        TextArea output = DevLayout.codeArea(false);
+        TextArea output = ToolLayout.codeArea(false);
         output.setPrefRowCount(EDITOR_ROWS);
         output.textProperty().bind(viewModel.outputProperty());
-        Label error = DevLayout.inlineMessage(Tone.DANGER);
+        Label error = ToolLayout.inlineMessage(Tone.DANGER);
         error.textProperty().bind(viewModel.errorProperty());
 
-        Button copy = DevLayout.button(Messages.get("devutils.copy"), viewModel::copyOutput);
+        Button copy = ToolLayout.button(Messages.get("common.copy"), viewModel::copyOutput);
         copy.disableProperty().bind(viewModel.outputProperty().isEmpty());
-        return DevLayout.card(
+        return ToolLayout.card(
                 Messages.get("devutils.encoder.url.codec"),
                 List.of(copy, ClipboardActions.clearButton(notifier)),
                 options,
-                DevLayout.labeled(Messages.get("devutils.encoder.input"), input),
+                ToolLayout.labeled(Messages.get("devutils.encoder.input"), input),
                 error,
-                DevLayout.labeled(Messages.get("devutils.encoder.output"), output));
+                ToolLayout.labeled(Messages.get("devutils.encoder.output"), output));
     }
 
     // ---------- Parser URL ----------
 
     private VBox buildParserCard() {
-        TextField url = DevLayout.codeField();
+        TextField url = ToolLayout.codeField();
         url.setPromptText(Messages.get("devutils.encoder.url.parse.prompt"));
         url.textProperty().bindBidirectional(viewModel.urlInputProperty());
-        Label error = DevLayout.inlineMessage(Tone.DANGER);
+        Label error = ToolLayout.inlineMessage(Tone.DANGER);
         error.textProperty().bind(viewModel.parseErrorProperty());
 
         TableView<ParamRow> table = buildParamTable();
-        TextField rebuilt = DevLayout.codeField();
+        TextField rebuilt = ToolLayout.codeField();
         rebuilt.setEditable(false);
         rebuilt.textProperty().bind(viewModel.rebuiltProperty());
-        Button copy = DevLayout.button(Messages.get("devutils.copy"), viewModel::copyRebuilt);
+        Button copy = ToolLayout.button(Messages.get("common.copy"), viewModel::copyRebuilt);
         copy.disableProperty().bind(viewModel.rebuiltProperty().isEmpty());
         HBox.setHgrow(rebuilt, Priority.ALWAYS);
 
         VBox details = new VBox(
-                DevLayout.SPACING,
+                ToolLayout.SPACING,
                 buildPartsGrid(),
-                DevLayout.labeled(Messages.get("devutils.encoder.url.params"), table),
+                ToolLayout.labeled(Messages.get("devutils.encoder.url.params"), table),
                 buildParamActions(table),
-                DevLayout.labeled(Messages.get("devutils.encoder.url.rebuilt"), DevLayout.row(rebuilt, copy)));
+                ToolLayout.labeled(Messages.get("devutils.encoder.url.rebuilt"), ToolLayout.row(rebuilt, copy)));
         details.visibleProperty().bind(viewModel.parsedProperty().isNotNull());
-        DevLayout.collapseWhenHidden(details);
+        ToolLayout.collapseWhenHidden(details);
 
-        return DevLayout.card(
+        return ToolLayout.card(
                 Messages.get("devutils.encoder.url.parser"),
                 List.of(),
-                DevLayout.hint(Messages.get("devutils.encoder.url.parser.hint")),
+                ToolLayout.hint(Messages.get("devutils.encoder.url.parser.hint")),
                 url,
                 error,
                 details);
@@ -122,8 +122,8 @@ final class UrlPane extends VBox {
 
     private GridPane buildPartsGrid() {
         GridPane grid = new GridPane();
-        grid.setHgap(DevLayout.SPACING * 2);
-        grid.setVgap(DevLayout.GAP / 2);
+        grid.setHgap(ToolLayout.SPACING * 2);
+        grid.setVgap(ToolLayout.GAP / 2);
         addPart(grid, 0, "devutils.encoder.url.scheme", ParsedUrl::scheme);
         addPart(grid, 1, "devutils.encoder.url.host", ParsedUrl::host);
         addPart(
@@ -178,29 +178,29 @@ final class UrlPane extends VBox {
     }
 
     private HBox buildParamActions(TableView<ParamRow> table) {
-        Button remove = DevLayout.button(
+        Button remove = ToolLayout.button(
                 Messages.get("devutils.encoder.url.params.remove"),
                 () -> viewModel.removeParam(table.getSelectionModel().getSelectedIndex()));
-        Button up = DevLayout.button(Messages.get("devutils.encoder.url.params.up"), () -> move(table, -1));
-        Button down = DevLayout.button(Messages.get("devutils.encoder.url.params.down"), () -> move(table, 1));
+        Button up = ToolLayout.button(Messages.get("devutils.encoder.url.params.up"), () -> move(table, -1));
+        Button down = ToolLayout.button(Messages.get("devutils.encoder.url.params.down"), () -> move(table, 1));
         remove.disableProperty()
                 .bind(table.getSelectionModel().selectedItemProperty().isNull());
         up.disableProperty()
                 .bind(table.getSelectionModel().selectedItemProperty().isNull());
         down.disableProperty()
                 .bind(table.getSelectionModel().selectedItemProperty().isNull());
-        Button add = DevLayout.button(Messages.get("devutils.encoder.url.params.add"), () -> {
+        Button add = ToolLayout.button(Messages.get("devutils.encoder.url.params.add"), () -> {
             viewModel.addParam();
             int last = viewModel.params().size() - 1;
             table.getSelectionModel().select(last);
             table.edit(last, table.getColumns().getFirst());
         });
-        return DevLayout.row(
+        return ToolLayout.row(
                 add,
                 remove,
                 up,
                 down,
-                DevLayout.button(Messages.get("devutils.encoder.url.params.sort"), viewModel::sortParams));
+                ToolLayout.button(Messages.get("devutils.encoder.url.params.sort"), viewModel::sortParams));
     }
 
     private void move(TableView<ParamRow> table, int offset) {

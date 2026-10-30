@@ -1,5 +1,7 @@
 package io.github.lukmnh.toolbox.devutils.encoder.presentation;
 
+import io.github.lukmnh.toolbox.common.ui.ClipboardActions;
+import io.github.lukmnh.toolbox.common.ui.Debounce;
 import io.github.lukmnh.toolbox.common.ui.Notifier;
 import io.github.lukmnh.toolbox.devutils.encoder.domain.InvalidPercentEncodingException;
 import io.github.lukmnh.toolbox.devutils.encoder.domain.ParsedUrl;
@@ -7,8 +9,6 @@ import io.github.lukmnh.toolbox.devutils.encoder.domain.QueryParam;
 import io.github.lukmnh.toolbox.devutils.encoder.domain.SpaceEncoding;
 import io.github.lukmnh.toolbox.devutils.encoder.domain.UrlCodec;
 import io.github.lukmnh.toolbox.devutils.encoder.domain.UrlParser;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.ClipboardActions;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.Debounce;
 import java.util.Comparator;
 import java.util.List;
 import javafx.beans.Observable;

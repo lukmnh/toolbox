@@ -2,11 +2,11 @@ package io.github.lukmnh.toolbox.devutils.checksum.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
 import io.github.lukmnh.toolbox.common.ui.Notifier;
+import io.github.lukmnh.toolbox.common.ui.Tone;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.checksum.domain.FileVerification;
 import io.github.lukmnh.toolbox.devutils.checksum.domain.SumsVerification;
 import io.github.lukmnh.toolbox.devutils.checksum.domain.VerifyStatus;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.Tone;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
@@ -54,52 +54,52 @@ final class VerifyPane extends ScrollPane {
         this.notifier = notifier;
         setFitToWidth(true);
         getStyleClass().add("edge-to-edge");
-        VBox content = new VBox(DevLayout.SPACING, buildSingleFile(), buildSumsFile());
+        VBox content = new VBox(ToolLayout.SPACING, buildSingleFile(), buildSumsFile());
         content.getStyleClass().add("tool-view");
-        content.setPadding(new Insets(DevLayout.SPACING, 0, 0, 0));
+        content.setPadding(new Insets(ToolLayout.SPACING, 0, 0, 0));
         setContent(content);
     }
 
     // ---------- (a) Satu file ----------
 
     private VBox buildSingleFile() {
-        Label fileName = DevLayout.statText();
+        Label fileName = ToolLayout.statText();
         fileName.textProperty().bind(fileLabel(viewModel.fileProperty(), "devutils.checksum.verify.file.none"));
-        Button choose = DevLayout.button(
+        Button choose = ToolLayout.button(
                 Messages.get("devutils.checksum.chooseFile"),
                 () -> chooseFile(Messages.get("devutils.checksum.chooseFile.title"), viewModel.fileProperty()::set));
 
-        TextField expected = DevLayout.codeField();
+        TextField expected = ToolLayout.codeField();
         expected.setPromptText(Messages.get("devutils.checksum.verify.expected.prompt"));
         expected.textProperty().bindBidirectional(viewModel.expectedProperty());
         HBox.setHgrow(expected, Priority.ALWAYS);
 
-        Label detected = DevLayout.badge("", Tone.INFO);
+        Label detected = ToolLayout.badge("", Tone.INFO);
         detected.textProperty().bind(viewModel.detectedAlgorithm());
         detected.visibleProperty().bind(detected.textProperty().isNotEmpty());
-        DevLayout.collapseWhenHidden(detected);
+        ToolLayout.collapseWhenHidden(detected);
 
-        Button verify = DevLayout.accentButton(Messages.get("devutils.checksum.verify.run"), viewModel::verifyFile);
+        Button verify = ToolLayout.accentButton(Messages.get("devutils.checksum.verify.run"), viewModel::verifyFile);
         verify.disableProperty().bind(viewModel.canVerifyFile().not());
 
-        Label error = DevLayout.inlineMessage(Tone.DANGER);
+        Label error = ToolLayout.inlineMessage(Tone.DANGER);
         error.textProperty().bind(viewModel.fileErrorProperty());
 
-        VBox card = DevLayout.card(
+        VBox card = ToolLayout.card(
                 Messages.get("devutils.checksum.verify.single"),
                 List.of(),
-                DevLayout.hint(Messages.get("devutils.checksum.verify.single.hint")),
-                DevLayout.row(choose, fileName),
-                DevLayout.labeled(Messages.get("devutils.checksum.verify.expected"), expected),
-                DevLayout.row(
-                        DevLayout.labeled(
+                ToolLayout.hint(Messages.get("devutils.checksum.verify.single.hint")),
+                ToolLayout.row(choose, fileName),
+                ToolLayout.labeled(Messages.get("devutils.checksum.verify.expected"), expected),
+                ToolLayout.row(
+                        ToolLayout.labeled(
                                 Messages.get("devutils.checksum.algorithm"), choiceBox(viewModel.fileChoiceProperty())),
                         detected,
-                        DevLayout.spacer(),
+                        ToolLayout.spacer(),
                         verify),
                 buildVerdict(),
                 error);
-        DevLayout.acceptDrops(
+        ToolLayout.acceptDrops(
                 card, Set.of(), files -> viewModel.fileProperty().set(files.getFirst()), this::warnRejected);
         return card;
     }
@@ -108,7 +108,7 @@ final class VerifyPane extends ScrollPane {
         Label verdict = new Label();
         verdict.getStyleClass().add(VERDICT);
         verdict.setMaxWidth(Double.MAX_VALUE);
-        Label detail = DevLayout.statText();
+        Label detail = ToolLayout.statText();
         detail.getStyleClass().add("mono");
         detail.setWrapText(true);
         viewModel
@@ -116,7 +116,7 @@ final class VerifyPane extends ScrollPane {
                 .addListener((observable, previous, result) -> showVerdict(verdict, detail, result));
         VBox box = new VBox(6, verdict, detail);
         box.visibleProperty().bind(viewModel.fileResultProperty().isNotNull());
-        DevLayout.collapseWhenHidden(box);
+        ToolLayout.collapseWhenHidden(box);
         return box;
     }
 
@@ -140,9 +140,9 @@ final class VerifyPane extends ScrollPane {
     // ---------- (b) File daftar SUMS ----------
 
     private VBox buildSumsFile() {
-        Label fileName = DevLayout.statText();
+        Label fileName = ToolLayout.statText();
         fileName.textProperty().bind(fileLabel(viewModel.sumsFileProperty(), "devutils.checksum.verify.sums.none"));
-        Button choose = DevLayout.accentButton(
+        Button choose = ToolLayout.accentButton(
                 Messages.get("devutils.checksum.verify.sums.choose"),
                 () -> chooseFile(Messages.get("devutils.checksum.verify.sums.choose.title"), viewModel::verifySums));
         choose.disableProperty().bind(viewModel.idle().not());
@@ -151,31 +151,31 @@ final class VerifyPane extends ScrollPane {
         // Ganti algoritma setelah file dimuat → verifikasi ulang tanpa memilih file lagi
         viewModel.sumsChoiceProperty().addListener((observable, previous, current) -> viewModel.reverifySums());
 
-        Label error = DevLayout.inlineMessage(Tone.DANGER);
+        Label error = ToolLayout.inlineMessage(Tone.DANGER);
         error.textProperty().bind(viewModel.sumsErrorProperty());
 
         TableView<SumsVerification> table = buildSumsTable();
         table.setPrefHeight(SUMS_TABLE_HEIGHT);
 
-        VBox card = DevLayout.card(
+        VBox card = ToolLayout.card(
                 Messages.get("devutils.checksum.verify.sums"),
                 List.of(),
-                DevLayout.hint(Messages.get("devutils.checksum.verify.sums.hint")),
-                DevLayout.row(
+                ToolLayout.hint(Messages.get("devutils.checksum.verify.sums.hint")),
+                ToolLayout.row(
                         choose,
                         fileName,
-                        DevLayout.spacer(),
-                        DevLayout.labeled(Messages.get("devutils.checksum.algorithm"), algorithm)),
+                        ToolLayout.spacer(),
+                        ToolLayout.labeled(Messages.get("devutils.checksum.algorithm"), algorithm)),
                 buildCounters(),
                 error,
                 table);
-        DevLayout.acceptDrops(card, Set.of(), files -> viewModel.verifySums(files.getFirst()), this::warnRejected);
+        ToolLayout.acceptDrops(card, Set.of(), files -> viewModel.verifySums(files.getFirst()), this::warnRejected);
         return card;
     }
 
     /** Ringkasan per status sebagai badge berwarna: OK 12 · GAGAL 1 · …. */
     private HBox buildCounters() {
-        HBox row = DevLayout.row();
+        HBox row = ToolLayout.row();
         viewModel.sumsResults().addListener((ListChangeListener<SumsVerification>) change -> {
             row.getChildren().clear();
             if (viewModel.sumsResults().isEmpty()) {
@@ -183,20 +183,20 @@ final class VerifyPane extends ScrollPane {
             }
             for (VerifyStatus status : VerifyStatus.values()) {
                 row.getChildren()
-                        .add(DevLayout.badge(
+                        .add(ToolLayout.badge(
                                 Messages.format(
                                         "devutils.checksum.count", statusLabel(status), viewModel.count(status)),
                                 tone(status)));
             }
         });
         row.visibleProperty().bind(Bindings.isNotEmpty(viewModel.sumsResults()));
-        DevLayout.collapseWhenHidden(row);
+        ToolLayout.collapseWhenHidden(row);
         return row;
     }
 
     private TableView<SumsVerification> buildSumsTable() {
         TableView<SumsVerification> table = new TableView<>(viewModel.sumsResults());
-        table.setPlaceholder(DevLayout.hint(Messages.get("devutils.checksum.verify.sums.empty")));
+        table.setPlaceholder(ToolLayout.hint(Messages.get("devutils.checksum.verify.sums.empty")));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         TableColumn<SumsVerification, VerifyStatus> status =
                 new TableColumn<>(Messages.get("devutils.checksum.column.status"));
@@ -223,7 +223,7 @@ final class VerifyPane extends ScrollPane {
             protected void updateItem(VerifyStatus item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(null);
-                setGraphic(empty || item == null ? null : DevLayout.badge(statusLabel(item), tone(item)));
+                setGraphic(empty || item == null ? null : ToolLayout.badge(statusLabel(item), tone(item)));
             }
         };
     }
@@ -246,7 +246,7 @@ final class VerifyPane extends ScrollPane {
     private static ChoiceBox<AlgorithmChoice> choiceBox(ObjectProperty<AlgorithmChoice> value) {
         ChoiceBox<AlgorithmChoice> choice = new ChoiceBox<>();
         choice.getItems().setAll(AlgorithmChoice.values());
-        choice.setConverter(DevLayout.labels(AlgorithmChoice::label));
+        choice.setConverter(ToolLayout.labels(AlgorithmChoice::label));
         choice.valueProperty().bindBidirectional(value);
         return choice;
     }

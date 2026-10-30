@@ -2,11 +2,11 @@ package io.github.lukmnh.toolbox.devutils.checksum.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
 import io.github.lukmnh.toolbox.common.ui.ByteSizeFormat;
+import io.github.lukmnh.toolbox.common.ui.ClipboardActions;
 import io.github.lukmnh.toolbox.common.ui.Notifier;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.checksum.domain.ChecksumAlgorithm;
 import io.github.lukmnh.toolbox.devutils.checksum.domain.FileChecksum;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.ClipboardActions;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
 import java.io.File;
 import java.util.List;
 import java.util.Set;
@@ -40,45 +40,45 @@ final class GeneratePane extends VBox {
     private final Notifier notifier;
 
     GeneratePane(GenerateViewModel viewModel, Window owner, Notifier notifier) {
-        super(DevLayout.SPACING);
+        super(ToolLayout.SPACING);
         this.viewModel = viewModel;
         this.owner = owner;
         this.notifier = notifier;
-        setPadding(new Insets(DevLayout.SPACING, 0, 0, 0));
+        setPadding(new Insets(ToolLayout.SPACING, 0, 0, 0));
         VBox results = buildResults();
         VBox.setVgrow(results, Priority.ALWAYS);
         getChildren().addAll(buildInput(), results);
     }
 
     private VBox buildInput() {
-        VBox dropZone = DevLayout.dropZone(
+        VBox dropZone = ToolLayout.dropZone(
                 Messages.get("devutils.checksum.generate.drop"),
                 Messages.get("devutils.checksum.chooseFiles"),
                 this::chooseFiles);
-        DevLayout.acceptDrops(dropZone, Set.of(), viewModel::addFiles, this::warnRejected);
+        ToolLayout.acceptDrops(dropZone, Set.of(), viewModel::addFiles, this::warnRejected);
 
-        Label selected = DevLayout.statText();
+        Label selected = ToolLayout.statText();
         selected.setWrapText(true);
         selected.textProperty().bind(Bindings.createStringBinding(viewModel::filesSummary, viewModel.files()));
 
-        Button clear = DevLayout.button(Messages.get("devutils.checksum.files.clear"), viewModel::clearFiles);
+        Button clear = ToolLayout.button(Messages.get("devutils.checksum.files.clear"), viewModel::clearFiles);
         clear.disableProperty().bind(Bindings.isEmpty(viewModel.files()));
-        Button run = DevLayout.accentButton(Messages.get("devutils.checksum.generate.run"), viewModel::run);
+        Button run = ToolLayout.accentButton(Messages.get("devutils.checksum.generate.run"), viewModel::run);
         run.disableProperty().bind(viewModel.canRun().not());
 
-        return DevLayout.card(
+        return ToolLayout.card(
                 Messages.get("devutils.checksum.generate.input"),
                 List.of(),
                 dropZone,
                 selected,
-                DevLayout.row(
-                        DevLayout.labeled(
+                ToolLayout.row(
+                        ToolLayout.labeled(
                                 Messages.get("devutils.checksum.algorithm"),
-                                DevLayout.segmented(
+                                ToolLayout.segmented(
                                         viewModel.algorithmProperty(),
                                         List.of(ChecksumAlgorithm.values()),
                                         ChecksumAlgorithm::label)),
-                        DevLayout.spacer(),
+                        ToolLayout.spacer(),
                         clear,
                         run));
     }
@@ -87,31 +87,31 @@ final class GeneratePane extends VBox {
         TableView<FileChecksum> table = buildTable();
         VBox.setVgrow(table, Priority.ALWAYS);
 
-        Label summary = DevLayout.statText();
+        Label summary = ToolLayout.statText();
         summary.textProperty()
                 .bind(Bindings.createStringBinding(
                         () -> viewModel.results().isEmpty() ? "" : viewModel.resultSummary(), viewModel.results()));
 
         Button copy = ClipboardActions.copyButton(viewModel::sumsText, notifier);
         copy.setTooltip(new Tooltip(Messages.get("devutils.checksum.copySums.tooltip")));
-        Button download = DevLayout.accentButton(Messages.get("download.button"), viewModel::download);
-        Button saveAs = DevLayout.button(Messages.get("download.saveAs.button"), viewModel::saveAs);
+        Button download = ToolLayout.accentButton(Messages.get("download.button"), viewModel::download);
+        Button saveAs = ToolLayout.button(Messages.get("download.saveAs.button"), viewModel::saveAs);
         for (Button button : List.of(copy, download, saveAs)) {
             button.disableProperty().bind(viewModel.hasResults().not());
         }
 
-        VBox card = DevLayout.card(
+        VBox card = ToolLayout.card(
                 Messages.get("devutils.checksum.generate.result"),
                 List.of(copy, saveAs, download),
                 table,
-                DevLayout.row(
-                        summary, DevLayout.spacer(), DevLayout.hint(Messages.get("devutils.checksum.copyRow.hint"))));
+                ToolLayout.row(
+                        summary, ToolLayout.spacer(), ToolLayout.hint(Messages.get("devutils.checksum.copyRow.hint"))));
         return card;
     }
 
     private TableView<FileChecksum> buildTable() {
         TableView<FileChecksum> table = new TableView<>(viewModel.results());
-        table.setPlaceholder(DevLayout.hint(Messages.get("devutils.checksum.generate.empty")));
+        table.setPlaceholder(ToolLayout.hint(Messages.get("devutils.checksum.generate.empty")));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         table.getColumns()
                 .setAll(List.of(

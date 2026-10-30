@@ -1,9 +1,9 @@
 package io.github.lukmnh.toolbox.devutils.regex.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.ui.Tone;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.regex.application.ReplaceResult;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.Tone;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -28,21 +28,21 @@ final class ReplacePane {
     }
 
     private Node build() {
-        TextField template = DevLayout.codeField();
+        TextField template = ToolLayout.codeField();
         template.setPromptText(Messages.get("devutils.regex.replace.prompt"));
         template.textProperty().bindBidirectional(viewModel.replacementProperty());
-        Label hint = DevLayout.hint("");
+        Label hint = ToolLayout.hint("");
         hint.textProperty()
                 .bind(Bindings.createStringBinding(
                         () -> Messages.get("devutils.regex.replace.hint."
                                 + viewModel.flavorProperty().get().name()),
                         viewModel.flavorProperty()));
-        Label error = DevLayout.inlineMessage(Tone.DANGER);
+        Label error = ToolLayout.inlineMessage(Tone.DANGER);
         error.textProperty().bind(viewModel.replaceErrorProperty());
 
-        TextArea output = DevLayout.codeArea(false);
+        TextArea output = ToolLayout.codeArea(false);
         VBox.setVgrow(output, Priority.ALWAYS);
-        Label count = DevLayout.statText();
+        Label count = ToolLayout.statText();
         viewModel.evaluationProperty().addListener((observable, previous, current) -> {
             ReplaceResult result = current == null ? null : current.replace().orElse(null);
             output.setText(result == null ? "" : result.output());
@@ -52,18 +52,18 @@ final class ReplacePane {
                             : Messages.format(
                                     "devutils.regex.replace.count", RegexMessages.number(result.replacements())));
         });
-        Button copy = DevLayout.button(Messages.get("devutils.copy"), viewModel::copyReplaceOutput);
+        Button copy = ToolLayout.button(Messages.get("common.copy"), viewModel::copyReplaceOutput);
         copy.disableProperty().bind(output.textProperty().isEmpty());
 
         VBox box = new VBox(
-                DevLayout.GAP,
-                DevLayout.labeled(Messages.get("devutils.regex.replace.template"), template),
+                ToolLayout.GAP,
+                ToolLayout.labeled(Messages.get("devutils.regex.replace.template"), template),
                 hint,
                 error,
-                DevLayout.row(
-                        new Label(Messages.get("devutils.regex.replace.output")), DevLayout.spacer(), count, copy),
+                ToolLayout.row(
+                        new Label(Messages.get("devutils.regex.replace.output")), ToolLayout.spacer(), count, copy),
                 output);
-        box.setPadding(new Insets(DevLayout.GAP));
+        box.setPadding(new Insets(ToolLayout.GAP));
         return box;
     }
 }

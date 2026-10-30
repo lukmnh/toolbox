@@ -1,10 +1,12 @@
 package io.github.lukmnh.toolbox.pdf.compress.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.ToolCategory;
 import io.github.lukmnh.toolbox.common.ui.TaskStatusBar;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.pdf.compress.domain.CompressionPreset;
+import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfControls;
 import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfFileChooser;
-import io.github.lukmnh.toolbox.pdf.shared.presentation.ToolLayout;
 import java.util.function.Consumer;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
@@ -29,14 +31,15 @@ public final class CompressView extends VBox {
         getStyleClass().add("tool-view");
         setPadding(new Insets(ToolLayout.SPACING * 2));
 
-        VBox dropZone = ToolLayout.dropZone(
+        VBox dropZone = PdfControls.dropZone(
                 Messages.get("pdf.drop.single"),
                 () -> PdfFileChooser.chooseOne(owner).ifPresent(viewModel::openFile));
-        ToolLayout.acceptPdfDrops(this, files -> viewModel.openFile(files.getFirst()), warn);
+        PdfControls.acceptPdfDrops(this, files -> viewModel.openFile(files.getFirst()), warn);
 
         getChildren()
                 .addAll(
-                        ToolLayout.header(Messages.get("pdf.compress.name"), Messages.get("pdf.compress.hint")),
+                        ToolLayout.header(
+                                ToolCategory.PDF, Messages.get("pdf.compress.name"), Messages.get("pdf.compress.hint")),
                         dropZone,
                         infoLabel(),
                         buildPresets(),
@@ -102,7 +105,7 @@ public final class CompressView extends VBox {
         resultRow.visibleProperty().bind(viewModel.resultProperty().isNotNull());
         resultRow.managedProperty().bind(resultRow.visibleProperty());
 
-        CheckBox removeProtection = ToolLayout.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
+        CheckBox removeProtection = PdfControls.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
         return new VBox(ToolLayout.SPACING, removeProtection, compress, status, resultRow);
     }
 }

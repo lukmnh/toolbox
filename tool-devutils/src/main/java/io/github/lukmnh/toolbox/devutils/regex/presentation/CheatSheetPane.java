@@ -1,8 +1,8 @@
 package io.github.lukmnh.toolbox.devutils.regex.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.regex.domain.RegexFlavor;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
 import java.util.List;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -18,7 +18,7 @@ final class CheatSheetPane {
     private static final double TOKEN_COLUMN_WIDTH = 170;
 
     private final RegexViewModel viewModel;
-    private final VBox sections = new VBox(DevLayout.GAP);
+    private final VBox sections = new VBox(ToolLayout.GAP);
 
     private CheatSheetPane(RegexViewModel viewModel) {
         this.viewModel = viewModel;
@@ -29,7 +29,7 @@ final class CheatSheetPane {
     }
 
     private Node build() {
-        sections.setPadding(new Insets(DevLayout.GAP));
+        sections.setPadding(new Insets(ToolLayout.GAP));
         viewModel.flavorProperty().addListener((observable, previous, current) -> rebuild(current));
         rebuild(viewModel.flavorProperty().get());
         ScrollPane scroll = new ScrollPane(sections);
@@ -56,8 +56,8 @@ final class CheatSheetPane {
 
     private static GridPane grid(List<CheatSheet.Entry> entries) {
         GridPane grid = new GridPane();
-        grid.setHgap(DevLayout.SPACING);
-        grid.setVgap(DevLayout.GAP);
+        grid.setHgap(ToolLayout.SPACING);
+        grid.setVgap(ToolLayout.GAP);
         for (int row = 0; row < entries.size(); row++) {
             CheatSheet.Entry entry = entries.get(row);
             Label token = new Label(entry.token());

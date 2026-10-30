@@ -2,8 +2,9 @@ package io.github.lukmnh.toolbox.pdf.sign.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
 import io.github.lukmnh.toolbox.common.ui.TaskStatusBar;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
+import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfControls;
 import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfFileChooser;
-import io.github.lukmnh.toolbox.pdf.shared.presentation.ToolLayout;
 import io.github.lukmnh.toolbox.pdf.sign.domain.EditDefaults;
 import java.io.File;
 import java.nio.file.Path;
@@ -60,7 +61,7 @@ public final class SignView extends BorderPane {
         viewModel.currentTaskProperty().addListener((observable, previous, task) -> status.track(task));
         setBottom(status);
 
-        ToolLayout.acceptPdfDrops(this, files -> openIfConfirmed(files.getFirst()), viewModel::warn);
+        PdfControls.acceptPdfDrops(this, files -> openIfConfirmed(files.getFirst()), viewModel::warn);
         // Begitu halaman pertama selesai dirender, sesuaikan zoom ke lebar area
         viewModel.pageImageProperty().addListener((observable, previous, image) -> {
             if (previous == null && image != null) {
@@ -82,7 +83,7 @@ public final class SignView extends BorderPane {
         saveAs.setOnAction(event -> viewModel.saveAs());
         HBox downloads = ToolLayout.downloadButtons(download, saveAs);
         downloads.disableProperty().bind(viewModel.sourceProperty().isNull());
-        CheckBox removeProtection = ToolLayout.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
+        CheckBox removeProtection = PdfControls.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
 
         HBox bar = toolbar(
                 open,
@@ -238,7 +239,7 @@ public final class SignView extends BorderPane {
     // ---------- Area tengah ----------
 
     private StackPane center() {
-        VBox placeholder = ToolLayout.dropZone(
+        VBox placeholder = PdfControls.dropZone(
                 Messages.get("pdf.sign.drop"),
                 () -> PdfFileChooser.chooseOne(owner).ifPresent(this::openIfConfirmed));
         placeholder.visibleProperty().bind(viewModel.sourceProperty().isNull());

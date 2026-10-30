@@ -1,10 +1,11 @@
 package io.github.lukmnh.toolbox.devutils.checksum.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.ToolCategory;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
+import io.github.lukmnh.toolbox.common.ui.ClipboardActions;
 import io.github.lukmnh.toolbox.common.ui.TaskStatusBar;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.ClipboardActions;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -33,13 +34,15 @@ final class ChecksumView {
         generate.currentTaskProperty().addListener((observable, previous, task) -> status.track(task));
         verify.currentTaskProperty().addListener((observable, previous, task) -> status.track(task));
 
-        VBox page = DevLayout.page();
+        VBox page = ToolLayout.page();
         page.getChildren()
                 .addAll(
-                        DevLayout.row(
-                                DevLayout.header(
-                                        Messages.get("devutils.checksum.name"), Messages.get("devutils.checksum.hint")),
-                                DevLayout.spacer(),
+                        ToolLayout.row(
+                                ToolLayout.header(
+                                        ToolCategory.DEV_UTILS,
+                                        Messages.get("devutils.checksum.name"),
+                                        Messages.get("devutils.checksum.hint")),
+                                ToolLayout.spacer(),
                                 ClipboardActions.clearButton(context.notifier())),
                         tabs,
                         status);

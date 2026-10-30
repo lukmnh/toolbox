@@ -14,4 +14,12 @@
     <name>Toolbox :: Common</name>
     <description>Kontrak Tool, download, task runner, komponen UI reusable, i18n, dan tema.</description>
     <!-- JavaFX diambil dari Liberica JDK Full, tidak perlu dependency org.openjfx -->
+
+    <dependencies>
+        <!-- Export laporan PDF (kalkulator, invoice, budget, guide) -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+        </dependency>
+    </dependencies>
 </project>

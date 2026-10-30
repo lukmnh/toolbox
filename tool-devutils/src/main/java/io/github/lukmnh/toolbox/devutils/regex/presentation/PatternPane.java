@@ -1,11 +1,11 @@
 package io.github.lukmnh.toolbox.devutils.regex.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.ui.Tone;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.regex.domain.RegexFlag;
 import io.github.lukmnh.toolbox.devutils.regex.domain.RegexFlavor;
 import io.github.lukmnh.toolbox.devutils.regex.domain.Span;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.Tone;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,8 +32,8 @@ final class PatternPane {
     private static final String CARET = "^";
 
     private final RegexViewModel viewModel;
-    private final FlowPane flagChips = new FlowPane(DevLayout.GAP, DevLayout.GAP);
-    private final Label accuracy = DevLayout.badge("", Tone.SUCCESS);
+    private final FlowPane flagChips = new FlowPane(ToolLayout.GAP, ToolLayout.GAP);
+    private final Label accuracy = ToolLayout.badge("", Tone.SUCCESS);
     private final HighlightedText preview = new HighlightedText("regex-pattern-preview");
 
     private PatternPane(RegexViewModel viewModel) {
@@ -49,12 +49,12 @@ final class PatternPane {
         viewModel.flags().addListener((SetChangeListener<RegexFlag>) change -> rebuildFlagChips());
         refreshFlavor(viewModel.flavorProperty().get());
 
-        Label error = DevLayout.inlineMessage(Tone.DANGER);
+        Label error = ToolLayout.inlineMessage(Tone.DANGER);
         error.textProperty().bind(viewModel.patternErrorProperty());
-        return DevLayout.card(
+        return ToolLayout.card(
                 Messages.get("devutils.regex.pattern"),
                 List.of(accuracy, copyCodeButton()),
-                DevLayout.segmented(
+                ToolLayout.segmented(
                         viewModel.flavorProperty(), Arrays.asList(RegexFlavor.values()), RegexMessages::flavorName),
                 patternRow(),
                 flagChips,
@@ -63,7 +63,7 @@ final class PatternPane {
     }
 
     private Button copyCodeButton() {
-        Button button = DevLayout.button("", viewModel::copyCode);
+        Button button = ToolLayout.button("", viewModel::copyCode);
         button.textProperty()
                 .bind(Bindings.createStringBinding(
                         () -> Messages.get("devutils.regex.copyCode."
@@ -74,7 +74,7 @@ final class PatternPane {
     }
 
     private HBox patternRow() {
-        TextField field = DevLayout.codeField();
+        TextField field = ToolLayout.codeField();
         field.setPromptText(Messages.get("devutils.regex.pattern.prompt"));
         field.textProperty().bindBidirectional(viewModel.patternProperty());
         HBox.setHgrow(field, Priority.ALWAYS);
@@ -89,7 +89,7 @@ final class PatternPane {
                                         viewModel.flavorProperty().get(), Set.copyOf(viewModel.flags())),
                         viewModel.flavorProperty(),
                         viewModel.flags()));
-        return DevLayout.row(open, field, close);
+        return ToolLayout.row(open, field, close);
     }
 
     /** Delimiter hanya relevan untuk flavor yang menulis pola sebagai {@code /re/flags} (JS dan PHP). */
@@ -99,7 +99,7 @@ final class PatternPane {
         label.visibleProperty()
                 .bind(Bindings.createBooleanBinding(
                         () -> viewModel.flavorProperty().get().translated(), viewModel.flavorProperty()));
-        DevLayout.collapseWhenHidden(label);
+        ToolLayout.collapseWhenHidden(label);
         return label;
     }
 
@@ -126,7 +126,7 @@ final class PatternPane {
                         .hoveredSpanProperty()
                         .isNotNull()
                         .or(viewModel.errorPositionProperty().greaterThanOrEqualTo(0)));
-        DevLayout.collapseWhenHidden(box);
+        ToolLayout.collapseWhenHidden(box);
         return box;
     }
 
@@ -146,7 +146,7 @@ final class PatternPane {
 
     private void refreshFlavor(RegexFlavor flavor) {
         boolean translated = flavor.translated();
-        DevLayout.update(
+        ToolLayout.update(
                 accuracy,
                 Messages.get(translated ? "devutils.regex.accuracy.translated" : "devutils.regex.accuracy.native"),
                 translated ? Tone.INFO : Tone.SUCCESS);

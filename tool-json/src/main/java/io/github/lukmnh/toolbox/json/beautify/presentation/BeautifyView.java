@@ -1,10 +1,11 @@
 package io.github.lukmnh.toolbox.json.beautify.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.ToolCategory;
 import io.github.lukmnh.toolbox.common.ui.TaskStatusBar;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.json.beautify.domain.BeautifyAction;
 import io.github.lukmnh.toolbox.json.beautify.domain.Indent;
-import io.github.lukmnh.toolbox.json.shared.presentation.JsonLayout;
 import java.io.File;
 import java.util.Map;
 import java.util.Set;
@@ -37,12 +38,12 @@ public final class BeautifyView extends VBox {
     private final Window owner;
 
     public BeautifyView(BeautifyViewModel viewModel, Window owner, Consumer<String> warn) {
-        super(JsonLayout.SPACING);
+        super(ToolLayout.SPACING);
         this.viewModel = viewModel;
         this.owner = owner;
         getStyleClass().add("tool-view");
-        setPadding(new Insets(JsonLayout.SPACING * 2));
-        JsonLayout.acceptDrops(
+        setPadding(new Insets(ToolLayout.SPACING * 2));
+        ToolLayout.acceptDrops(
                 this,
                 JSON_EXTENSIONS,
                 files -> viewModel.openFile(files.getFirst()),
@@ -55,7 +56,10 @@ public final class BeautifyView extends VBox {
 
         getChildren()
                 .addAll(
-                        JsonLayout.header(Messages.get("json.beautify.name"), Messages.get("json.beautify.hint")),
+                        ToolLayout.header(
+                                ToolCategory.JSON,
+                                Messages.get("json.beautify.name"),
+                                Messages.get("json.beautify.hint")),
                         buildFileRow(),
                         editors,
                         buildOptions(),
@@ -73,8 +77,8 @@ public final class BeautifyView extends VBox {
         Button openViewer = new Button(Messages.get("json.beautify.openViewer"));
         openViewer.setOnAction(event -> viewModel.openInViewer());
         openViewer.visibleProperty().bind(viewModel.fileProperty().isNotNull());
-        JsonLayout.collapseWhenHidden(clear);
-        JsonLayout.collapseWhenHidden(openViewer);
+        ToolLayout.collapseWhenHidden(clear);
+        ToolLayout.collapseWhenHidden(openViewer);
         Label info = new Label();
         info.getStyleClass().add("file-info");
         info.textProperty()
@@ -83,13 +87,13 @@ public final class BeautifyView extends VBox {
                                 ? Messages.get("json.beautify.file.none")
                                 : viewModel.fileSummary(viewModel.fileProperty().get()),
                         viewModel.fileProperty()));
-        HBox row = new HBox(JsonLayout.SPACING, upload, clear, openViewer, info);
+        HBox row = new HBox(ToolLayout.SPACING, upload, clear, openViewer, info);
         row.setAlignment(Pos.CENTER_LEFT);
         return row;
     }
 
     private VBox buildInput() {
-        TextArea input = JsonLayout.monospace(new TextArea());
+        TextArea input = ToolLayout.mono(new TextArea());
         input.setPromptText(Messages.get("json.beautify.input.prompt"));
         input.textProperty().bindBidirectional(viewModel.textProperty());
         // File besar tidak dimuat ke TextArea; selama ada file, input paste dinonaktifkan
@@ -98,7 +102,7 @@ public final class BeautifyView extends VBox {
     }
 
     private VBox buildOutput() {
-        TextArea output = JsonLayout.monospace(new TextArea());
+        TextArea output = ToolLayout.mono(new TextArea());
         output.setEditable(false);
         output.textProperty()
                 .bind(Bindings.createStringBinding(
@@ -114,7 +118,7 @@ public final class BeautifyView extends VBox {
                         () -> viewModel.previewProperty().get() != null
                                 && viewModel.previewProperty().get().truncated(),
                         viewModel.previewProperty()));
-        JsonLayout.collapseWhenHidden(truncated);
+        ToolLayout.collapseWhenHidden(truncated);
         return labeled(Messages.get("json.beautify.output"), output, truncated);
     }
 
@@ -150,15 +154,15 @@ public final class BeautifyView extends VBox {
         Label sortHint = new Label(Messages.get("json.beautify.sortKeys.disabled"));
         sortHint.getStyleClass().add("field-label");
         sortHint.visibleProperty().bind(viewModel.sortKeysAvailable().not());
-        JsonLayout.collapseWhenHidden(sortHint);
+        ToolLayout.collapseWhenHidden(sortHint);
 
         HBox row = new HBox(
-                JsonLayout.SPACING,
+                ToolLayout.SPACING,
                 new Label(Messages.get("json.beautify.indent")),
                 indent,
                 sortKeys,
                 sortHint,
-                JsonLayout.spacer(),
+                ToolLayout.spacer(),
                 actionButton(BeautifyAction.VALIDATE, "json.beautify.validate"),
                 actionButton(BeautifyAction.MINIFY, "json.beautify.minify"),
                 actionButton(BeautifyAction.BEAUTIFY, "json.beautify.beautify"));
@@ -180,7 +184,7 @@ public final class BeautifyView extends VBox {
         Label header = new Label();
         header.getStyleClass().add("text-error");
         header.setWrapText(true);
-        Label detail = JsonLayout.monospace(new Label());
+        Label detail = ToolLayout.mono(new Label());
         detail.setWrapText(false);
         header.textProperty()
                 .bind(Bindings.createStringBinding(
@@ -198,7 +202,7 @@ public final class BeautifyView extends VBox {
                         viewModel.errorProperty()));
         VBox box = new VBox(4, header, detail);
         box.visibleProperty().bind(viewModel.errorProperty().isNotNull());
-        JsonLayout.collapseWhenHidden(box);
+        ToolLayout.collapseWhenHidden(box);
         return box;
     }
 
@@ -221,14 +225,14 @@ public final class BeautifyView extends VBox {
         download.setOnAction(event -> viewModel.download());
         Button saveAs = new Button(Messages.get("download.saveAs.button"));
         saveAs.setOnAction(event -> viewModel.saveAs());
-        HBox buttons = new HBox(8, copy, JsonLayout.downloadButtons(download, saveAs));
+        HBox buttons = new HBox(8, copy, ToolLayout.downloadButtons(download, saveAs));
         buttons.visibleProperty().bind(viewModel.hasOutput());
-        JsonLayout.collapseWhenHidden(buttons);
+        ToolLayout.collapseWhenHidden(buttons);
 
-        HBox row = new HBox(JsonLayout.SPACING, summary, JsonLayout.spacer(), buttons);
+        HBox row = new HBox(ToolLayout.SPACING, summary, ToolLayout.spacer(), buttons);
         row.setAlignment(Pos.CENTER_LEFT);
         row.visibleProperty().bind(viewModel.resultProperty().isNotNull());
-        JsonLayout.collapseWhenHidden(row);
+        ToolLayout.collapseWhenHidden(row);
         return row;
     }
 

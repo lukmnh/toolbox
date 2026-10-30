@@ -1,6 +1,9 @@
 package io.github.lukmnh.toolbox.devutils.cron.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.ToolCategory;
+import io.github.lukmnh.toolbox.common.ui.Tone;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.cron.domain.CronExplanation;
 import io.github.lukmnh.toolbox.devutils.cron.domain.CronFieldKind;
 import io.github.lukmnh.toolbox.devutils.cron.domain.CronMeaning;
@@ -10,8 +13,6 @@ import io.github.lukmnh.toolbox.devutils.cron.domain.CronTarget;
 import io.github.lukmnh.toolbox.devutils.cron.domain.FieldExpr;
 import io.github.lukmnh.toolbox.devutils.cron.domain.GoInterval;
 import io.github.lukmnh.toolbox.devutils.shared.presentation.DateTimeTexts;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.Tone;
 import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -68,10 +69,13 @@ final class CronView {
     }
 
     private Node build() {
-        VBox page = DevLayout.page();
+        VBox page = ToolLayout.page();
         page.getChildren()
                 .addAll(
-                        DevLayout.header(Messages.get("devutils.cron.name"), Messages.get("devutils.cron.hint")),
+                        ToolLayout.header(
+                                ToolCategory.DEV_UTILS,
+                                Messages.get("devutils.cron.name"),
+                                Messages.get("devutils.cron.hint")),
                         buildTarget(),
                         buildBuilder(),
                         buildExpression(),
@@ -90,7 +94,7 @@ final class CronView {
         seconds.selectedProperty().bindBidirectional(viewModel.goWithSecondsProperty());
         seconds.setTooltip(new Tooltip(Messages.get("devutils.cron.goSeconds.tooltip")));
         seconds.visibleProperty().bind(viewModel.targetProperty().isEqualTo(CronTarget.GO));
-        DevLayout.collapseWhenHidden(seconds);
+        ToolLayout.collapseWhenHidden(seconds);
 
         ComboBox<String> zone = new ComboBox<>();
         zone.getItems().setAll(ZoneId.getAvailableZoneIds().stream().sorted().toList());
@@ -98,20 +102,20 @@ final class CronView {
         zone.setPrefWidth(ZONE_WIDTH);
         zone.valueProperty().bindBidirectional(viewModel.zoneProperty());
 
-        Label hint = DevLayout.hint("");
+        Label hint = ToolLayout.hint("");
         hint.textProperty()
                 .bind(Bindings.createStringBinding(
                         () -> Messages.get("devutils.cron.target.hint."
                                 + viewModel.targetProperty().get().name()),
                         viewModel.targetProperty()));
 
-        HBox row = DevLayout.row(
-                DevLayout.segmented(viewModel.targetProperty(), List.of(CronTarget.values()), CronTarget::displayName),
+        HBox row = ToolLayout.row(
+                ToolLayout.segmented(viewModel.targetProperty(), List.of(CronTarget.values()), CronTarget::displayName),
                 seconds,
-                DevLayout.spacer(),
-                DevLayout.labeled(Messages.get("devutils.cron.zone"), zone));
-        row.setSpacing(DevLayout.SPACING);
-        return DevLayout.card(Messages.get("devutils.cron.target"), List.of(), row, hint);
+                ToolLayout.spacer(),
+                ToolLayout.labeled(Messages.get("devutils.cron.zone"), zone));
+        row.setSpacing(ToolLayout.SPACING);
+        return ToolLayout.card(Messages.get("devutils.cron.target"), List.of(), row, hint);
     }
 
     // ---------- Builder ----------
@@ -119,57 +123,57 @@ final class CronView {
     private VBox buildBuilder() {
         ChoiceBox<PresetKind> preset = new ChoiceBox<>();
         preset.getItems().setAll(PresetKind.values());
-        preset.setConverter(DevLayout.labels(kind -> Messages.get(kind.labelKey())));
+        preset.setConverter(ToolLayout.labels(kind -> Messages.get(kind.labelKey())));
         preset.valueProperty().bindBidirectional(viewModel.presetProperty());
 
         ChoiceBox<DayOfWeek> day = new ChoiceBox<>();
         day.getItems().setAll(DayOfWeek.values());
-        day.setConverter(DevLayout.labels(value -> value.getDisplayName(TextStyle.FULL, Messages.LOCALE)));
+        day.setConverter(ToolLayout.labels(value -> value.getDisplayName(TextStyle.FULL, Messages.LOCALE)));
         day.valueProperty().bindBidirectional(viewModel.dayOfWeekProperty());
 
-        HBox parameters = DevLayout.row(
+        HBox parameters = ToolLayout.row(
                 shownFor(
-                        DevLayout.labeled(
+                        ToolLayout.labeled(
                                 Messages.get("devutils.cron.builder.everyMinutes"),
                                 spinner(1, MAX_MINUTE, viewModel.everyMinutesProperty())),
                         EnumSet.of(PresetKind.EVERY_MINUTES)),
                 shownFor(
-                        DevLayout.labeled(Messages.get("devutils.cron.builder.day"), day),
+                        ToolLayout.labeled(Messages.get("devutils.cron.builder.day"), day),
                         EnumSet.of(PresetKind.WEEKLY)),
                 shownFor(
-                        DevLayout.labeled(
+                        ToolLayout.labeled(
                                 Messages.get("devutils.cron.builder.dayOfMonth"),
                                 spinner(1, CronPreset.MAX_DAY_OF_MONTH, viewModel.dayOfMonthProperty())),
                         EnumSet.of(PresetKind.MONTHLY)),
                 shownFor(
-                        DevLayout.labeled(
+                        ToolLayout.labeled(
                                 Messages.get("devutils.cron.builder.hour"),
                                 spinner(0, MAX_HOUR, viewModel.hourProperty())),
                         EnumSet.of(PresetKind.DAILY, PresetKind.WEEKDAYS, PresetKind.WEEKLY, PresetKind.MONTHLY)),
                 shownFor(
-                        DevLayout.labeled(
+                        ToolLayout.labeled(
                                 Messages.get("devutils.cron.builder.minute"),
                                 spinner(0, MAX_MINUTE, viewModel.minuteProperty())),
                         EnumSet.complementOf(EnumSet.of(PresetKind.EVERY_MINUTES, PresetKind.CUSTOM))),
                 shownFor(customFields(), EnumSet.of(PresetKind.CUSTOM)));
-        parameters.setSpacing(DevLayout.SPACING);
+        parameters.setSpacing(ToolLayout.SPACING);
 
-        HBox row = DevLayout.row(DevLayout.labeled(Messages.get("devutils.cron.builder.preset"), preset), parameters);
-        row.setSpacing(DevLayout.SPACING);
-        return DevLayout.card(
+        HBox row = ToolLayout.row(ToolLayout.labeled(Messages.get("devutils.cron.builder.preset"), preset), parameters);
+        row.setSpacing(ToolLayout.SPACING);
+        return ToolLayout.card(
                 Messages.get("devutils.cron.builder"),
                 List.of(),
                 row,
-                DevLayout.hint(Messages.get("devutils.cron.builder.hint")));
+                ToolLayout.hint(Messages.get("devutils.cron.builder.hint")));
     }
 
     private HBox customFields() {
-        HBox row = DevLayout.row();
+        HBox row = ToolLayout.row();
         for (int index = 0; index < CUSTOM_LAYOUT.size(); index++) {
-            TextField field = DevLayout.codeField();
+            TextField field = ToolLayout.codeField();
             field.setPrefWidth(CUSTOM_FIELD_WIDTH);
             field.textProperty().bindBidirectional(viewModel.customFields().get(index));
-            row.getChildren().add(DevLayout.labeled(CronErrorMessages.fieldName(CUSTOM_LAYOUT.get(index)), field));
+            row.getChildren().add(ToolLayout.labeled(CronErrorMessages.fieldName(CUSTOM_LAYOUT.get(index)), field));
         }
         return row;
     }
@@ -178,7 +182,7 @@ final class CronView {
         node.visibleProperty()
                 .bind(Bindings.createBooleanBinding(
                         () -> presets.contains(viewModel.presetProperty().get()), viewModel.presetProperty()));
-        DevLayout.collapseWhenHidden(node);
+        ToolLayout.collapseWhenHidden(node);
         return node;
     }
 
@@ -193,34 +197,34 @@ final class CronView {
     // ---------- Ekspresi ----------
 
     private VBox buildExpression() {
-        TextField expression = DevLayout.codeField();
+        TextField expression = ToolLayout.codeField();
         expression.setPromptText(Messages.get("devutils.cron.expression.prompt"));
         expression.textProperty().bindBidirectional(viewModel.expressionProperty());
 
         // Listener langsung ke property ViewModel: binding turunan (isNotNull) tanpa referensi kuat bisa terkena GC
-        Label badge = DevLayout.badge("", Tone.NEUTRAL);
+        Label badge = ToolLayout.badge("", Tone.NEUTRAL);
         viewModel
                 .explanationProperty()
                 .addListener((observable, previous, current) -> updateBadge(badge, current != null));
         updateBadge(badge, viewModel.explanationProperty().get() != null);
 
-        Button copy = DevLayout.button(Messages.get("devutils.copy"), viewModel::copyExpression);
-        Label error = DevLayout.inlineMessage(Tone.DANGER);
+        Button copy = ToolLayout.button(Messages.get("common.copy"), viewModel::copyExpression);
+        Label error = ToolLayout.inlineMessage(Tone.DANGER);
         error.textProperty().bind(viewModel.errorProperty());
 
         GridPane fields = new GridPane();
-        fields.setHgap(DevLayout.SPACING);
+        fields.setHgap(ToolLayout.SPACING);
         fields.setVgap(GRID_GAP);
         viewModel.explanationProperty().addListener((observable, previous, current) -> fillFields(fields, current));
         fillFields(fields, viewModel.explanationProperty().get());
 
-        HBox row = DevLayout.row(expression, badge, copy);
+        HBox row = ToolLayout.row(expression, badge, copy);
         HBox.setHgrow(expression, Priority.ALWAYS);
-        return DevLayout.card(Messages.get("devutils.cron.expression"), List.of(), row, error, fields);
+        return ToolLayout.card(Messages.get("devutils.cron.expression"), List.of(), row, error, fields);
     }
 
     private static void updateBadge(Label badge, boolean valid) {
-        DevLayout.update(
+        ToolLayout.update(
                 badge,
                 Messages.get(valid ? "devutils.cron.valid" : "devutils.cron.invalid"),
                 valid ? Tone.SUCCESS : Tone.DANGER);
@@ -257,13 +261,13 @@ final class CronView {
                         () -> describe(viewModel.explanationProperty().get()), viewModel.explanationProperty()));
 
         VBox runs = new VBox(4);
-        Label noRuns = DevLayout.inlineMessage(Tone.WARNING);
-        Label zoneNote = DevLayout.hint("");
+        Label noRuns = ToolLayout.inlineMessage(Tone.WARNING);
+        Label zoneNote = ToolLayout.hint("");
         viewModel
                 .explanationProperty()
                 .addListener((observable, previous, current) -> fillRuns(runs, noRuns, zoneNote, current));
 
-        TextArea snippet = DevLayout.codeArea(false);
+        TextArea snippet = ToolLayout.codeArea(false);
         snippet.setPrefHeight(SNIPPET_HEIGHT);
         snippet.textProperty()
                 .bind(Bindings.createStringBinding(
@@ -273,18 +277,18 @@ final class CronView {
                             return current == null ? "" : current.snippet();
                         },
                         viewModel.explanationProperty()));
-        Button copySnippet = DevLayout.button(Messages.get("devutils.copy"), viewModel::copySnippet);
+        Button copySnippet = ToolLayout.button(Messages.get("common.copy"), viewModel::copySnippet);
 
-        VBox card = DevLayout.card(
+        VBox card = ToolLayout.card(
                 Messages.get("devutils.cron.result"),
                 List.of(),
                 description,
-                DevLayout.labeled(Messages.get("devutils.cron.nextRuns"), runs),
+                ToolLayout.labeled(Messages.get("devutils.cron.nextRuns"), runs),
                 noRuns,
                 zoneNote,
-                DevLayout.card(Messages.get("devutils.cron.snippet"), List.of(copySnippet), snippet));
+                ToolLayout.card(Messages.get("devutils.cron.snippet"), List.of(copySnippet), snippet));
         card.visibleProperty().bind(viewModel.explanationProperty().isNotNull());
-        DevLayout.collapseWhenHidden(card);
+        ToolLayout.collapseWhenHidden(card);
         return card;
     }
 
@@ -348,8 +352,8 @@ final class CronView {
                         () -> Messages.get("devutils.cron.reference."
                                 + viewModel.targetProperty().get().name()),
                         viewModel.targetProperty()));
-        VBox content = new VBox(DevLayout.GAP, table, DevLayout.hint(Messages.get("devutils.cron.reference.common")));
-        content.setPadding(new Insets(DevLayout.GAP));
+        VBox content = new VBox(ToolLayout.GAP, table, ToolLayout.hint(Messages.get("devutils.cron.reference.common")));
+        content.setPadding(new Insets(ToolLayout.GAP));
         TitledPane pane = new TitledPane(Messages.get("devutils.cron.reference"), content);
         pane.setExpanded(false);
         return pane;

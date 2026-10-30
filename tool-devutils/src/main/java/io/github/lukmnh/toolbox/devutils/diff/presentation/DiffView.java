@@ -1,14 +1,15 @@
 package io.github.lukmnh.toolbox.devutils.diff.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.ToolCategory;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
 import io.github.lukmnh.toolbox.common.ui.TaskStatusBar;
+import io.github.lukmnh.toolbox.common.ui.Tone;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.diff.domain.DiffResult;
 import io.github.lukmnh.toolbox.devutils.diff.domain.DiffRow;
 import io.github.lukmnh.toolbox.devutils.diff.domain.DiffStats;
 import io.github.lukmnh.toolbox.devutils.diff.domain.WhitespaceMode;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.Tone;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -64,10 +65,13 @@ final class DiffView {
     private Node build() {
         TaskStatusBar status = new TaskStatusBar();
         viewModel.currentTaskProperty().addListener((observable, previous, task) -> status.track(task));
-        VBox page = DevLayout.page();
+        VBox page = ToolLayout.page();
         page.getChildren()
                 .addAll(
-                        DevLayout.header(Messages.get("devutils.diff.name"), Messages.get("devutils.diff.hint")),
+                        ToolLayout.header(
+                                ToolCategory.DEV_UTILS,
+                                Messages.get("devutils.diff.name"),
+                                Messages.get("devutils.diff.hint")),
                         buildInputs(),
                         buildOptions(),
                         status,
@@ -99,7 +103,7 @@ final class DiffView {
     }
 
     private HBox buildInputs() {
-        Button swap = DevLayout.button(Messages.get("devutils.diff.swap"), viewModel::swap);
+        Button swap = ToolLayout.button(Messages.get("devutils.diff.swap"), viewModel::swap);
         swap.setTooltip(new Tooltip(Messages.get("devutils.diff.swap.tooltip")));
         VBox swapColumn = new VBox(swap);
         swapColumn.setAlignment(Pos.CENTER);
@@ -109,11 +113,11 @@ final class DiffView {
         HBox.setHgrow(newCard, Priority.ALWAYS);
         oldCard.setPrefWidth(0);
         newCard.setPrefWidth(0);
-        return new HBox(DevLayout.GAP, oldCard, swapColumn, newCard);
+        return new HBox(ToolLayout.GAP, oldCard, swapColumn, newCard);
     }
 
     private VBox inputCard(String title, DiffInput input) {
-        TextArea area = DevLayout.codeArea(true);
+        TextArea area = ToolLayout.codeArea(true);
         area.setWrapText(false);
         area.setPrefHeight(EDITOR_HEIGHT);
         area.setPromptText(Messages.get("devutils.diff.input.prompt"));
@@ -121,16 +125,16 @@ final class DiffView {
         // File besar tidak dimuat ke editor; selama ada file besar, editor nonaktif
         area.disableProperty().bind(input.largeFileProperty().isNotNull());
 
-        Label info = DevLayout.statText();
+        Label info = ToolLayout.statText();
         info.textProperty()
                 .bind(Bindings.createStringBinding(
                         () -> viewModel.fileSummary(input), input.fileNameProperty(), input.largeFileProperty()));
-        Button upload = DevLayout.button(Messages.get("devutils.diff.upload"), () -> chooseFile(input));
-        Button clear = DevLayout.button(Messages.get("devutils.diff.clear"), input::clear);
+        Button upload = ToolLayout.button(Messages.get("devutils.diff.upload"), () -> chooseFile(input));
+        Button clear = ToolLayout.button(Messages.get("devutils.diff.clear"), input::clear);
         clear.disableProperty().bind(input.isEmpty());
 
-        VBox card = DevLayout.card(title, List.of(upload, clear), area, info);
-        DevLayout.acceptDrops(
+        VBox card = ToolLayout.card(title, List.of(upload, clear), area, info);
+        ToolLayout.acceptDrops(
                 card,
                 Set.of(),
                 files -> viewModel.loadFile(input, files.getFirst()),
@@ -144,51 +148,51 @@ final class DiffView {
         CheckBox lineEndings = new CheckBox(Messages.get("devutils.diff.normalizeLineEndings"));
         lineEndings.selectedProperty().bindBidirectional(viewModel.normalizeLineEndingsProperty());
         lineEndings.setTooltip(new Tooltip(Messages.get("devutils.diff.normalizeLineEndings.tooltip")));
-        Button compare = DevLayout.accentButton(Messages.get("devutils.diff.compare"), viewModel::compare);
+        Button compare = ToolLayout.accentButton(Messages.get("devutils.diff.compare"), viewModel::compare);
         compare.disableProperty().bind(viewModel.canCompare().not());
         compare.setTooltip(new Tooltip(Messages.get("devutils.diff.compare.tooltip")));
 
-        HBox row = DevLayout.row(
+        HBox row = ToolLayout.row(
                 new Label(Messages.get("devutils.diff.whitespace")),
-                DevLayout.segmented(
+                ToolLayout.segmented(
                         viewModel.whitespaceProperty(),
                         List.of(WhitespaceMode.EXACT, WhitespaceMode.IGNORE_TRAILING, WhitespaceMode.IGNORE_ALL),
                         mode -> Messages.get(WHITESPACE_LABELS.get(mode))),
                 ignoreCase,
                 lineEndings,
-                DevLayout.spacer(),
+                ToolLayout.spacer(),
                 compare);
-        row.setSpacing(DevLayout.SPACING);
-        return DevLayout.card(row);
+        row.setSpacing(ToolLayout.SPACING);
+        return ToolLayout.card(row);
     }
 
     private VBox buildResult() {
-        Label added = DevLayout.badge("", Tone.SUCCESS);
-        Label deleted = DevLayout.badge("", Tone.DANGER);
-        Label changed = DevLayout.badge("", Tone.WARNING);
+        Label added = ToolLayout.badge("", Tone.SUCCESS);
+        Label deleted = ToolLayout.badge("", Tone.DANGER);
+        Label changed = ToolLayout.badge("", Tone.WARNING);
         viewModel
                 .resultProperty()
                 .addListener((observable, previous, result) -> updateBadges(result, added, deleted, changed));
 
-        Button previous = DevLayout.button(Messages.get("devutils.diff.previous"), viewModel::previous);
+        Button previous = ToolLayout.button(Messages.get("devutils.diff.previous"), viewModel::previous);
         previous.setTooltip(new Tooltip(Messages.get("devutils.diff.previous.tooltip")));
-        Button next = DevLayout.button(Messages.get("devutils.diff.next"), viewModel::next);
+        Button next = ToolLayout.button(Messages.get("devutils.diff.next"), viewModel::next);
         next.setTooltip(new Tooltip(Messages.get("devutils.diff.next.tooltip")));
         previous.disableProperty().bind(viewModel.hasChanges().not());
         next.disableProperty().bind(viewModel.hasChanges().not());
-        HBox toolbar = DevLayout.row(
+        HBox toolbar = ToolLayout.row(
                 added,
                 deleted,
                 changed,
-                DevLayout.spacer(),
-                DevLayout.segmented(
+                ToolLayout.spacer(),
+                ToolLayout.segmented(
                         viewModel.viewModeProperty(),
                         List.of(DiffViewMode.SIDE_BY_SIDE, DiffViewMode.UNIFIED),
                         mode -> Messages.get(MODE_LABELS.get(mode))),
                 previous,
                 next);
 
-        VBox card = DevLayout.card(
+        VBox card = ToolLayout.card(
                 Messages.get("devutils.diff.result"),
                 List.of(),
                 toolbar,
@@ -197,7 +201,7 @@ final class DiffView {
                 buildLists(),
                 buildExportRow());
         card.visibleProperty().bind(viewModel.resultProperty().isNotNull());
-        DevLayout.collapseWhenHidden(card);
+        ToolLayout.collapseWhenHidden(card);
         return card;
     }
 
@@ -212,7 +216,7 @@ final class DiffView {
     }
 
     private Label identicalMessage() {
-        Label message = DevLayout.inlineMessage(Tone.SUCCESS);
+        Label message = ToolLayout.inlineMessage(Tone.SUCCESS);
         message.textProperty()
                 .bind(Bindings.when(viewModel
                                 .resultProperty()
@@ -224,7 +228,7 @@ final class DiffView {
     }
 
     private Label staleMessage() {
-        Label message = DevLayout.inlineMessage(Tone.WARNING);
+        Label message = ToolLayout.inlineMessage(Tone.WARNING);
         message.textProperty()
                 .bind(Bindings.when(viewModel.staleProperty())
                         .then(Messages.get("devutils.diff.stale"))
@@ -259,15 +263,15 @@ final class DiffView {
     }
 
     private HBox buildExportRow() {
-        Label hint = DevLayout.statText();
+        Label hint = ToolLayout.statText();
         hint.setText(Messages.get("devutils.diff.shortcuts"));
-        Button copy = DevLayout.button(Messages.get("devutils.diff.copyUnified"), viewModel::copyUnified);
-        Button download = DevLayout.accentButton(Messages.get("download.button"), viewModel::download);
-        Button saveAs = DevLayout.button(Messages.get("download.saveAs.button"), viewModel::saveAs);
+        Button copy = ToolLayout.button(Messages.get("devutils.diff.copyUnified"), viewModel::copyUnified);
+        Button download = ToolLayout.accentButton(Messages.get("download.button"), viewModel::download);
+        Button saveAs = ToolLayout.button(Messages.get("download.saveAs.button"), viewModel::saveAs);
         for (Button button : List.of(copy, download, saveAs)) {
             button.disableProperty().bind(viewModel.canExport().not());
         }
-        return DevLayout.row(hint, DevLayout.spacer(), copy, saveAs, download);
+        return ToolLayout.row(hint, ToolLayout.spacer(), copy, saveAs, download);
     }
 
     private void chooseFile(DiffInput input) {

@@ -1,7 +1,7 @@
 package io.github.lukmnh.toolbox.json.viewer.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
-import io.github.lukmnh.toolbox.json.shared.presentation.JsonLayout;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 final class RecordDetailPane extends VBox {
 
     private final ViewerViewModel viewModel;
-    private final TextArea pretty = JsonLayout.monospace(new TextArea());
+    private final TextArea pretty = ToolLayout.mono(new TextArea());
     private final Label truncated = new Label(Messages.get("json.viewer.detail.truncated"));
     private final JsonTreeView tree;
 
@@ -26,7 +26,7 @@ final class RecordDetailPane extends VBox {
         truncated.getStyleClass().add("field-label");
         truncated.setWrapText(true);
         truncated.setVisible(false);
-        JsonLayout.collapseWhenHidden(truncated);
+        ToolLayout.collapseWhenHidden(truncated);
 
         Tab prettyTab = new Tab(Messages.get("json.viewer.detail.pretty"), new VBox(4, truncated, pretty));
         VBox.setVgrow(pretty, Priority.ALWAYS);

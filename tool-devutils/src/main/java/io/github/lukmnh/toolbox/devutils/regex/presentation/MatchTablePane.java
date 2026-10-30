@@ -1,10 +1,10 @@
 package io.github.lukmnh.toolbox.devutils.regex.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.regex.application.RegexRun;
 import io.github.lukmnh.toolbox.devutils.regex.domain.GroupMatch;
 import io.github.lukmnh.toolbox.devutils.regex.domain.RegexMatch;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -30,7 +30,7 @@ final class MatchTablePane {
 
     private final RegexViewModel viewModel;
     private final TableView<MatchRow> table = new TableView<>();
-    private final Label summary = DevLayout.statText();
+    private final Label summary = ToolLayout.statText();
 
     private MatchTablePane(RegexViewModel viewModel) {
         this.viewModel = viewModel;
@@ -46,8 +46,8 @@ final class MatchTablePane {
         VBox.setVgrow(table, Priority.ALWAYS);
         viewModel.evaluationProperty().addListener((observable, previous, current) -> refresh(current));
         refresh(null);
-        VBox box = new VBox(DevLayout.GAP, summary, table);
-        box.setPadding(new Insets(DevLayout.GAP));
+        VBox box = new VBox(ToolLayout.GAP, summary, table);
+        box.setPadding(new Insets(ToolLayout.GAP));
         return box;
     }
 

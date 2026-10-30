@@ -1,13 +1,13 @@
 package io.github.lukmnh.toolbox.devutils.encoder.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.ui.ClipboardActions;
 import io.github.lukmnh.toolbox.common.ui.Notifier;
 import io.github.lukmnh.toolbox.common.ui.TaskStatusBar;
+import io.github.lukmnh.toolbox.common.ui.Tone;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.encoder.domain.Base64Variant;
 import io.github.lukmnh.toolbox.devutils.encoder.domain.TextCharset;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.ClipboardActions;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.DevLayout;
-import io.github.lukmnh.toolbox.devutils.shared.presentation.Tone;
 import java.io.File;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +42,7 @@ final class Base64Pane extends VBox {
     private final Notifier notifier;
 
     Base64Pane(Base64ViewModel viewModel, Window owner, Notifier notifier) {
-        super(DevLayout.SPACING);
+        super(ToolLayout.SPACING);
         this.viewModel = viewModel;
         this.owner = owner;
         this.notifier = notifier;
@@ -56,16 +56,16 @@ final class Base64Pane extends VBox {
     // ---------- Opsi ----------
 
     private VBox buildOptions() {
-        Button swap = DevLayout.button(Messages.get("devutils.encoder.swap"), viewModel::swap);
+        Button swap = ToolLayout.button(Messages.get("devutils.encoder.swap"), viewModel::swap);
         bindVisible(swap, viewModel.modeProperty().isEqualTo(InputMode.TEXT));
-        HBox primary = DevLayout.row(
-                DevLayout.segmented(viewModel.modeProperty(), List.of(InputMode.values()), Base64Pane::modeLabel),
-                DevLayout.segmented(
+        HBox primary = ToolLayout.row(
+                ToolLayout.segmented(viewModel.modeProperty(), List.of(InputMode.values()), Base64Pane::modeLabel),
+                ToolLayout.segmented(
                         viewModel.directionProperty(), List.of(Direction.values()), Base64Pane::directionLabel),
-                DevLayout.spacer(),
+                ToolLayout.spacer(),
                 swap);
 
-        HBox variants = DevLayout.segmented(
+        HBox variants = ToolLayout.segmented(
                 viewModel.variantProperty(), List.of(Base64Variant.values()), Base64Pane::variantLabel);
         variants.disableProperty().bind(viewModel.encodeOptionsDisabled());
         CheckBox padding = new CheckBox(Messages.get("devutils.encoder.padding"));
@@ -74,9 +74,9 @@ final class Base64Pane extends VBox {
 
         ChoiceBox<TextCharset> charset = new ChoiceBox<>();
         charset.getItems().setAll(TextCharset.values());
-        charset.setConverter(DevLayout.labels(TextCharset::displayName));
+        charset.setConverter(ToolLayout.labels(TextCharset::displayName));
         charset.valueProperty().bindBidirectional(viewModel.charsetProperty());
-        VBox charsetBox = DevLayout.labeled(Messages.get("devutils.encoder.charset"), charset);
+        VBox charsetBox = ToolLayout.labeled(Messages.get("devutils.encoder.charset"), charset);
         bindVisible(charsetBox, viewModel.modeProperty().isEqualTo(InputMode.TEXT));
 
         CheckBox dataUri = new CheckBox(Messages.get("devutils.encoder.dataUri"));
@@ -88,22 +88,22 @@ final class Base64Pane extends VBox {
                         .isEqualTo(InputMode.FILE)
                         .and(viewModel.directionProperty().isEqualTo(Direction.ENCODE)));
 
-        HBox secondary = DevLayout.row(
-                DevLayout.labeled(Messages.get("devutils.encoder.variant"), variants),
+        HBox secondary = ToolLayout.row(
+                ToolLayout.labeled(Messages.get("devutils.encoder.variant"), variants),
                 charsetBox,
-                DevLayout.labeled("", padding),
-                DevLayout.labeled("", dataUri));
-        secondary.setSpacing(DevLayout.SPACING * 2);
-        return DevLayout.card(primary, secondary);
+                ToolLayout.labeled("", padding),
+                ToolLayout.labeled("", dataUri));
+        secondary.setSpacing(ToolLayout.SPACING * 2);
+        return ToolLayout.card(primary, secondary);
     }
 
     // ---------- Mode Teks ----------
 
     private VBox buildTextSection() {
-        TextArea input = DevLayout.codeArea(true);
+        TextArea input = ToolLayout.codeArea(true);
         input.setPromptText(Messages.get("devutils.encoder.input.prompt"));
         input.textProperty().bindBidirectional(viewModel.inputProperty());
-        TextArea output = DevLayout.codeArea(false);
+        TextArea output = ToolLayout.codeArea(false);
         output.textProperty().bind(viewModel.outputProperty());
 
         Button copy = ClipboardActions.copyButton(viewModel.outputProperty()::get, notifier);
@@ -115,17 +115,17 @@ final class Base64Pane extends VBox {
         editors.setPrefHeight(EDITOR_HEIGHT);
         VBox.setVgrow(editors, Priority.ALWAYS);
 
-        Label error = DevLayout.inlineMessage(Tone.DANGER);
+        Label error = ToolLayout.inlineMessage(Tone.DANGER);
         error.textProperty().bind(viewModel.textErrorProperty());
-        Label stats = DevLayout.statText();
+        Label stats = ToolLayout.statText();
         stats.textProperty().bind(viewModel.statsProperty());
-        HBox footer = DevLayout.row(stats, DevLayout.spacer(), ClipboardActions.clearButton(notifier));
-        return new VBox(DevLayout.SPACING, editors, error, footer);
+        HBox footer = ToolLayout.row(stats, ToolLayout.spacer(), ClipboardActions.clearButton(notifier));
+        return new VBox(ToolLayout.SPACING, editors, error, footer);
     }
 
     private static VBox editorCard(String title, TextArea area, List<Node> trailing) {
         VBox.setVgrow(area, Priority.ALWAYS);
-        VBox card = DevLayout.card(title, trailing, area);
+        VBox card = ToolLayout.card(title, trailing, area);
         card.setMinWidth(0);
         return card;
     }
@@ -133,7 +133,7 @@ final class Base64Pane extends VBox {
     // ---------- Mode File ----------
 
     private VBox buildFileSection() {
-        Button run = DevLayout.accentButton("", viewModel::runFile);
+        Button run = ToolLayout.accentButton("", viewModel::runFile);
         run.textProperty()
                 .bind(Bindings.when(viewModel.directionProperty().isEqualTo(Direction.ENCODE))
                         .then(Messages.get("devutils.encoder.file.runEncode"))
@@ -142,22 +142,22 @@ final class Base64Pane extends VBox {
 
         TaskStatusBar status = new TaskStatusBar();
         viewModel.currentTaskProperty().addListener((observable, previous, task) -> status.track(task));
-        Label error = DevLayout.inlineMessage(Tone.DANGER);
+        Label error = ToolLayout.inlineMessage(Tone.DANGER);
         error.textProperty().bind(viewModel.fileErrorProperty());
 
         VBox section = new VBox(
-                DevLayout.SPACING,
+                ToolLayout.SPACING,
                 buildSourceCard(),
-                DevLayout.row(DevLayout.spacer(), run),
+                ToolLayout.row(ToolLayout.spacer(), run),
                 status,
                 error,
                 buildResultCard());
-        DevLayout.acceptDrops(section, Set.of(), files -> viewModel.selectFile(files.getFirst()), notifier::warning);
+        ToolLayout.acceptDrops(section, Set.of(), files -> viewModel.selectFile(files.getFirst()), notifier::warning);
         return section;
     }
 
     private VBox buildSourceCard() {
-        VBox drop = DevLayout.dropZone(
+        VBox drop = ToolLayout.dropZone(
                 Messages.get("devutils.encoder.file.drop"),
                 Messages.get("devutils.encoder.file.choose"),
                 this::chooseFile);
@@ -166,26 +166,26 @@ final class Base64Pane extends VBox {
         Label info = new Label();
         info.getStyleClass().add("file-info");
         info.textProperty().bind(viewModel.sourceInfoProperty());
-        HBox selected = DevLayout.row(
-                DevLayout.badge(Messages.get("devutils.encoder.file.selected"), Tone.INFO),
+        HBox selected = ToolLayout.row(
+                ToolLayout.badge(Messages.get("devutils.encoder.file.selected"), Tone.INFO),
                 info,
-                DevLayout.spacer(),
-                DevLayout.button(Messages.get("devutils.encoder.file.change"), this::chooseFile),
-                DevLayout.button(Messages.get("devutils.encoder.file.clear"), viewModel::clearFile));
+                ToolLayout.spacer(),
+                ToolLayout.button(Messages.get("devutils.encoder.file.change"), this::chooseFile),
+                ToolLayout.button(Messages.get("devutils.encoder.file.clear"), viewModel::clearFile));
         bindVisible(selected, viewModel.sourceFileProperty().isNotNull());
 
-        TextArea pasted = DevLayout.codeArea(true);
+        TextArea pasted = ToolLayout.codeArea(true);
         pasted.setPromptText(Messages.get("devutils.encoder.file.paste.prompt"));
         pasted.setPrefRowCount(5);
         pasted.textProperty().bindBidirectional(viewModel.pastedBase64Property());
-        VBox pasteBox = DevLayout.labeled(Messages.get("devutils.encoder.file.paste"), pasted);
+        VBox pasteBox = ToolLayout.labeled(Messages.get("devutils.encoder.file.paste"), pasted);
         bindVisible(
                 pasteBox,
                 viewModel
                         .directionProperty()
                         .isEqualTo(Direction.DECODE)
                         .and(viewModel.sourceFileProperty().isNull()));
-        return DevLayout.card(drop, selected, pasteBox);
+        return ToolLayout.card(drop, selected, pasteBox);
     }
 
     private VBox buildResultCard() {
@@ -199,14 +199,14 @@ final class Base64Pane extends VBox {
                                         viewModel.fileResultProperty().get()),
                         viewModel.fileResultProperty()));
 
-        TextArea preview = DevLayout.codeArea(false);
+        TextArea preview = ToolLayout.codeArea(false);
         preview.setPrefHeight(PREVIEW_HEIGHT);
-        Label truncated = DevLayout.inlineMessage(Tone.NEUTRAL);
+        Label truncated = ToolLayout.inlineMessage(Tone.NEUTRAL);
         ImageView image = new ImageView();
         image.setPreserveRatio(true);
         image.setFitWidth(IMAGE_PREVIEW_MAX);
         image.setFitHeight(IMAGE_PREVIEW_MAX);
-        Label imageNote = DevLayout.inlineMessage(Tone.WARNING);
+        Label imageNote = ToolLayout.inlineMessage(Tone.WARNING);
         StackPane previewHost = new StackPane(preview, image);
         viewModel
                 .fileResultProperty()
@@ -214,15 +214,15 @@ final class Base64Pane extends VBox {
                         (observable, previous, result) -> showPreview(result, preview, truncated, image, imageNote));
         showPreview(null, preview, truncated, image, imageNote);
 
-        Button copy = DevLayout.button(Messages.get("devutils.copy"), viewModel::copyFileResult);
+        Button copy = ToolLayout.button(Messages.get("common.copy"), viewModel::copyFileResult);
         copy.setTooltip(new Tooltip(Messages.get("devutils.encoder.file.copy.tooltip")));
         copy.disableProperty().bind(viewModel.canCopyFileResult().not());
-        Button download = DevLayout.accentButton(Messages.get("download.button"), viewModel::download);
-        Button saveAs = DevLayout.button(Messages.get("download.saveAs.button"), viewModel::saveAs);
-        HBox actions = DevLayout.row(
-                summary, DevLayout.spacer(), copy, ClipboardActions.clearButton(notifier), saveAs, download);
+        Button download = ToolLayout.accentButton(Messages.get("download.button"), viewModel::download);
+        Button saveAs = ToolLayout.button(Messages.get("download.saveAs.button"), viewModel::saveAs);
+        HBox actions = ToolLayout.row(
+                summary, ToolLayout.spacer(), copy, ClipboardActions.clearButton(notifier), saveAs, download);
 
-        VBox card = DevLayout.card(
+        VBox card = ToolLayout.card(
                 Messages.get("devutils.encoder.file.result"), List.of(), actions, previewHost, truncated, imageNote);
         bindVisible(card, viewModel.fileResultProperty().isNotNull());
         return card;
@@ -284,7 +284,7 @@ final class Base64Pane extends VBox {
 
     private static void bindVisible(Node node, BooleanBinding condition) {
         node.visibleProperty().bind(condition);
-        DevLayout.collapseWhenHidden(node);
+        ToolLayout.collapseWhenHidden(node);
     }
 
     private static String modeLabel(InputMode mode) {

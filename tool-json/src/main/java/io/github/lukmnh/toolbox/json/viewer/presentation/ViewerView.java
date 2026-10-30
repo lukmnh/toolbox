@@ -1,9 +1,10 @@
 package io.github.lukmnh.toolbox.json.viewer.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.ToolCategory;
 import io.github.lukmnh.toolbox.common.ui.TaskStatusBar;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.json.shared.presentation.JsonErrorMessages;
-import io.github.lukmnh.toolbox.json.shared.presentation.JsonLayout;
 import io.github.lukmnh.toolbox.json.viewer.domain.ExportFormat;
 import java.io.File;
 import java.nio.file.Path;
@@ -40,22 +41,22 @@ public final class ViewerView extends VBox {
     private final RecordTable table;
 
     public ViewerView(ViewerViewModel viewModel, Window owner, Consumer<String> warn) {
-        super(JsonLayout.SPACING);
+        super(ToolLayout.SPACING);
         this.viewModel = viewModel;
         this.owner = owner;
         this.table = new RecordTable(viewModel);
         getStyleClass().add("tool-view");
-        setPadding(new Insets(JsonLayout.SPACING * 2));
-        JsonLayout.acceptDrops(
+        setPadding(new Insets(ToolLayout.SPACING * 2));
+        ToolLayout.acceptDrops(
                 this,
                 ViewerViewModel.EXTENSIONS,
                 files -> viewModel.openFile(files.getFirst()),
                 names -> warn.accept(Messages.format("json.viewer.drop.rejected", names)));
 
-        VBox dropZone = JsonLayout.dropZone(
+        VBox dropZone = ToolLayout.dropZone(
                 Messages.get("json.viewer.drop"), Messages.get("json.viewer.open"), this::chooseFile);
         dropZone.visibleProperty().bind(viewModel.sessionProperty().isNull());
-        JsonLayout.collapseWhenHidden(dropZone);
+        ToolLayout.collapseWhenHidden(dropZone);
 
         TaskStatusBar status = new TaskStatusBar();
         viewModel.currentTaskProperty().addListener((observable, previous, task) -> status.track(task));
@@ -65,7 +66,8 @@ public final class ViewerView extends VBox {
 
         getChildren()
                 .addAll(
-                        JsonLayout.header(Messages.get("json.viewer.name"), Messages.get("json.viewer.hint")),
+                        ToolLayout.header(
+                                ToolCategory.JSON, Messages.get("json.viewer.name"), Messages.get("json.viewer.hint")),
                         buildToolbar(),
                         dropZone,
                         buildFilterBar(),
@@ -86,7 +88,7 @@ public final class ViewerView extends VBox {
         Label info = new Label();
         info.getStyleClass().add("file-info");
         info.textProperty().bind(viewModel.fileSummary());
-        HBox row = new HBox(JsonLayout.SPACING, open, recent, info);
+        HBox row = new HBox(ToolLayout.SPACING, open, recent, info);
         row.setAlignment(Pos.CENTER_LEFT);
         return row;
     }
@@ -103,7 +105,7 @@ public final class ViewerView extends VBox {
         search.textProperty().bindBidirectional(viewModel.quickSearchProperty());
         search.setOnAction(event -> viewModel.applyFilter());
 
-        TextField query = JsonLayout.monospace(new TextField());
+        TextField query = ToolLayout.mono(new TextField());
         query.setPromptText(Messages.get("json.viewer.query.prompt"));
         query.setPrefWidth(QUERY_FIELD_WIDTH);
         query.textProperty().bindBidirectional(viewModel.queryProperty());
@@ -128,16 +130,16 @@ public final class ViewerView extends VBox {
         for (Button button : new Button[] {apply, reset, go}) {
             button.setMinWidth(Region.USE_PREF_SIZE);
         }
-        HBox row = new HBox(8, search, query, apply, reset, JsonLayout.spacer(), jump, go);
+        HBox row = new HBox(8, search, query, apply, reset, ToolLayout.spacer(), jump, go);
         row.setAlignment(Pos.CENTER_LEFT);
         row.disableProperty().bind(viewModel.canQuery().not());
         row.visibleProperty().bind(viewModel.tableMode());
-        JsonLayout.collapseWhenHidden(row);
+        ToolLayout.collapseWhenHidden(row);
         return row;
     }
 
     private Label buildQueryError() {
-        Label error = JsonLayout.monospace(new Label());
+        Label error = ToolLayout.mono(new Label());
         error.getStyleClass().add("text-error");
         error.textProperty()
                 .bind(Bindings.createStringBinding(
@@ -150,7 +152,7 @@ public final class ViewerView extends VBox {
                         },
                         viewModel.queryErrorProperty()));
         error.visibleProperty().bind(viewModel.queryErrorProperty().isNotNull());
-        JsonLayout.collapseWhenHidden(error);
+        ToolLayout.collapseWhenHidden(error);
         return error;
     }
 
@@ -197,16 +199,16 @@ public final class ViewerView extends VBox {
         Label hint = new Label(Messages.get("json.viewer.export.hint"));
         hint.getStyleClass().add("field-label");
         HBox row = new HBox(
-                JsonLayout.SPACING,
+                ToolLayout.SPACING,
                 hint,
-                JsonLayout.spacer(),
+                ToolLayout.spacer(),
                 new Label(Messages.get("json.viewer.export.format")),
                 format,
-                JsonLayout.downloadButtons(download, saveAs));
+                ToolLayout.downloadButtons(download, saveAs));
         row.setAlignment(Pos.CENTER_LEFT);
         row.disableProperty().bind(viewModel.canQuery().not());
         row.visibleProperty().bind(viewModel.tableMode());
-        JsonLayout.collapseWhenHidden(row);
+        ToolLayout.collapseWhenHidden(row);
         return row;
     }
 

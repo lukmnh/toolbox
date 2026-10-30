@@ -1,10 +1,12 @@
 package io.github.lukmnh.toolbox.pdf.merge.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.tool.ToolCategory;
 import io.github.lukmnh.toolbox.common.ui.TaskStatusBar;
+import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.pdf.shared.domain.PdfSource;
+import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfControls;
 import io.github.lukmnh.toolbox.pdf.shared.presentation.PdfFileChooser;
-import io.github.lukmnh.toolbox.pdf.shared.presentation.ToolLayout;
 import java.util.function.Consumer;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
@@ -37,7 +39,7 @@ public final class MergeView extends BorderPane {
         this.warn = warn;
         getStyleClass().add("tool-view");
         setPadding(new Insets(ToolLayout.SPACING * 2));
-        setTop(ToolLayout.header(Messages.get("pdf.merge.name"), Messages.get("pdf.merge.hint")));
+        setTop(ToolLayout.header(ToolCategory.PDF, Messages.get("pdf.merge.name"), Messages.get("pdf.merge.hint")));
         setCenter(buildList());
         setRight(buildSideButtons(owner));
         setBottom(buildActions(owner));
@@ -49,7 +51,7 @@ public final class MergeView extends BorderPane {
         list.setItems(viewModel.files());
         list.setPlaceholder(new Label(Messages.get("pdf.merge.empty")));
         list.setCellFactory(view -> new ReorderableCell());
-        ToolLayout.acceptPdfDrops(list, viewModel::addFiles, warn);
+        PdfControls.acceptPdfDrops(list, viewModel::addFiles, warn);
         return list;
     }
 
@@ -108,7 +110,7 @@ public final class MergeView extends BorderPane {
 
         TaskStatusBar status = new TaskStatusBar();
         viewModel.currentTaskProperty().addListener((observable, previous, task) -> status.track(task));
-        CheckBox removeProtection = ToolLayout.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
+        CheckBox removeProtection = PdfControls.removeProtectionToggle(owner, viewModel.removeProtectionProperty());
         return new VBox(ToolLayout.SPACING, removeProtection, new HBox(ToolLayout.SPACING, merge), status, resultRow);
     }
 
