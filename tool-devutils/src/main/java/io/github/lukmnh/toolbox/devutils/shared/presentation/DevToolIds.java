@@ -11,6 +11,7 @@ public final class DevToolIds {
     public static final String REGEX = "devutils.regex";
     public static final String SQL = "devutils.sql";
     public static final String CRON = "devutils.cron";
+    public static final String QR = "devutils.qr";
 
     private DevToolIds() {}
 }

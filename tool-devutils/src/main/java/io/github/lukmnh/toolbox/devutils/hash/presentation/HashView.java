@@ -11,18 +11,21 @@ import io.github.lukmnh.toolbox.devutils.hash.domain.DigestResult;
 import java.util.List;
 import java.util.Map;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-/** Layout Hash Generator: input + opsi di atas, daftar hasil per algoritma di bawah. */
+/** Layout Hash Generator: tab Hash/HMAC (input + hasil per algoritma) dan tab Generate (secret, key pair, UUID). */
 public final class HashView extends VBox {
 
     private static final int INPUT_ROWS = 6;
@@ -40,7 +43,7 @@ public final class HashView extends VBox {
     private final Notifier notifier;
     private final VBox rows = new VBox(2);
 
-    public HashView(HashViewModel viewModel, Notifier notifier) {
+    public HashView(HashViewModel viewModel, GenerateViewModel generateViewModel, Notifier notifier) {
         this.viewModel = viewModel;
         this.notifier = notifier;
         VBox page = ToolLayout.page();
@@ -49,15 +52,32 @@ public final class HashView extends VBox {
         results.setFitToWidth(true);
         results.getStyleClass().add("edge-to-edge");
         VBox.setVgrow(results, Priority.ALWAYS);
+        VBox hashContent = new VBox(ToolLayout.SPACING, buildInputCard(), buildHmacCard(), results);
+        hashContent.setPadding(new Insets(ToolLayout.SPACING, 0, 0, 0));
+
+        ScrollPane generateContent = new ScrollPane(new GeneratePane(generateViewModel, notifier));
+        generateContent.setFitToWidth(true);
+        generateContent.setPadding(new Insets(ToolLayout.SPACING, 0, 0, 0));
+        generateContent.getStyleClass().add("edge-to-edge");
+        Tab generateTab = new Tab(Messages.get("devutils.hash.tab.generate"), generateContent);
+        // Nilai dibuat begitu tab dibuka, tanpa perlu mengetik input apa pun
+        generateTab.selectedProperty().addListener((observable, wasSelected, selected) -> {
+            if (selected) {
+                generateViewModel.ensureGenerated();
+            }
+        });
+        TabPane tabs = new TabPane(new Tab(Messages.get("devutils.hash.tab.hash"), hashContent), generateTab);
+        tabs.getStyleClass().add("underline-tabs");
+        tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        VBox.setVgrow(tabs, Priority.ALWAYS);
+
         page.getChildren()
                 .addAll(
                         ToolLayout.header(
                                 ToolCategory.DEV_UTILS,
                                 Messages.get("devutils.hash.name"),
                                 Messages.get("devutils.hash.hint")),
-                        buildInputCard(),
-                        buildHmacCard(),
-                        results);
+                        tabs);
         getStyleClass().add("tool-view");
         getChildren().add(page);
         viewModel.outcomeProperty().addListener((observable, previous, current) -> renderRows());

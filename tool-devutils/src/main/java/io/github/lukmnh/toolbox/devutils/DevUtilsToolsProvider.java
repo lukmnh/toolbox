@@ -30,17 +30,30 @@ import io.github.lukmnh.toolbox.devutils.encoder.domain.Base64Files;
 import io.github.lukmnh.toolbox.devutils.encoder.infrastructure.JdkBase64Files;
 import io.github.lukmnh.toolbox.devutils.encoder.presentation.EncoderTool;
 import io.github.lukmnh.toolbox.devutils.encoder.presentation.EncoderUseCases;
+import io.github.lukmnh.toolbox.devutils.hash.application.ExportPemUseCase;
+import io.github.lukmnh.toolbox.devutils.hash.application.GenerateKeyPairUseCase;
+import io.github.lukmnh.toolbox.devutils.hash.application.GenerateSecretUseCase;
+import io.github.lukmnh.toolbox.devutils.hash.application.GenerateUuidsUseCase;
 import io.github.lukmnh.toolbox.devutils.hash.application.HashTextUseCase;
 import io.github.lukmnh.toolbox.devutils.hash.application.HmacTextUseCase;
 import io.github.lukmnh.toolbox.devutils.hash.domain.TextHasher;
+import io.github.lukmnh.toolbox.devutils.hash.domain.UuidV7Generator;
+import io.github.lukmnh.toolbox.devutils.hash.infrastructure.JdkPemFiles;
 import io.github.lukmnh.toolbox.devutils.hash.infrastructure.JdkTextHasher;
 import io.github.lukmnh.toolbox.devutils.hash.presentation.HashTool;
+import io.github.lukmnh.toolbox.devutils.hash.presentation.HashUseCases;
 import io.github.lukmnh.toolbox.devutils.jwt.application.DecodeJwtUseCase;
 import io.github.lukmnh.toolbox.devutils.jwt.application.VerifyJwtSignatureUseCase;
 import io.github.lukmnh.toolbox.devutils.jwt.domain.JwtSignatureVerifier;
 import io.github.lukmnh.toolbox.devutils.jwt.infrastructure.JacksonJwtJson;
 import io.github.lukmnh.toolbox.devutils.jwt.infrastructure.JdkPublicKeyParser;
 import io.github.lukmnh.toolbox.devutils.jwt.presentation.JwtTool;
+import io.github.lukmnh.toolbox.devutils.qr.application.ExportQrPngUseCase;
+import io.github.lukmnh.toolbox.devutils.qr.application.GenerateQrUseCase;
+import io.github.lukmnh.toolbox.devutils.qr.infrastructure.ImageIoQrPngWriter;
+import io.github.lukmnh.toolbox.devutils.qr.infrastructure.ZxingQrEncoder;
+import io.github.lukmnh.toolbox.devutils.qr.presentation.QrTool;
+import io.github.lukmnh.toolbox.devutils.qr.presentation.QrUseCases;
 import io.github.lukmnh.toolbox.devutils.regex.application.AnalyzeRegexUseCase;
 import io.github.lukmnh.toolbox.devutils.regex.application.LoadTestTextUseCase;
 import io.github.lukmnh.toolbox.devutils.regex.application.RegexCompiler;
@@ -60,6 +73,7 @@ import io.github.lukmnh.toolbox.devutils.sql.infrastructure.JdkSqlFiles;
 import io.github.lukmnh.toolbox.devutils.sql.infrastructure.VerticalBlankSqlFormatter;
 import io.github.lukmnh.toolbox.devutils.sql.presentation.SqlTool;
 import io.github.lukmnh.toolbox.devutils.sql.presentation.SqlUseCases;
+import java.security.SecureRandom;
 import java.time.Clock;
 import java.util.List;
 
@@ -72,7 +86,15 @@ public final class DevUtilsToolsProvider implements ToolProvider {
     @Override
     public List<Tool> tools() {
         return List.of(
-                jwtTool(), encoderTool(), hashTool(), checksumTool(), diffTool(), regexTool(), sqlTool(), cronTool());
+                jwtTool(),
+                encoderTool(),
+                hashTool(),
+                checksumTool(),
+                diffTool(),
+                regexTool(),
+                sqlTool(),
+                cronTool(),
+                qrTool());
     }
 
     private static JwtTool jwtTool() {
@@ -89,7 +111,14 @@ public final class DevUtilsToolsProvider implements ToolProvider {
 
     private static HashTool hashTool() {
         TextHasher hasher = new JdkTextHasher();
-        return new HashTool(new HashTextUseCase(hasher), new HmacTextUseCase(hasher));
+        SecureRandom random = new SecureRandom();
+        return new HashTool(new HashUseCases(
+                new HashTextUseCase(hasher),
+                new HmacTextUseCase(hasher),
+                new GenerateSecretUseCase(random),
+                new GenerateKeyPairUseCase(random),
+                new GenerateUuidsUseCase(new UuidV7Generator(System::currentTimeMillis, random)),
+                new ExportPemUseCase(new JdkPemFiles())));
     }
 
     private static ChecksumTool checksumTool() {
@@ -130,5 +159,10 @@ public final class DevUtilsToolsProvider implements ToolProvider {
     private static CronTool cronTool() {
         return new CronTool(new CronUseCases(
                 new ExplainCronUseCase(new CronUtilsEngine(), Clock.systemUTC()), new BuildCronUseCase()));
+    }
+
+    private static QrTool qrTool() {
+        return new QrTool(new QrUseCases(
+                new GenerateQrUseCase(new ZxingQrEncoder()), new ExportQrPngUseCase(new ImageIoQrPngWriter())));
     }
 }

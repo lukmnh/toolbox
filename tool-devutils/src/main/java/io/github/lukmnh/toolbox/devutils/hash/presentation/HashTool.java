@@ -1,24 +1,23 @@
 package io.github.lukmnh.toolbox.devutils.hash.presentation;
 
 import io.github.lukmnh.toolbox.common.i18n.Messages;
+import io.github.lukmnh.toolbox.common.io.TempFiles;
 import io.github.lukmnh.toolbox.common.tool.Tool;
 import io.github.lukmnh.toolbox.common.tool.ToolCategory;
 import io.github.lukmnh.toolbox.common.tool.ToolContext;
-import io.github.lukmnh.toolbox.devutils.hash.application.HashTextUseCase;
-import io.github.lukmnh.toolbox.devutils.hash.application.HmacTextUseCase;
 import io.github.lukmnh.toolbox.devutils.shared.presentation.DevToolIds;
 import java.util.Set;
 import javafx.scene.Node;
 
+/** Hash Generator: hash/HMAC teks, plus generate random secret, key pair PEM, dan UUID tanpa input. */
 public final class HashTool implements Tool {
 
-    private final HashTextUseCase hashUseCase;
-    private final HmacTextUseCase hmacUseCase;
+    private final HashUseCases useCases;
     private HashViewModel viewModel;
+    private GenerateViewModel generateViewModel;
 
-    public HashTool(HashTextUseCase hashUseCase, HmacTextUseCase hmacUseCase) {
-        this.hashUseCase = hashUseCase;
-        this.hmacUseCase = hmacUseCase;
+    public HashTool(HashUseCases useCases) {
+        this.useCases = useCases;
     }
 
     @Override
@@ -49,8 +48,9 @@ public final class HashTool implements Tool {
 
     @Override
     public Node createView(ToolContext context) {
-        viewModel = new HashViewModel(hashUseCase, hmacUseCase, context);
-        return new HashView(viewModel, context.notifier());
+        viewModel = new HashViewModel(useCases.hash(), useCases.hmac(), context);
+        generateViewModel = new GenerateViewModel(useCases, context, new TempFiles());
+        return new HashView(viewModel, generateViewModel, context.notifier());
     }
 
     @Override
@@ -58,6 +58,10 @@ public final class HashTool implements Tool {
         if (viewModel != null) {
             viewModel.dispose();
             viewModel = null;
+        }
+        if (generateViewModel != null) {
+            generateViewModel.dispose();
+            generateViewModel = null;
         }
     }
 }
