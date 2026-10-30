@@ -21,9 +21,9 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: liberica
           java-version: '21'
@@ -47,21 +47,21 @@ jobs:
             --add-modules "$MODS" \
             --jlink-options "--strip-debug --no-header-files --no-man-pages --strip-native-commands" \
             --dest dist
-          echo "ZIP=Toolbox-${VER}-${{ matrix.platform }}.zip" >> "$GITHUB_ENV"
+          echo "ASSET=Toolbox-${VER}-${{ matrix.platform }}.zip" >> "$GITHUB_ENV"
 
       - name: Zip (Linux)
         if: runner.os == 'Linux'
-        run: cd dist && zip -qr "../$ZIP" Toolbox
+        run: cd dist && zip -qr "../$ASSET" Toolbox
 
       - name: Zip (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
-        run: Compress-Archive -Path dist/Toolbox -DestinationPath $env:ZIP
+        run: Compress-Archive -Path dist/Toolbox -DestinationPath $env:ASSET
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.platform }}
-          path: ${{ env.ZIP }}
+          path: ${{ env.ASSET }}
           if-no-files-found: error
           compression-level: 0
 
@@ -69,12 +69,12 @@ jobs:
     needs: package
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: out
           merge-multiple: true
 
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           files: out/*.zip
           fail_on_unmatched_files: true
