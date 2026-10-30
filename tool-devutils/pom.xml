@@ -12,7 +12,7 @@
 
     <artifactId>tool-devutils</artifactId>
     <name>Toolbox :: Tool DevUtils</name>
-    <description>JWT Debugger, Encoder/Decoder, Hash Generator, Checksum, Text Diff, Regex Tester, SQL Formatter, dan Cron Builder.</description>
+    <description>JWT Debugger, Encoder/Decoder, Hash Generator, Checksum, Text Diff, Regex Tester, SQL Formatter, Cron Builder, dan QR Code Generator.</description>
 
     <dependencies>
         <dependency>
@@ -43,6 +43,11 @@
         <dependency>
             <groupId>com.cronutils</groupId>
             <artifactId>cron-utils</artifactId>
+        </dependency>
+        <!-- QR Code Generator: encoder BitMatrix saja (tanpa javase/Swing); render PNG via ImageIO -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
         </dependency>
     </dependencies>
 </project>

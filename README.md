@@ -9,7 +9,7 @@ Superapp desktop berisi kumpulan utility pribadi untuk PDF, JSON, dan developer 
 > | Tool PDF (Isi & TTD, Gabung, Pisah, Kompres) | ✅ Selesai + test, lihat [Implementasi PDF](#implementasi-pdf) |
 > | Shell `app` | ⚠️ Minimal: Home, sidebar, Open with, `Ctrl+H`/`Ctrl+B`. Belum ada: halaman Settings, "Terakhir dipakai", simpan ukuran window, log ke file |
 > | Tool JSON (Viewer, Beautify) | ✅ Selesai + test |
-> | Tool Dev Utils | ✅ JWT Debugger, Encoder/Decoder, Hash, Checksum, Text Diff, Regex Tester, SQL Formatter, Cron Builder + test |
+> | Tool Dev Utils | ✅ JWT Debugger, Encoder/Decoder, Hash, Checksum, Text Diff, Regex Tester, SQL Formatter, Cron Builder, QR Code + test |
 > | Packaging & release | ⏳ Belum dimulai |
 
 - Satu aplikasi, satu menu: pilih tool dari Home, pindah tool lewat sidebar.
@@ -51,12 +51,13 @@ Superapp desktop berisi kumpulan utility pribadi untuk PDF, JSON, dan developer 
 | Data | **CSV Kolom: Split & Merge** | Pisah/gabung/atur kolom CSV secara streaming: deteksi delimiter & encoding, pipeline langkah, formula guard | ✅ |
 | Dev Utils | **JWT Debugger** | Decode header/payload/claims, status waktu, verifikasi signature HS/RS/PS/ES/EdDSA secara offline | – |
 | Dev Utils | **Encoder / Decoder** | Base64 teks & file (URL-safe, MIME, data URI) + URL encode/decode & parser query string | ✅ (Base64 file) |
-| Dev Utils | **Hash Generator** | MD5, SHA-1, SHA-2, SHA3 untuk teks, plus mode HMAC | – |
+| Dev Utils | **Hash Generator** | MD5, SHA-1, SHA-2, SHA3 untuk teks, plus mode HMAC; tab Generate: random secret (hex/Base64/Base64URL), key pair PEM (RSA 2048–4096, EC P-256/384/521, Ed25519), UUID v4/v7 tanpa input | ✅ (.pem) |
 | Dev Utils | **Checksum** | Generate & verify checksum file, format `sha256sum` | ✅ |
 | Dev Utils | **Text Diff** | Side-by-side & unified, highlight per kata, export `.diff` (bisa di-`git apply`) | ✅ |
 | Dev Utils | **Regex Tester** | Uji & jelaskan regex **Java, JavaScript, Go, PHP**: highlight per grup, tabel match, replace, timeout anti-backtracking | – |
 | Dev Utils | **SQL Formatter** | Format & minify SQL 10 dialect (MySQL, PostgreSQL, Oracle, SQL Server, …); string & quoted identifier tidak diubah, file s.d. 10 MB | ✅ |
 | Dev Utils | **Cron Builder & Explainer** | Builder + penjelasan bahasa Indonesia + 10 jadwal berikutnya untuk **Unix crontab, Java Spring, Java Quarkus/Quartz, Go (robfig/cron), PHP Laravel**, lengkap dengan snippet kode per target | – |
+| Dev Utils | **QR Code Generator** | Teks, URL promo, atau vCard 3.0 menjadi QR (ZXing); error correction L/M/Q/H, ukuran 256–1024 px, quiet zone, preview live | ✅ (.png) |
 | Produktivitas | **Text Tools** | Statistik teks (grapheme, kata, kalimat, waktu baca), case converter, rapikan teks, undo 20 langkah | ✅ |
 | Produktivitas | **Batch Rename** | Rename banyak file dengan aturan bertingkat, preview konflik, two-phase rename + rollback, undo | – (in-place) |
 | Produktivitas | **Kalkulator Cepat** | Diskon ganda (diskon efektif) dan simulasi cicilan anuitas/flat/efektif | ✅ (jadwal cicilan) |
@@ -509,8 +510,8 @@ toolbox/
 ├── common/              # kontrak Tool, download, task runner, settings, UI reusable, i18n, tema CSS
 ├── tool-pdf/            # Isi & TTD, Gabung, Pisah, Kompres
 ├── tool-json/           # JSON Viewer, JSON Beautify, CSV Split & Merge
-├── tool-devutils/       # JWT, Encoder/Decoder, Hash, Checksum, Text Diff, Regex, SQL, Cron
-├── tool-productivity/   # Text Tools, Batch Rename, Kalkulator, Budget
+├── tool-devutils/       # JWT, Encoder/Decoder, Hash, Checksum, Text Diff, Regex, SQL, Cron, QR
+├── tool-productivity/   # Text Tools, Batch Rename, Installment Simulator, Budget
 ├── app/                 # shell: Home, sidebar, routing, Settings, main class
 ├── tools/               # GenerateSample.java (generator JSON dummy)
 ├── packaging/           # script jpackage + icons/ (opsional)
