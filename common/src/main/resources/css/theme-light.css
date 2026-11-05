@@ -830,6 +830,14 @@
     -fx-font-family: "Monospaced";
     -fx-control-inner-background: -tb-code-bg;
 }
+/* Contoh kode read-only (cheatsheet SQL) */
+.code-block {
+    -fx-background-color: -tb-code-bg;
+    -fx-border-color: -tb-border;
+    -fx-border-width: 1;
+    -fx-padding: 8 12 8 12;
+    -fx-text-fill: -tb-text;
+}
 
 /* Baris hasil (Hash, dll.): dipisah hairline */
 .result-row {

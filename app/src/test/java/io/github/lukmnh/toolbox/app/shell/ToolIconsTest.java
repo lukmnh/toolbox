@@ -30,7 +30,9 @@ class ToolIconsTest {
     private static void assertResolvable(String literal, String owner) {
         assertDoesNotThrow(
                 // FontLoader no-op: cukup cek literal ter-resolve, font tidak perlu di-load
-                () -> IkonResolverProvider.getInstance(handler -> {}).resolve(literal).resolve(literal),
+                () -> IkonResolverProvider.getInstance(handler -> {})
+                        .resolve(literal)
+                        .resolve(literal),
                 () -> owner + ": ikon '" + literal + "' tidak ada di Ikonli");
     }
 }

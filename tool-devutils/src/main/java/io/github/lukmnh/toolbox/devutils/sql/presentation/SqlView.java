@@ -10,12 +10,15 @@ import io.github.lukmnh.toolbox.common.ui.ToolLayout;
 import io.github.lukmnh.toolbox.devutils.sql.application.FormatSqlUseCase;
 import io.github.lukmnh.toolbox.devutils.sql.domain.FormatOptions;
 import io.github.lukmnh.toolbox.devutils.sql.domain.IndentStyle;
+import io.github.lukmnh.toolbox.devutils.sql.domain.SqlCheatsheet;
 import io.github.lukmnh.toolbox.devutils.sql.domain.SqlDialect;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -28,10 +31,14 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
-/** Layout SQL Formatter: input, opsi + aksi Format/Minify, lalu hasil read-only dengan Copy/Download. */
+/**
+ * Layout SQL: mode Formatter (input, opsi + aksi Format/Minify, hasil read-only dengan Copy/Download), Cheatsheet
+ * (syntax per grup), dan Concepts (ACID, isolation, locking, deadlock, EXPLAIN, normalisasi, partition, sharding).
+ */
 final class SqlView {
 
     private static final double EDITOR_HEIGHT = 240;
@@ -43,6 +50,18 @@ final class SqlView {
             IndentStyle.TWO_SPACES, "devutils.sql.indent.two",
             IndentStyle.FOUR_SPACES, "devutils.sql.indent.four",
             IndentStyle.TAB, "devutils.sql.indent.tab");
+
+    private enum Mode {
+        FORMATTER("devutils.sql.mode.formatter"),
+        CHEATSHEET("devutils.sql.mode.cheatsheet"),
+        CONCEPTS("devutils.sql.mode.concepts");
+
+        private final String messageKey;
+
+        Mode(String messageKey) {
+            this.messageKey = messageKey;
+        }
+    }
 
     private final SqlViewModel viewModel;
     private final ToolContext context;
@@ -59,6 +78,22 @@ final class SqlView {
     private Node build() {
         TaskStatusBar status = new TaskStatusBar();
         viewModel.currentTaskProperty().addListener((observable, previous, task) -> status.track(task));
+        VBox formatter = new VBox(ToolLayout.SPACING, buildInput(), buildOptions(), status, buildResult());
+        // Shortcut hanya aktif di mode Formatter
+        formatter.addEventFilter(KeyEvent.KEY_PRESSED, this::handleShortcut);
+        Node cheatsheet = SqlReferenceView.create(SqlCheatsheet.SYNTAX_GROUPS, false, context.notifier());
+        Node concepts = SqlReferenceView.create(SqlCheatsheet.CONCEPT_GROUPS, true, context.notifier());
+
+        ObjectProperty<Mode> mode = new SimpleObjectProperty<>(Mode.FORMATTER);
+        StackPane content = new StackPane(formatter);
+        mode.addListener((observable, previous, current) -> content.getChildren()
+                .setAll(
+                        switch (current) {
+                            case FORMATTER -> formatter;
+                            case CHEATSHEET -> cheatsheet;
+                            case CONCEPTS -> concepts;
+                        }));
+
         VBox page = ToolLayout.page();
         page.getChildren()
                 .addAll(
@@ -66,11 +101,8 @@ final class SqlView {
                                 ToolCategory.DEV_UTILS,
                                 Messages.get("devutils.sql.name"),
                                 Messages.get("devutils.sql.hint")),
-                        buildInput(),
-                        buildOptions(),
-                        status,
-                        buildResult());
-        page.addEventFilter(KeyEvent.KEY_PRESSED, this::handleShortcut);
+                        ToolLayout.segmented(mode, List.of(Mode.values()), option -> Messages.get(option.messageKey)),
+                        content);
         ScrollPane scroll = new ScrollPane(page);
         scroll.setFitToWidth(true);
         scroll.getStyleClass().add("edge-to-edge");
