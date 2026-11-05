@@ -15,8 +15,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /**
- * Daftar referensi SQL (dipakai mode Cheatsheet dan Concepts): search + card per grup. Tiap snippet berisi kode,
- * penjelasan, dan kapan dipakai. Grup konsep menampilkan intro di atas snippet-nya.
+ * Daftar referensi SQL (dipakai mode Cheatsheet dan Concepts): search + card per grup. Tiap snippet berisi judul,
+ * kode, penjelasan, dan kapan dipakai. Grup konsep menampilkan intro di atas snippet-nya.
  */
 final class SqlReferenceView {
 
@@ -70,7 +70,7 @@ final class SqlReferenceView {
         return intro;
     }
 
-    /** Kode (+ tombol copy) di atas, lalu penjelasan dan "kapan dipakai". */
+    /** Judul, kode (+ tombol copy), lalu penjelasan dan "kapan dipakai". */
     private VBox snippetBlock(SqlSnippet snippet) {
         Label code = ToolLayout.mono(new Label(snippet.code()));
         code.getStyleClass().add("code-block");
@@ -78,12 +78,16 @@ final class SqlReferenceView {
         code.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(code, Priority.ALWAYS);
 
+        Label title = new Label(SqlTexts.title(snippet));
+        title.getStyleClass().add("snippet-title");
+        title.setWrapText(true);
+
         Label description = new Label(SqlTexts.snippet(snippet));
         description.setWrapText(true);
         Label when = ToolLayout.hint(Messages.format("devutils.sql.when", SqlTexts.when(snippet)));
 
         HBox codeRow = ToolLayout.row(code, ClipboardActions.copyButton(snippet::code, notifier));
-        VBox block = new VBox(ToolLayout.GAP, codeRow, description, when);
+        VBox block = new VBox(ToolLayout.GAP, title, codeRow, description, when);
         block.getStyleClass().add("result-row");
         return block;
     }

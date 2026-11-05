@@ -24,6 +24,7 @@ class SqlTextsTest {
                 .forEach(group -> keys.add(SqlTexts.groupKey(group)));
         SqlCheatsheet.CONCEPT_GROUPS.forEach(group -> keys.add(SqlTexts.introKey(group)));
         for (SqlSnippet snippet : SqlCheatsheet.SNIPPETS) {
+            keys.add(SqlTexts.titleKey(snippet));
             keys.add(SqlTexts.snippetKey(snippet));
             keys.add(SqlTexts.whenKey(snippet));
         }

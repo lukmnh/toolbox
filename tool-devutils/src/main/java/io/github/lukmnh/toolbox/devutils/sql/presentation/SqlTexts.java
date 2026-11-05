@@ -29,6 +29,10 @@ final class SqlTexts {
         return snippetKey(snippet) + ".when";
     }
 
+    static String titleKey(SqlSnippet snippet) {
+        return snippetKey(snippet) + ".title";
+    }
+
     static String group(String group) {
         return Messages.get(groupKey(group));
     }
@@ -45,8 +49,12 @@ final class SqlTexts {
         return Messages.get(whenKey(snippet));
     }
 
+    static String title(SqlSnippet snippet) {
+        return Messages.get(titleKey(snippet));
+    }
+
     /**
-     * Snippet di grup tersebut yang cocok dengan query di kode, penjelasan, atau kapan dipakai. Query yang cocok
+     * Snippet di grup tersebut yang cocok dengan query di judul, kode, penjelasan, atau kapan dipakai. Query yang cocok
      * dengan judul grup menampilkan seluruh grup (mis. "deadlock").
      */
     static List<SqlSnippet> matching(String group, String query) {
@@ -55,6 +63,7 @@ final class SqlTexts {
         return SqlCheatsheet.SNIPPETS.stream()
                 .filter(snippet -> snippet.group().equals(group))
                 .filter(snippet -> wholeGroup
+                        || contains(title(snippet), needle)
                         || contains(snippet.code(), needle)
                         || contains(snippet(snippet), needle)
                         || contains(when(snippet), needle))

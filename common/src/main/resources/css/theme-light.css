@@ -831,6 +831,7 @@
     -fx-control-inner-background: -tb-code-bg;
 }
 /* Contoh kode read-only (cheatsheet SQL) */
+.snippet-title { -fx-font-weight: bold; -fx-text-fill: -tb-text; }
 .code-block {
     -fx-background-color: -tb-code-bg;
     -fx-border-color: -tb-border;
