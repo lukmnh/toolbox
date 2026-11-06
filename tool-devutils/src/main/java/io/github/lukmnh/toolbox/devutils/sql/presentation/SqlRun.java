@@ -15,7 +15,7 @@ record SqlRun(SqlAction action, SqlDialect dialect, SqlOutput output, long input
     }
 
     /** Tanpa {@code getBytes}: input 10 MB tidak perlu disalin hanya untuk dihitung. */
-    private static long utf8Length(String text) {
+    static long utf8Length(String text) {
         long bytes = 0;
         for (int index = 0; index < text.length(); index++) {
             char c = text.charAt(index);

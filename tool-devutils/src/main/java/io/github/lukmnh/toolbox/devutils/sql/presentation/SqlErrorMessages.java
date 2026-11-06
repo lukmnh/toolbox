@@ -3,6 +3,7 @@ package io.github.lukmnh.toolbox.devutils.sql.presentation;
 import io.github.lukmnh.toolbox.common.i18n.Messages;
 import io.github.lukmnh.toolbox.common.ui.ByteSizeFormat;
 import io.github.lukmnh.toolbox.common.ui.ErrorDialogs;
+import io.github.lukmnh.toolbox.devutils.sql.domain.InvalidDataException;
 import io.github.lukmnh.toolbox.devutils.sql.domain.SqlFileTooLargeException;
 import io.github.lukmnh.toolbox.devutils.sql.domain.SqlFormatFailedException;
 import io.github.lukmnh.toolbox.devutils.sql.domain.SqlIoException;
@@ -33,7 +34,30 @@ final class SqlErrorMessages {
                         "SQL formatter failed: " + e.getCause().getClass().getName());
                 yield Messages.format("devutils.sql.error.formatFailed", e.statementNumber());
             }
+            case InvalidDataException e -> {
+                String reason = Messages.format(problemKey(e.problem()), e.detail());
+                yield e.line() == InvalidDataException.NO_LINE
+                        ? Messages.format("devutils.sql.generator.error.file", e.fileName(), reason)
+                        : Messages.format("devutils.sql.generator.error.fileLine", e.fileName(), e.line(), reason);
+            }
         };
+    }
+
+    /** Switch exhaustive: Problem baru wajib punya pesan sebelum bisa di-compile. */
+    static String problemKey(InvalidDataException.Problem problem) {
+        String prefix = "devutils.sql.generator.error.";
+        return prefix
+                + switch (problem) {
+                    case UNSUPPORTED_FORMAT -> "unsupported";
+                    case UNREADABLE -> "unreadable";
+                    case NO_HEADER -> "noHeader";
+                    case BLANK_COLUMN -> "blankColumn";
+                    case DUPLICATE_COLUMN -> "duplicateColumn";
+                    case TOO_MANY_FIELDS -> "tooManyFields";
+                    case NOT_OBJECTS -> "notObjects";
+                    case TOO_MANY_ROWS -> "tooManyRows";
+                    case NO_ROWS -> "noRows";
+                };
     }
 
     static void show(Window owner, Throwable error) {

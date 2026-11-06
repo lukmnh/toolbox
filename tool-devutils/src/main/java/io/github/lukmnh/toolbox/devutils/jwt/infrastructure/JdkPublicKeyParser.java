@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import io.github.lukmnh.toolbox.devutils.jwt.domain.PublicKeyParser;
 import io.github.lukmnh.toolbox.devutils.jwt.domain.UnreadableKeyException;
 import io.github.lukmnh.toolbox.devutils.jwt.domain.UnreadableKeyException.Reason;
+import io.github.lukmnh.toolbox.devutils.shared.infrastructure.SafeJsonFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -143,7 +144,7 @@ public final class JdkPublicKeyParser implements PublicKeyParser {
 
     /** Field string top-level JWK; field lain (misalnya {@code key_ops} array) dilewati. */
     private static Map<String, String> jwkFields(String json) {
-        try (JsonParser parser = JwtJsonFactory.FACTORY.createParser(json)) {
+        try (JsonParser parser = SafeJsonFactory.FACTORY.createParser(json)) {
             if (parser.nextToken() != JsonToken.START_OBJECT) {
                 throw new UnreadableKeyException(Reason.INVALID_JWK);
             }

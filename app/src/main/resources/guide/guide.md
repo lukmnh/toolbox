@@ -92,9 +92,11 @@ Compare two texts or files side by side or as a unified diff, with word-level hi
 
 Test and explain regular expressions for Java, JavaScript, Go and PHP: per-group highlights, a match table, replace preview, and a timeout that stops runaway backtracking.
 
-### SQL Formatter
+### SQL Formatter & Generator
 
 Format or minify SQL in 10 dialects, including MySQL, PostgreSQL, Oracle and SQL Server. Strings and quoted identifiers are never changed.
+
+The Generator mode turns data into statements: upload an .xlsx, .csv, .txt or .json file, choose PostgreSQL, Oracle or MongoDB and INSERT, UPDATE or DELETE, then click Generate. The first row (or the JSON keys) gives the column names; UPDATE and DELETE use the key column you pick in WHERE.
 
 ### Cron Builder & Explainer
 

@@ -1,21 +1,18 @@
 package io.github.lukmnh.toolbox.productivity.budget.infrastructure;
 
 import io.github.lukmnh.toolbox.common.security.SecurityLimits;
+import io.github.lukmnh.toolbox.common.security.ZipGuard;
 import io.github.lukmnh.toolbox.productivity.budget.domain.BudgetException;
 import io.github.lukmnh.toolbox.productivity.budget.domain.BudgetFileTooLargeException;
 import io.github.lukmnh.toolbox.productivity.budget.domain.BudgetStorageException;
 import io.github.lukmnh.toolbox.productivity.budget.domain.InvalidBudgetFileException;
 import io.github.lukmnh.toolbox.productivity.budget.domain.InvalidBudgetFileException.Problem;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Base64;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 import org.dhatim.fastexcel.VisibilityState;
 import org.dhatim.fastexcel.Workbook;
 import org.dhatim.fastexcel.Worksheet;
@@ -46,7 +43,6 @@ final class XlsxBudgetData {
     /** File export Toolbox hanya berisi belasan entry; batas ini menolak ZIP aneh lebih awal. */
     private static final int MAX_ZIP_ENTRIES = 10_000;
 
-    private static final int BUFFER_SIZE = 8_192;
     private static final String NO_LOCATION = "";
 
     private XlsxBudgetData() {}
@@ -120,27 +116,13 @@ final class XlsxBudgetData {
         return row.getOptionalCell(column).map(Cell::getText).orElse("");
     }
 
-    /** Hitung byte hasil decompress sungguhan (bukan ukuran yang diklaim header ZIP, yang bisa dipalsukan). */
+    /** Isi ZIP dicek lewat {@link ZipGuard} sebelum fastexcel men-decompress apa pun. */
     private static void checkUncompressedSize(Path file, String fileName) {
         long max = SecurityLimits.BUDGET_XLSX_MAX_UNCOMPRESSED_BYTES;
-        long total = 0;
-        int count = 0;
-        byte[] buffer = new byte[BUFFER_SIZE];
-        try (ZipFile zip = new ZipFile(file.toFile())) {
-            Enumeration<? extends ZipEntry> entries = zip.entries();
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                if (++count > MAX_ZIP_ENTRIES) {
-                    throw invalid(fileName, Problem.UNREADABLE_FILE, null);
-                }
-                try (InputStream content = zip.getInputStream(entry)) {
-                    for (int read = content.read(buffer); read != -1; read = content.read(buffer)) {
-                        total += read;
-                        if (total > max) {
-                            throw new BudgetFileTooLargeException(fileName, total, max);
-                        }
-                    }
-                }
+        try {
+            long total = ZipGuard.uncompressedSize(file, max, MAX_ZIP_ENTRIES);
+            if (total > max) {
+                throw new BudgetFileTooLargeException(fileName, total, max);
             }
         } catch (ZipException e) {
             throw invalid(fileName, Problem.UNREADABLE_FILE, e);

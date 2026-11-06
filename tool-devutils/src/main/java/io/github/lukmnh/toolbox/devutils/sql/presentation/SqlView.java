@@ -36,7 +36,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 /**
- * Layout SQL: mode Formatter (input, opsi + aksi Format/Minify, hasil read-only dengan Copy/Download), Cheatsheet
+ * Layout SQL: mode Formatter (input, opsi + aksi Format/Minify, hasil read-only dengan Copy/Download), Generator
+ * (data file → INSERT/UPDATE/DELETE, lihat {@link GeneratorView}), Cheatsheet
  * (syntax per grup), dan Concepts (ACID, isolation, locking, deadlock, EXPLAIN, normalisasi, partition, sharding).
  */
 final class SqlView {
@@ -53,6 +54,7 @@ final class SqlView {
 
     private enum Mode {
         FORMATTER("devutils.sql.mode.formatter"),
+        GENERATOR("devutils.sql.mode.generator"),
         CHEATSHEET("devutils.sql.mode.cheatsheet"),
         CONCEPTS("devutils.sql.mode.concepts");
 
@@ -64,15 +66,17 @@ final class SqlView {
     }
 
     private final SqlViewModel viewModel;
+    private final GeneratorViewModel generatorViewModel;
     private final ToolContext context;
 
-    private SqlView(SqlViewModel viewModel, ToolContext context) {
+    private SqlView(SqlViewModel viewModel, GeneratorViewModel generatorViewModel, ToolContext context) {
         this.viewModel = viewModel;
+        this.generatorViewModel = generatorViewModel;
         this.context = context;
     }
 
-    static Node create(SqlViewModel viewModel, ToolContext context) {
-        return new SqlView(viewModel, context).build();
+    static Node create(SqlViewModel viewModel, GeneratorViewModel generatorViewModel, ToolContext context) {
+        return new SqlView(viewModel, generatorViewModel, context).build();
     }
 
     private Node build() {
@@ -81,6 +85,7 @@ final class SqlView {
         VBox formatter = new VBox(ToolLayout.SPACING, buildInput(), buildOptions(), status, buildResult());
         // Shortcut hanya aktif di mode Formatter
         formatter.addEventFilter(KeyEvent.KEY_PRESSED, this::handleShortcut);
+        Node generator = GeneratorView.create(generatorViewModel, context);
         Node cheatsheet = SqlReferenceView.create(SqlCheatsheet.SYNTAX_GROUPS, false, context.notifier());
         Node concepts = SqlReferenceView.create(SqlCheatsheet.CONCEPT_GROUPS, true, context.notifier());
 
@@ -90,6 +95,7 @@ final class SqlView {
                 .setAll(
                         switch (current) {
                             case FORMATTER -> formatter;
+                            case GENERATOR -> generator;
                             case CHEATSHEET -> cheatsheet;
                             case CONCEPTS -> concepts;
                         }));

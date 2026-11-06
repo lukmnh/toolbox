@@ -12,6 +12,7 @@ import io.github.lukmnh.toolbox.devutils.jwt.domain.Claim;
 import io.github.lukmnh.toolbox.devutils.jwt.domain.JwtJson;
 import io.github.lukmnh.toolbox.devutils.jwt.domain.JwtPart;
 import io.github.lukmnh.toolbox.devutils.jwt.domain.MalformedJwtException;
+import io.github.lukmnh.toolbox.devutils.shared.infrastructure.SafeJsonFactory;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
@@ -27,10 +28,10 @@ public final class JacksonJwtJson implements JwtJson {
 
     @Override
     public String prettyPrint(String json, JwtPart part) {
-        try (JsonParser parser = JwtJsonFactory.FACTORY.createParser(json)) {
+        try (JsonParser parser = SafeJsonFactory.FACTORY.createParser(json)) {
             requireObject(parser, part);
             StringWriter writer = new StringWriter();
-            try (JsonGenerator generator = JwtJsonFactory.FACTORY.createGenerator(writer)) {
+            try (JsonGenerator generator = SafeJsonFactory.FACTORY.createGenerator(writer)) {
                 generator.setPrettyPrinter(prettyPrinter());
                 generator.copyCurrentStructure(parser);
             }
@@ -45,7 +46,7 @@ public final class JacksonJwtJson implements JwtJson {
 
     @Override
     public List<Claim> claims(String payloadJson) {
-        try (JsonParser parser = JwtJsonFactory.FACTORY.createParser(payloadJson)) {
+        try (JsonParser parser = SafeJsonFactory.FACTORY.createParser(payloadJson)) {
             requireObject(parser, JwtPart.PAYLOAD);
             List<Claim> claims = new ArrayList<>();
             while (parser.nextToken() == JsonToken.FIELD_NAME) {
@@ -63,7 +64,7 @@ public final class JacksonJwtJson implements JwtJson {
 
     @Override
     public Optional<String> algorithm(String headerJson) {
-        try (JsonParser parser = JwtJsonFactory.FACTORY.createParser(headerJson)) {
+        try (JsonParser parser = SafeJsonFactory.FACTORY.createParser(headerJson)) {
             requireObject(parser, JwtPart.HEADER);
             while (parser.nextToken() == JsonToken.FIELD_NAME) {
                 String name = parser.currentName();
@@ -113,7 +114,7 @@ public final class JacksonJwtJson implements JwtJson {
 
     private static String compact(JsonParser parser) throws IOException {
         StringWriter writer = new StringWriter();
-        try (JsonGenerator generator = JwtJsonFactory.FACTORY.createGenerator(writer)) {
+        try (JsonGenerator generator = SafeJsonFactory.FACTORY.createGenerator(writer)) {
             generator.copyCurrentStructure(parser);
         }
         return writer.toString();

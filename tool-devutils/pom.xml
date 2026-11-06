@@ -7,12 +7,12 @@
     <parent>
         <groupId>io.github.lukmnh.toolbox</groupId>
         <artifactId>toolbox-parent</artifactId>
-        <version>1.3.1</version>
+        <version>1.4.0</version>
     </parent>
 
     <artifactId>tool-devutils</artifactId>
     <name>Toolbox :: Tool DevUtils</name>
-    <description>JWT Debugger, Encoder/Decoder, Hash Generator, Checksum, Text Diff, Regex Tester, SQL Formatter, Cron Builder, dan QR Code Generator.</description>
+    <description>JWT Debugger, Encoder/Decoder, Hash Generator, Checksum, Text Diff, Regex Tester, SQL Formatter &amp; Generator, Cron Builder, dan QR Code Generator.</description>
 
     <dependencies>
         <dependency>
@@ -48,6 +48,22 @@
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
+        </dependency>
+        <!-- SQL Generator: baca data .csv/.txt (RFC 4180) -->
+        <dependency>
+            <groupId>de.siegmar</groupId>
+            <artifactId>fastcsv</artifactId>
+        </dependency>
+        <!-- SQL Generator: baca .xlsx streaming tanpa Apache POI -->
+        <dependency>
+            <groupId>org.dhatim</groupId>
+            <artifactId>fastexcel-reader</artifactId>
+        </dependency>
+        <!-- Test: membuat fixture .xlsx -->
+        <dependency>
+            <groupId>org.dhatim</groupId>
+            <artifactId>fastexcel</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

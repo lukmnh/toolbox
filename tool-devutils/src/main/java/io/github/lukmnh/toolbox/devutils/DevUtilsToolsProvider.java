@@ -75,10 +75,13 @@ import io.github.lukmnh.toolbox.devutils.regex.presentation.RegexTool;
 import io.github.lukmnh.toolbox.devutils.regex.presentation.RegexUseCases;
 import io.github.lukmnh.toolbox.devutils.sql.application.ExportSqlUseCase;
 import io.github.lukmnh.toolbox.devutils.sql.application.FormatSqlUseCase;
+import io.github.lukmnh.toolbox.devutils.sql.application.GenerateSyntaxUseCase;
+import io.github.lukmnh.toolbox.devutils.sql.application.LoadDataFileUseCase;
 import io.github.lukmnh.toolbox.devutils.sql.application.LoadSqlFileUseCase;
 import io.github.lukmnh.toolbox.devutils.sql.application.MinifySqlUseCase;
 import io.github.lukmnh.toolbox.devutils.sql.domain.SqlFiles;
 import io.github.lukmnh.toolbox.devutils.sql.infrastructure.JdkSqlFiles;
+import io.github.lukmnh.toolbox.devutils.sql.infrastructure.TabularDataFiles;
 import io.github.lukmnh.toolbox.devutils.sql.infrastructure.VerticalBlankSqlFormatter;
 import io.github.lukmnh.toolbox.devutils.sql.presentation.SqlTool;
 import io.github.lukmnh.toolbox.devutils.sql.presentation.SqlUseCases;
@@ -164,7 +167,9 @@ public final class DevUtilsToolsProvider implements ToolProvider {
                 new LoadSqlFileUseCase(files),
                 new FormatSqlUseCase(new VerticalBlankSqlFormatter()),
                 new MinifySqlUseCase(),
-                new ExportSqlUseCase(files)));
+                new ExportSqlUseCase(files),
+                new LoadDataFileUseCase(new TabularDataFiles()),
+                new GenerateSyntaxUseCase()));
     }
 
     private static CronTool cronTool() {

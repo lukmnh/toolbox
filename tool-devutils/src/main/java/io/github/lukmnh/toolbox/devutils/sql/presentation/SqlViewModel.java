@@ -230,7 +230,7 @@ final class SqlViewModel {
     }
 
     /** Potong tanpa memisahkan pasangan surrogate (emoji di komentar/string). */
-    private static String safePrefix(String text, int length) {
+    static String safePrefix(String text, int length) {
         int end = Character.isHighSurrogate(text.charAt(length - 1)) ? length - 1 : length;
         return text.substring(0, end);
     }

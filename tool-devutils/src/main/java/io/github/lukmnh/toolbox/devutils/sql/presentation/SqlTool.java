@@ -9,11 +9,15 @@ import io.github.lukmnh.toolbox.devutils.shared.presentation.DevToolIds;
 import java.util.Set;
 import javafx.scene.Node;
 
-/** SQL Formatter: format/minify multi-dialect, download {@code .formatted.sql} / {@code .min.sql}. */
+/**
+ * SQL Formatter (format/minify multi-dialect) + Generator (INSERT/UPDATE/DELETE PostgreSQL/Oracle/MongoDB dari
+ * .xlsx/.csv/.txt/.json).
+ */
 public final class SqlTool implements Tool {
 
     private final SqlUseCases useCases;
     private SqlViewModel viewModel;
+    private GeneratorViewModel generatorViewModel;
 
     public SqlTool(SqlUseCases useCases) {
         this.useCases = useCases;
@@ -52,7 +56,8 @@ public final class SqlTool implements Tool {
     @Override
     public Node createView(ToolContext context) {
         viewModel = new SqlViewModel(useCases, context, new TempFiles());
-        return SqlView.create(viewModel, context);
+        generatorViewModel = new GeneratorViewModel(useCases, context, new TempFiles());
+        return SqlView.create(viewModel, generatorViewModel, context);
     }
 
     @Override
@@ -60,6 +65,10 @@ public final class SqlTool implements Tool {
         if (viewModel != null) {
             viewModel.dispose();
             viewModel = null;
+        }
+        if (generatorViewModel != null) {
+            generatorViewModel.dispose();
+            generatorViewModel = null;
         }
     }
 }

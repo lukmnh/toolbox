@@ -34,6 +34,14 @@ public final class SecurityLimits {
     /** SQL Formatter memuat file utuh ke memori (formatter library tidak streaming). */
     public static final long SQL_MAX_FILE_BYTES = 10 * MB;
 
+    /** SQL Generator memuat data (.csv/.txt/.json/.xlsx) utuh ke memori lalu membangun output sebagai String. */
+    public static final long SQL_GENERATOR_MAX_FILE_BYTES = 10 * MB;
+
+    /** Total isi ZIP .xlsx SQL Generator setelah di-decompress (zip bomb). */
+    public static final long SQL_GENERATOR_XLSX_MAX_UNCOMPRESSED_BYTES = 100 * MB;
+
+    public static final int SQL_GENERATOR_MAX_ROWS = 100_000;
+
     /** Text Tools menghitung statistik dari teks utuh di memori. */
     public static final long TEXT_TOOLS_MAX_BYTES = 10 * MB;
 

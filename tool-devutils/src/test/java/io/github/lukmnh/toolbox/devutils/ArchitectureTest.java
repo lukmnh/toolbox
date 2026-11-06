@@ -58,7 +58,9 @@ class ArchitectureTest {
                     "com.google.re2j..",
                     "com.github.vertical_blank..",
                     "com.cronutils..",
-                    "com.google.zxing..")
+                    "com.google.zxing..",
+                    "de.siegmar..",
+                    "org.dhatim..")
             .orShould()
             .dependOnClassesThat()
             .haveFullyQualifiedName("java.nio.file.Files");

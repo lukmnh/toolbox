@@ -1,5 +1,6 @@
 package io.github.lukmnh.toolbox.devutils.mock.domain;
 
+import io.github.lukmnh.toolbox.devutils.shared.domain.JsonText;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +52,7 @@ public final class MockRenderer {
                     out.append(first ? "\n  {" : ",\n  {");
                     for (int i = 0; i < columns.size(); i++) {
                         out.append(i == 0 ? "" : ", ")
-                                .append(jsonString(columns.get(i).name()))
+                                .append(JsonText.quote(columns.get(i).name()))
                                 .append(": ")
                                 .append(jsonValue(columns.get(i).type(), values.get(i)));
                     }
@@ -102,7 +103,7 @@ public final class MockRenderer {
     }
 
     private static String jsonValue(MockType type, String value) {
-        return type.kind() == MockType.Kind.TEXT ? jsonString(value) : value;
+        return type.kind() == MockType.Kind.TEXT ? JsonText.quote(value) : value;
     }
 
     private String csvValue(MockType type, String value) {
@@ -111,27 +112,6 @@ public final class MockRenderer {
 
     private static String sqlValue(MockType type, String value) {
         return type.kind() == MockType.Kind.TEXT ? sqlString(value) : value;
-    }
-
-    static String jsonString(String value) {
-        StringBuilder out = new StringBuilder(value.length() + 2).append('"');
-        for (char c : value.toCharArray()) {
-            switch (c) {
-                case '"' -> out.append("\\\"");
-                case '\\' -> out.append("\\\\");
-                case '\n' -> out.append("\\n");
-                case '\r' -> out.append("\\r");
-                case '\t' -> out.append("\\t");
-                default -> {
-                    if (c < 0x20) {
-                        out.append(String.format("\\u%04x", (int) c));
-                    } else {
-                        out.append(c);
-                    }
-                }
-            }
-        }
-        return out.append('"').toString();
     }
 
     /** RFC 4180: kutip bila ada koma, kutip, atau baris baru; kutip di dalam digandakan. */
